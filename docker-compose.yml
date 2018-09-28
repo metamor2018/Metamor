@@ -1,0 +1,31 @@
+version: "2"
+services:
+  # mysql settings
+  db:
+    image: mysql:5.7
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    environment:
+     MYSQL_DATABASE: "metamor"
+     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/init.d:/docker-entrypoint-initdb.d
+
+    ports:
+      - 3306:3306
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db
+      PMA_USER: "root"
+      PMA_PASSWORD:
+    links:
+      - db
+    ports:
+      - 8888:80
+    volumes:
+      - /sessions
+
