@@ -1,5 +1,4 @@
-## issues
-* issues番号
+close #[issues番号]
 
 ## 概要
 
