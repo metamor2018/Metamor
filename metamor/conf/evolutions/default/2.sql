@@ -12,4 +12,4 @@ CREATE TABLE relations (
 );
 
 # --- !Downs
-drop table kartalla
+drop table relations
