@@ -1,3 +1,5 @@
+-- 投稿
+
 # --- !Ups
 CREATE TABLE contents (
   id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,

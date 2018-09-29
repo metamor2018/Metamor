@@ -1,3 +1,5 @@
+-- フォロー
+
 # --- !Ups
 CREATE TABLE relations (
   id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,

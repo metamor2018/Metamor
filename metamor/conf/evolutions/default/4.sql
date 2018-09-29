@@ -1,3 +1,5 @@
+-- お気に入り
+
 # --- !Ups
 CREATE TABLE favorites (
   id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,

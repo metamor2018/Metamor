@@ -1,3 +1,5 @@
+-- ユーザー
+
 # --- !Ups
 CREATE TABLE users (
   id VARCHAR(255) NOT NULL PRIMARY KEY,
