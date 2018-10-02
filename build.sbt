@@ -13,7 +13,6 @@ libraryDependencies ++= Seq(
   evolutions,
   "mysql" % "mysql-connector-java" % "6.0.5",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
-
 )
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.example.controllers._"
