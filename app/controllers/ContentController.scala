@@ -1,6 +1,6 @@
 package controllers
 
-import service.ContentService
+import service.{ ContentService, UserService }
 import javax.inject._
 import play.api.mvc._
 import play.api.libs.json._
@@ -9,13 +9,15 @@ import play.api.libs.functional.syntax._
 
 object ContentController {
   val contentService = ContentService
+  val userService    = UserService
 
   case class ContentForm(userId: String, content: String)
 
   implicit val contentFormReads = (
-    (__ \ "userId").read[String] and
+    (__ \ "userId").read[String](verifying(userService.exists)) and
       (__ \ "content").read[String]
   )(ContentForm)
+
 }
 
 @Singleton
