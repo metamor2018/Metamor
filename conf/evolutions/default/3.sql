@@ -1,14 +1,15 @@
 -- 投稿
 
 # --- !Ups
-CREATE TABLE contents (
+CREATE TABLE statuses (
   id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  user_id VARCHAR(20) NOT NULL,
-  content VARCHAR(255) NOT NULL,
-  created_at timestamp not null default current_timestamp,
-  updated_at timestamp not null default current_timestamp on update current_timestamp,
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  world_id VARCHAR(20) NOT NULL,
+  character_id VARCHAR(20) NOT NULL,
+  reply,
+  in_reply_to_id,
+  FOREIGN KEY (world_id) REFERENCES worlds(id)
+  FOREIGN KEY (character_id) REFERENCES charcters(id)
 );
 
 # --- !Downs
-drop table contents
+drop table statuses
