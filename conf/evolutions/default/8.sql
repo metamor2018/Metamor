@@ -1,12 +1,13 @@
--- 称号
+-- 投稿お気に入り
 
 # --- !Ups
-CREATE TABLE emblems(
-  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  icon,
-  character_id VARCHAR(20) NOT NULL,
-  FOREIGN KEY (character_id) REFERENCES characters(id)
+CREATE TABLE statuses_favorites (
+  id BIGINT NOT NULL PRIMARY KEY,
+  character_id BIGINT NOT NULL,
+  status_id BIGINT NOT NULL,
+  FOREIGN KEY (character_id) REFERENCES characters(id),
+  FOREIGN KEY (status_id) REFERENCES statuses(id)
 );
 
 # --- !Downs
-drop table emblems
+DROP TABLE statuses_favorites;

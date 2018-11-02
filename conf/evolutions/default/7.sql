@@ -1,13 +1,16 @@
--- ワールド（イベント）お気に入り
+-- 投稿
 
 # --- !Ups
-CREATE TABLE worlds_favorites(
-  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  character_id VARCHAR(20) NOT NULL,
-  world_id INT NOT NULL,
-  FOREIGN KEY (character_id) REFERENCES characters(id),
-  FOREIGN KEY (world_id) REFERENCES worlds(id)
+CREATE TABLE statuses(
+  id BIGINT NOT NULL PRIMARY KEY,
+  world_id BIGINT NOT NULL,
+  character_id BIGINT NOT NULL,
+  reply BOOLEAN NOT NULL DEFAULT FALSE,
+  in_reply_to_id BIGINT,
+  text VARCHAR(255) NOT NULL,
+  FOREIGN KEY (world_id) REFERENCES worlds(id),
+  FOREIGN KEY (character_id) REFERENCES characters(id)
 );
 
 # --- !Downs
-drop table worlds_favorites
+DROP TABLE statuses;

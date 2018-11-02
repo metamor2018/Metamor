@@ -2,16 +2,14 @@
 
 # --- !Ups
 CREATE TABLE creators(
-  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  display_id varchar(20) NOT NULL UNIQUE,
+  id BIGINT NOT NULL PRIMARY KEY,
+  display_id VARCHAR(20) NOT NULL UNIQUE,
   name VARCHAR(30) NOT NULL,
   profile VARCHAR(64) NULL,
-  icon,
-  official,
-  deleted_at,
---   created_at timestamp not null default current_timestamp,
---   updated_at timestamp not null default current_timestamp on update current_timestamp
+  icon VARCHAR(255) NULL,
+  official BOOLEAN NOT NULL DEFAULT FALSE,
+  deleted_at DATETIME
 );
 
 # --- !Downs
-drop table creators
+DROP TABLE creators;

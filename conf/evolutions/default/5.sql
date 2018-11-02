@@ -1,17 +1,13 @@
--- ワールド（イベント）
+-- ワールド（イベント）参加
 
 # --- !Ups
-CREATE TABLE worlds(
-  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  name VARCHAR(20) NOT NULL,
-  creator_id VARCHAR (20) NOT NULL UNIQUE,
-  detail VARCHAR(255) NOT NULL,
-  started_at,
-  ended_at,
-  emblem_id,
-  FOREIGN KEY (creator_id) REFERENCES creators(id),
-  FOREIGN KEY (emblem_id) REFERENCES embelms(id)
+CREATE TABLE worlds_entries(
+  id BIGINT NOT NULL PRIMARY KEY,
+  character_id BIGINT NOT NULL,
+  world_id BIGINT NOT NULL,
+  FOREIGN KEY (character_id) REFERENCES characters(id),
+  FOREIGN KEY (world_id) REFERENCES worlds(id)
 );
 
 # --- !Downs
-drop table worlds
+DROP TABLE worlds_entries;
