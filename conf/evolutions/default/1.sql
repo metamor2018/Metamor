@@ -1,13 +1,15 @@
--- ユーザー
+-- 創作者
 
 # --- !Ups
-CREATE TABLE users (
-  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  user_id varchar(20) NOT NULL UNIQUE,
+CREATE TABLE creators(
+  id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  display_id VARCHAR(20) NOT NULL UNIQUE,
   name VARCHAR(30) NOT NULL,
-  created_at timestamp not null default current_timestamp,
-  updated_at timestamp not null default current_timestamp on update current_timestamp
+  profile VARCHAR(64) NULL,
+  icon VARCHAR(255) NULL,
+  official BOOLEAN NOT NULL DEFAULT FALSE,
+  deleted_at DATETIME
 );
 
 # --- !Downs
-drop table users
+DROP TABLE creators;

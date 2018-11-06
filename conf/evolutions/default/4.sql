@@ -1,15 +1,17 @@
--- お気に入り
+-- ワールド（イベント）
 
 # --- !Ups
-CREATE TABLE favorites (
-  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  user_id VARCHAR(20) NOT NULL,
-  content_id INT NOT NULL,
-  created_at timestamp not null default current_timestamp,
-  updated_at timestamp not null default current_timestamp on update current_timestamp,
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (content_id) REFERENCES contents(id)
+CREATE TABLE worlds(
+  id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  name VARCHAR(20) NOT NULL,
+  creator_id BIGINT NOT NULL,
+  detail VARCHAR(255) NOT NULL,
+  started_at DATETIME,
+  ended_at DATETIME,
+  emblem_id BIGINT NOT NULL,
+  FOREIGN KEY (creator_id) REFERENCES creators(id),
+  FOREIGN KEY (emblem_id) REFERENCES emblems(id)
 );
 
 # --- !Downs
-drop table favorites
+DROP TABLE worlds;
