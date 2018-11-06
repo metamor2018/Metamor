@@ -2,7 +2,7 @@
 
 # --- !Ups
 CREATE TABLE statuses_favorites (
-  id BIGINT NOT NULL PRIMARY KEY,
+  id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   character_id BIGINT NOT NULL,
   status_id BIGINT NOT NULL,
   FOREIGN KEY (character_id) REFERENCES characters(id),

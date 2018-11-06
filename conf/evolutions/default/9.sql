@@ -2,9 +2,11 @@
 
 # --- !Ups
 CREATE TABLE creators_notifications(
-  id BIGINT NOT NULL PRIMARY KEY,
+  id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   creator_id BIGINT NOT NULL,
   from_creator_id BIGINT NOT NULL,
+  activity_id BIGINT NOT NULL,
+  activity_type ENUM('world_created'),
   FOREIGN KEY (creator_id) REFERENCES creators(id),
   FOREIGN KEY (from_creator_id) REFERENCES creators(id)
 );
