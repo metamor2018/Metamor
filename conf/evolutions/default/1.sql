@@ -8,6 +8,8 @@ CREATE TABLE creators(
   profile VARCHAR(64) NULL,
   icon VARCHAR(255) NULL,
   official BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at timestamp not null default current_timestamp,
+  updated_at timestamp not null default current_timestamp on update current_timestamp,
   deleted_at DATETIME
 );
 
