@@ -31,7 +31,10 @@ class CreatorController @Inject()(cc: ControllerComponents)
       CreatorService.create(creatorForm.displayId, creatorForm.name)
       Ok(("status" -> "ok").asJson)
     } catch {
-      case e: Exception => BadRequest(("status" -> "ng").asJson)
+      case e: Exception => {
+        println(e.toString)
+        BadRequest(("status" -> "ng").asJson)
+      }
     }
   }
 
