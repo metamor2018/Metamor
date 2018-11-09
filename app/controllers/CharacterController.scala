@@ -19,6 +19,7 @@ class CharacterController @Inject()(cc: ControllerComponents)
 
   import CharacterController._
 
+//ログインしてる程のID
   val testCreator = "1"
 
   /**
