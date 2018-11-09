@@ -19,9 +19,6 @@ class CharacterController @Inject()(cc: ControllerComponents)
 
   import CharacterController._
 
-//ログインしてる程のID
-  val testCreator = "1"
-
   /**
    * クリエイターを作成
    * @return 成功 { status : ok }
@@ -29,6 +26,8 @@ class CharacterController @Inject()(cc: ControllerComponents)
    */
   def create() = Action(circe.json[CharacterForm]) { implicit request =>
     val CharacterForm = request.body
+    //ログインしてる程のID
+    val testCreator = "1"
 
     try {
       CharacterService.create(testCreator, CharacterForm.displayId, CharacterForm.name)
