@@ -6,7 +6,7 @@ import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
-import models.service.CreatorService
+import models.service.MixInCreatorService
 
 object CreatorController {
   case class CreatorForm(displayId: String, name: String)
@@ -15,7 +15,8 @@ object CreatorController {
 @Singleton
 class CreatorController @Inject()(cc: ControllerComponents)
     extends AbstractController(cc)
-    with Circe {
+    with Circe
+    with MixInCreatorService {
 
   import CreatorController._
 
@@ -28,7 +29,7 @@ class CreatorController @Inject()(cc: ControllerComponents)
     val creatorForm = request.body
 
     try {
-      CreatorService.create(creatorForm.displayId, creatorForm.name)
+      creatorService.create(creatorForm.displayId, creatorForm.name)
       Ok(("status" -> "ok").asJson)
     } catch {
       case e: Exception => {
