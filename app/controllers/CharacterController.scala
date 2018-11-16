@@ -6,7 +6,7 @@ import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
-import models.service.CharacterService
+import models.service.MixInCharacterService
 
 object CharacterController {
   case class CharacterForm(creatorId: String, displayId: String, name: String)
@@ -15,7 +15,8 @@ object CharacterController {
 @Singleton
 class CharacterController @Inject()(cc: ControllerComponents)
     extends AbstractController(cc)
-    with Circe {
+    with Circe
+    with MixInCharacterService {
 
   import CharacterController._
 
@@ -27,10 +28,10 @@ class CharacterController @Inject()(cc: ControllerComponents)
   def create() = Action(circe.json[CharacterForm]) { implicit request =>
     val CharacterForm = request.body
     //ログインしてる程のID
-    val testCreator = "1"
+    val createrId = "1"
 
     try {
-      CharacterService.create(testCreator, CharacterForm.displayId, CharacterForm.name)
+      characterService.create(createrId, CharacterForm.displayId, CharacterForm.name)
       Ok(("status" -> "ok").asJson)
     } catch {
       case e: Exception => BadRequest(("status" -> "ng").asJson)
