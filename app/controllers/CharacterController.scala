@@ -27,7 +27,7 @@ class CharacterController @Inject()(cc: ControllerComponents)
   def create() = Action(circe.json[CharacterForm]) { implicit request =>
     val CharacterForm = request.body
     //ログインしてる程のID
-    val testCreator = "1"
+    val testCreator = "7"
 
     try {
       CharacterService.create(testCreator, CharacterForm.displayId, CharacterForm.name)
