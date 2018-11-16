@@ -2,7 +2,7 @@ package models.service
 
 import models.repository.{ MixInCreatorRepository, UsesCreatorRepository }
 
-trait CreatorService extends UsesCreatorRepository {
+abstract class CreatorService extends UsesCreatorRepository {
 
   /**
    * クリエイターを作成する
@@ -13,7 +13,12 @@ trait CreatorService extends UsesCreatorRepository {
   def create(displayId: String, name: String): Long = {
     creatorRepository.create(displayId, name)
   }
-
 }
 
-object CreatorService extends CreatorService with MixInCreatorRepository
+trait UsesCreatorService {
+  val creatorService: CreatorService
+}
+
+trait MixInCreatorService {
+  val creatorService: CreatorService = new CreatorService with MixInCreatorRepository
+}
