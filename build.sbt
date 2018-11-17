@@ -21,3 +21,6 @@ libraryDependencies ++= Seq(
 
 scalafmtConfig := Some(file(".scalafmt.conf"))
 scalafmtOnCompile := true
+
+// テスト時は conf/test.conf を読み込む
+javaOptions in Test += "-Dconfig.file=conf/test.conf"
