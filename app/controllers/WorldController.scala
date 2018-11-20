@@ -29,10 +29,10 @@ class WorldController @Inject()(cc: ControllerComponents)
   def create() = Action(circe.json[WorldForm]) { implicit request =>
     val worldForm = request.body
     //ログインしてる程のID
-    val testCreatorID = "7"
+    val creatorId = "7"
 
     try {
-      worldService.create(worldForm.name, testCreatorID, worldForm.detail, worldForm.startedAt)
+      worldService.create(worldForm.name, creatorId, worldForm.detail, worldForm.startedAt)
       Ok(("status" -> "ok").asJson)
     } catch {
       case e: Exception =>
