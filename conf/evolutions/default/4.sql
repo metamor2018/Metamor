@@ -8,7 +8,7 @@ CREATE TABLE worlds(
   detail VARCHAR(255) NOT NULL,
   started_at DATETIME,
   ended_at DATETIME,
-  emblem_id BIGINT NOT NULL,
+  emblem_id BIGINT NULL,
   created_at timestamp not null default current_timestamp,
   updated_at timestamp not null default current_timestamp on update current_timestamp,
   FOREIGN KEY (creator_id) REFERENCES creators(id),
