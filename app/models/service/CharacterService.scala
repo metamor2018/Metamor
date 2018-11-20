@@ -17,4 +17,10 @@ trait CharacterService extends UsesCharacterRepository {
 
 }
 
-object CharacterService extends CharacterService with MixInCharacterRepository
+trait UsesCharacterService {
+  val characterService: CharacterService
+}
+
+trait MixInCharacterService {
+  val characterService: CharacterService = new CharacterService with MixInCharacterRepository
+}
