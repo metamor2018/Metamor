@@ -1,13 +1,13 @@
 package controllers
 
 import java.time.ZonedDateTime
-
 import javax.inject.{ Inject, Singleton }
+import play.api._
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
-import models.service.WorldService
+import models.service.MixInWorldService
 
 object WorldController {
   case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
@@ -16,7 +16,8 @@ object WorldController {
 @Singleton
 class WorldController @Inject()(cc: ControllerComponents)
     extends AbstractController(cc)
-    with Circe {
+    with Circe
+    with MixInWorldService {
 
   import WorldController._
 
@@ -31,7 +32,7 @@ class WorldController @Inject()(cc: ControllerComponents)
     val testCreator = "7"
 
     try {
-      WorldService.create(worldForm.name, testCreator, worldForm.detail, worldForm.startedAt)
+      worldService.create(worldForm.name, testCreator, worldForm.detail, worldForm.startedAt)
       Ok(("status" -> "ok").asJson)
     } catch {
       case e: Exception =>
@@ -40,5 +41,3 @@ class WorldController @Inject()(cc: ControllerComponents)
     }
   }
 }
-
-// 2018-04-01T00:00:00.000+09:00[Asia/Tokyo]
