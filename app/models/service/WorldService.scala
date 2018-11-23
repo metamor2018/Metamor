@@ -1,6 +1,8 @@
 package models.service
 
 import java.time.ZonedDateTime
+
+import models.entity.World
 import models.repository.{ MixInWorldRepository, UsesWorldRepository }
 
 abstract class WorldService extends UsesWorldRepository {
@@ -15,6 +17,14 @@ abstract class WorldService extends UsesWorldRepository {
    */
   def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long = {
     worldRepository.create(name, creatorId, detail, startedAt)
+  }
+
+  /**
+   * ワールド一覧を取得する
+   * @return 存在するワールドの一覧
+   */
+  def getWorlds(): List[World] = {
+    worldRepository.getWorlds()
   }
 }
 

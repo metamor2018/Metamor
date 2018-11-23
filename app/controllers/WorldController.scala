@@ -40,4 +40,9 @@ class WorldController @Inject()(cc: ControllerComponents)
         BadRequest(("status" -> "ng").asJson)
     }
   }
+
+  def getWorlds() = Action {
+    val worlds = worldService.getWorlds()
+    Ok((worlds.asJson))
+  }
 }
