@@ -2,8 +2,6 @@ package models.repository
 
 import scalikejdbc._
 
-import scala.util.Try
-
 trait AccountRepository {
   def exists(authId: String): Boolean
   def create(authId: String): Long
@@ -30,7 +28,6 @@ object AccountRepositoryImpl extends AccountRepository {
   }
 
   def create(authId: String): Long = {
-
     DB autoCommit { implicit session =>
       sql"""
             insert into accounts (auth_id) values (${authId})
