@@ -29,7 +29,7 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
     }
 
     "キャラクター削除" in {
-      val request = FakeRequest(POST, "/characterDelete")
+      val request = FakeRequest(DELETE, "/characterDelete")
         .withJsonBody(Json.parse("""{"Id": "1"}"""))
       val controller = new CharacterController(stubControllerComponents())
       with MixInMockCharacterService {
@@ -60,7 +60,7 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
     }
 
     "キャラクター削除" in {
-      val request = FakeRequest(POST, "/characterDelete")
+      val request = FakeRequest(DELETE, "/characterDelete")
         .withJsonBody(Json.parse("""{"Id": "0"}"""))
       val controller = new CharacterController(stubControllerComponents())
       with MixInErrorCharacterService {
