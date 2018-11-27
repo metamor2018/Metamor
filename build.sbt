@@ -16,7 +16,10 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc" % "3.3.0",
   "org.scalikejdbc" %% "scalikejdbc-config" % "3.3.0",
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.3",
-  "com.dripower" %% "play-circe" % "2610.0"
+  "com.dripower" %% "play-circe" % "2610.0",
+  "com.pauldijou" %% "jwt-play" % "0.19.0",
+  "com.pauldijou" %% "jwt-core" % "0.19.0",
+  "com.auth0" % "jwks-rsa" % "0.6.1"
 )
 
 scalafmtConfig := Some(file(".scalafmt.conf"))
