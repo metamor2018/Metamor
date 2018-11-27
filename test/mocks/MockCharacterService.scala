@@ -5,6 +5,8 @@ import models.service.CharacterService
 
 object MockCharacterRepositoryImpl extends CharacterRepository {
   def create(creatorId: String, displayId: String, name: String): Long = 1
+
+  def delete(id: Long): Long = 1
 }
 
 trait MixInMockCharacterRepository {

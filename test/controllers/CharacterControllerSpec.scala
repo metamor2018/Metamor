@@ -27,6 +27,21 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("ok")
     }
+
+    "キャラクター削除" in {
+      val request = FakeRequest(POST, "/characterDelete")
+        .withJsonBody(Json.parse("""{"Id": "1"}"""))
+      val controller = new CharacterController(stubControllerComponents())
+      with MixInMockCharacterService {
+        override val characterService: CharacterService = mockCharacterService
+      }
+      val result = call(controller.delete(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("ok")
+    }
+
   }
 
   "error" should {
@@ -38,6 +53,20 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
         override val characterService: CharacterService = mockCharacterService
       }
       val result = call(controller.create(), request)
+
+      status(result) mustBe BAD_REQUEST
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("ng")
+    }
+
+    "キャラクター削除" in {
+      val request = FakeRequest(POST, "/characterDelete")
+        .withJsonBody(Json.parse("""{"Id": "0"}"""))
+      val controller = new CharacterController(stubControllerComponents())
+      with MixInErrorCharacterService {
+        override val characterService: CharacterService = mockCharacterService
+      }
+      val result = call(controller.delete(), request)
 
       status(result) mustBe BAD_REQUEST
       contentType(result) mustBe Some("application/json")

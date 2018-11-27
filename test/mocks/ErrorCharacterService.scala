@@ -5,6 +5,8 @@ import models.service.CharacterService
 
 object ErrorCharacterRepositoryImpl extends CharacterRepository {
   def create(creatorId: String, displayId: String, name: String): Long = throw new Exception
+
+  def delete(id: Long): Long = 0
 }
 
 trait MixInErrorCharacterRepository {

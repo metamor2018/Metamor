@@ -15,6 +15,10 @@ trait CharacterService extends UsesCharacterRepository {
     characterRepository.create(creatorId, displayId, name)
   }
 
+  def delete(id: Long): Long = {
+    characterRepository.delete(id)
+  }
+
 }
 
 trait UsesCharacterService {

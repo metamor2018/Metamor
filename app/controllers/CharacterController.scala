@@ -10,6 +10,7 @@ import models.service.MixInCharacterService
 
 object CharacterController {
   case class CharacterForm(creatorId: String, displayId: String, name: String)
+  case class CharacterDeleteForm(Id: Long)
 }
 
 @Singleton
@@ -28,7 +29,7 @@ class CharacterController @Inject()(cc: ControllerComponents)
   def create() = Action(circe.json[CharacterForm]) { implicit request =>
     val CharacterForm = request.body
     //ログインしてる程のID
-    val createrId = "1"
+    val createrId = "7"
 
     try {
       characterService.create(createrId, CharacterForm.displayId, CharacterForm.name)
@@ -36,5 +37,16 @@ class CharacterController @Inject()(cc: ControllerComponents)
     } catch {
       case e: Exception => BadRequest(("status" -> "ng").asJson)
     }
+  }
+
+  def delete() = Action(circe.json[CharacterDeleteForm]) { implicit request =>
+    val deleteForm = request.body
+    //存在している程のキャラクターのID
+    val deleteCharacters = characterService.delete(deleteForm.Id)
+    deleteCharacters match {
+      case 1 => Ok(("status" -> "ok").asJson)
+      case 0 => BadRequest(("status" -> "ng").asJson)
+    }
+
   }
 }
