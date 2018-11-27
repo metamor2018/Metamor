@@ -22,7 +22,7 @@ class CharacterController @Inject()(cc: ControllerComponents)
   import CharacterController._
 
   /**
-   * クリエイターを作成
+   * キャラクターを作成
    * @return 成功 { status : ok }
    *         失敗 { status : ng }
    */
@@ -39,6 +39,11 @@ class CharacterController @Inject()(cc: ControllerComponents)
     }
   }
 
+  /**
+    * キャラクターを削除
+    * @return 成功 { status : ok }
+    *         失敗 { status : ng }
+    */
   def delete() = Action(circe.json[CharacterDeleteForm]) { implicit request =>
     val deleteForm = request.body
     //存在している程のキャラクターのID
