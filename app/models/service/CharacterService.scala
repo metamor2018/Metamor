@@ -15,6 +15,15 @@ trait CharacterService extends UsesCharacterRepository {
     characterRepository.create(creatorId, displayId, name)
   }
 
+  /**
+   * 創作者がキャラクターを削除する
+   * @param id　キャラクターID
+   * @return　削除するキャラクターID
+   */
+  def delete(id: Long): Long = {
+    characterRepository.delete(id)
+  }
+
 }
 
 trait UsesCharacterService {

@@ -7,6 +7,7 @@
 GET     /                           controllers.HomeController.index
 POST    /creator                    controllers.CreatorController.create
 POST    /character                  controllers.CharacterController.create
+DELETE  /character                  controllers.CharacterController.delete
 GET     /world                      controllers.WorldController.getWorlds
 POST    /world                      controllers.WorldController.create
 
