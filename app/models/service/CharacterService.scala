@@ -16,10 +16,10 @@ trait CharacterService extends UsesCharacterRepository {
   }
 
   /**
-    * 創作者がキャラクターを削除する
-    * @param id　キャラクターID
-    * @return　削除するキャラクターID
-    */
+   * 創作者がキャラクターを削除する
+   * @param id　キャラクターID
+   * @return　削除するキャラクターID
+   */
   def delete(id: Long): Long = {
     characterRepository.delete(id)
   }
