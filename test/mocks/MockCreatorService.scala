@@ -6,6 +6,7 @@ import models.service.CreatorService
 object MockCreatorRepositoryImpl extends CreatorRepository {
   def create(displayId: String, name: String): Long = 1
 
+  def existsByDisplayId(displayId: String): Boolean = true
 }
 
 trait MixInMockCreatorRepository {
