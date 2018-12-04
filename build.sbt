@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "com.dripower" %% "play-circe" % "2610.0",
   "com.pauldijou" %% "jwt-play" % "0.19.0",
   "com.pauldijou" %% "jwt-core" % "0.19.0",
-  "com.auth0" % "jwks-rsa" % "0.6.1"
+  "com.auth0" % "jwks-rsa" % "0.6.1",
+  "org.scalaz" %% "scalaz-core" % "7.2.27"
 )
 
 scalafmtConfig := Some(file(".scalafmt.conf"))

@@ -2,7 +2,7 @@ package models.service
 
 import models.repository.{ MixInCreatorRepository, UsesCreatorRepository }
 
-abstract class CreatorService extends UsesCreatorRepository {
+trait CreatorService extends UsesCreatorRepository {
 
   /**
    * クリエイターを作成する
@@ -12,6 +12,10 @@ abstract class CreatorService extends UsesCreatorRepository {
    */
   def create(displayId: String, name: String): Long = {
     creatorRepository.create(displayId, name)
+  }
+
+  def existsByDisplayId(displayId: String): Boolean = {
+    creatorRepository.existsByDisplayId(displayId)
   }
 }
 
