@@ -1,7 +1,7 @@
 package controllers
 
 import auth.AuthAction
-import forms.CreatorForm
+import forms.{ CreatorEditForm, CreatorForm }
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -10,6 +10,7 @@ import play.api.libs.circe.Circe
 import models.service.MixInCreatorService
 import scalaz.Scalaz._
 import scalaz._
+import java.time.ZonedDateTime
 
 @Singleton
 class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthAction)
@@ -30,6 +31,13 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
         creatorService.create(s.displayId, s.name)
         Ok(("status" -> "ok").asJson)
     }
+  }
+
+  def edit(): Action[CreatorEditForm] = authAction(circe.json[CreatorEditForm]) {
+    implicit request =>
+      val rBody = request.body
+      creatorService.edit(rBody.id, rBody.displayId, rBody.name, rBody.profile, rBody.icon)
+      Ok(("status" -> "ok").asJson)
   }
 
 }

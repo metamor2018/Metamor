@@ -1,5 +1,7 @@
 package forms
 
+import java.time.ZonedDateTime
+
 import forms.validations.CreatorValidations
 import scalaz.Scalaz._
 import scalaz._
@@ -14,3 +16,5 @@ case class CreatorForm(displayId: String, name: String) {
   }
 
 }
+
+case class CreatorEditForm(id: Long, displayId: String, name: String, profile: String, icon: String)

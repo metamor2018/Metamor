@@ -1,5 +1,7 @@
 package models.service
 
+import java.time.ZonedDateTime
+
 import models.repository.{ MixInCreatorRepository, UsesCreatorRepository }
 
 trait CreatorService extends UsesCreatorRepository {
@@ -16,6 +18,10 @@ trait CreatorService extends UsesCreatorRepository {
 
   def existsByDisplayId(displayId: String): Boolean = {
     creatorRepository.existsByDisplayId(displayId)
+  }
+
+  def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long = {
+    creatorRepository.edit(id, displayId, name, profile, icon)
   }
 }
 
