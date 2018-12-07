@@ -1,6 +1,9 @@
 package controllers
 
 import java.time.ZonedDateTime
+
+import auth.AuthAction
+import forms.WorldEntryForm
 import javax.inject.{ Inject, Singleton }
 import play.api._
 import play.api.mvc._
@@ -8,13 +11,15 @@ import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
 import models.service.MixInWorldService
+import scalaz.Scalaz._
+import scalaz._
 
 object WorldController {
   case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
 }
 
 @Singleton
-class WorldController @Inject()(cc: ControllerComponents)
+class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
     with Circe
     with MixInWorldService {
@@ -44,5 +49,14 @@ class WorldController @Inject()(cc: ControllerComponents)
   def getWorlds() = Action {
     val worlds = worldService.getWorlds()
     Ok((worlds.asJson))
+  }
+
+  def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
+    request.body.validate() match {
+      case Failure(e) => BadRequest(e.toVector.asJson)
+      case Success(a) =>
+        worldService.entry(a.characterId, a.worldId)
+        Ok(("status" -> "ok").asJson)
+    }
   }
 }

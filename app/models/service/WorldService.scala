@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 import models.entity.World
 import models.repository.{ MixInWorldRepository, UsesWorldRepository }
 
-abstract class WorldService extends UsesWorldRepository {
+trait WorldService extends UsesWorldRepository {
 
   /**
    * ワールドを作成する
@@ -26,6 +26,15 @@ abstract class WorldService extends UsesWorldRepository {
   def getWorlds(): List[World] = {
     worldRepository.getWorlds()
   }
+
+  def entry(characterId: Long, worldId: Long): Long = {
+    worldRepository.entry(characterId, worldId)
+  }
+
+  def existsEntry(characterId: Long, worldId: Long): Boolean = {
+    worldRepository.existsEntry(characterId, worldId)
+  }
+
 }
 
 trait UsesWorldService {
