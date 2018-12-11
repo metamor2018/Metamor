@@ -7,7 +7,7 @@ import play.api.test.Helpers._
 import play.api.test._
 import akka.stream.Materializer
 import auth.{ AuthAction, AuthService }
-import mocks.MixInMockCreatorService
+import mocks.{ MixInErrorCreatorService, MixInMockCreatorService }
 import models.service.CreatorService
 import play.api.mvc.BodyParsers
 import play.api.{ Configuration, Environment }
@@ -41,6 +41,24 @@ class CreatorControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("ok")
     }
+
+    "創作者編集" in {
+      val request = FakeRequest(PUT, "/creator")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse(
+          """{"id":"1","displayId": "huga", "name": "ほげ","profile":"私はほげです","icon":"hogetter"}"""))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      with MixInMockCreatorService {
+        override val creatorService: CreatorService = mockCreatorService
+      }
+      val result = call(controller.edit(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("ok")
+    }
   }
+  
 
 }

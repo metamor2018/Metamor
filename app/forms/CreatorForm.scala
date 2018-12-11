@@ -17,4 +17,19 @@ case class CreatorForm(displayId: String, name: String) {
 
 }
 
-case class CreatorEditForm(id: Long, displayId: String, name: String, profile: String, icon: String)
+case class CreatorEditForm(id: Long,
+                           displayId: String,
+                           name: String,
+                           profile: String,
+                           icon: String) {
+
+  def validate(): Validation[NonEmptyList[String], CreatorEditForm] = {
+    (
+      CreatorValidations.id(this.id) |@|
+        CreatorValidations.displayId(this.displayId) |@|
+        CreatorValidations.name(this.name) |@|
+        CreatorValidations.profile(this.profile) |@|
+        CreatorValidations.icon(this.icon)
+    )(CreatorEditForm)
+  }
+}

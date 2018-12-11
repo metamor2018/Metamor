@@ -23,6 +23,10 @@ trait CreatorService extends UsesCreatorRepository {
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long = {
     creatorRepository.edit(id, displayId, name, profile, icon)
   }
+
+  def existsById(id: Long): Boolean = {
+    creatorRepository.existsById(id)
+  }
 }
 
 trait UsesCreatorService {
