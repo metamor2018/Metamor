@@ -9,6 +9,7 @@ POST    /creator                    controllers.CreatorController.create
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
 GET     /world                      controllers.WorldController.getWorlds
+GET     /world                      controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
 
 POST    /account                    controllers.AccountController.signup

@@ -11,6 +11,8 @@ object ErrorWorldRepositoryImpl extends WorldRepository {
     throw new Exception
   def getWorlds(): List[World] =
     throw new Exception
+  def getEnable(): List[World] =
+    throw new Exception
 }
 
 trait MixInErrorWorldRepository {
