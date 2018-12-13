@@ -10,7 +10,6 @@ import play.api.libs.circe.Circe
 import models.service.MixInCreatorService
 import scalaz.Scalaz._
 import scalaz._
-import java.time.ZonedDateTime
 
 @Singleton
 class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthAction)
@@ -35,8 +34,13 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
 
   def edit(): Action[CreatorEditForm] = authAction(circe.json[CreatorEditForm]) {
     implicit request =>
-      val rBody = request.body
-      creatorService.edit(rBody.id, rBody.displayId, rBody.name, rBody.profile, rBody.icon)
+      creatorService.edit(
+        request.body.id,
+        request.body.displayId,
+        request.body.name,
+        request.body.profile,
+        request.body.icon
+      )
       Ok(("status" -> "ok").asJson)
   }
 

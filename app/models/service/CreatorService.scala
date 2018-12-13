@@ -1,7 +1,5 @@
 package models.service
 
-import java.time.ZonedDateTime
-
 import models.repository.{ MixInCreatorRepository, UsesCreatorRepository }
 
 trait CreatorService extends UsesCreatorRepository {

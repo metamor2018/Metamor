@@ -1,7 +1,5 @@
 package models.repository
 
-import java.time.ZonedDateTime
-
 import scalikejdbc._
 
 trait CreatorRepository {

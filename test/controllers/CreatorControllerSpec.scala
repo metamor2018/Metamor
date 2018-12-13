@@ -7,7 +7,7 @@ import play.api.test.Helpers._
 import play.api.test._
 import akka.stream.Materializer
 import auth.{ AuthAction, AuthService }
-import mocks.{ MixInErrorCreatorService, MixInMockCreatorService }
+import mocks. MixInMockCreatorService
 import models.service.CreatorService
 import play.api.mvc.BodyParsers
 import play.api.{ Configuration, Environment }
