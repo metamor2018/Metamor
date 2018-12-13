@@ -42,18 +42,18 @@ class WorldController @Inject()(cc: ControllerComponents)
   }
 
   /**
-    * ワールド一覧の取得
-    * @return
-    */
+   * ワールド一覧の取得
+   * @return
+   */
   def getWorlds() = Action {
     val worlds = worldService.getWorlds()
     Ok((worlds.asJson))
   }
 
   /**
-    * 開催中のワールド一覧の取得
-    * @return
-    */
+   * 開催中のワールド一覧の取得
+   * @return
+   */
   def getEnable() = Action {
     val holdWorlds = worldService.getEnable()
     Ok((holdWorlds.asJson))
