@@ -7,8 +7,8 @@ case class WorldEntryForm(characterId: Long, worldId: Long) {
 
   def validate() = {
     (
-      WorldValidations.WorldEntryCharacterId(this.characterId, this.worldId) |@|
-        worldId.successNel[String]
+      WorldValidations.isEntryByCharacterId(this.characterId, this.worldId) |@|
+        WorldValidations.exists(this.worldId)
     )(WorldEntryForm)
   }
 

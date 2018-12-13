@@ -25,6 +25,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
   def entry(characterId: Long, worldId: Long): Long = 5
   def existsEntry(characterId: Long, worldId: Long): Boolean = true
 
+  def exists(worldId: Long): Boolean = true
 }
 
 trait MixInMockWorldRepository {

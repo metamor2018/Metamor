@@ -15,6 +15,8 @@ object ErrorWorldRepositoryImpl extends WorldRepository {
     throw new Exception
   def existsEntry(characterId: Long, worldId: Long): Boolean =
     throw new Exception
+  def exists(worldId: Long): Boolean =
+    throw new Exception
 }
 
 trait MixInErrorWorldRepository {

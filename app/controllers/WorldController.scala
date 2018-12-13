@@ -11,6 +11,7 @@ import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
 import models.service.MixInWorldService
+import models.service.MixInCharacterService
 import scalaz.Scalaz._
 import scalaz._
 
@@ -22,7 +23,8 @@ object WorldController {
 class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
     with Circe
-    with MixInWorldService {
+    with MixInWorldService
+    with MixInCharacterService {
 
   import WorldController._
 
@@ -41,7 +43,6 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
       Ok(("status" -> "ok").asJson)
     } catch {
       case e: Exception =>
-        println(e)
         BadRequest(("status" -> "ng").asJson)
     }
   }
@@ -51,12 +52,22 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     Ok((worlds.asJson))
   }
 
+  /**
+    * ワールド参加
+    * @return
+    */
   def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
     request.body.validate() match {
-      case Failure(e) => BadRequest(e.toVector.asJson)
+      case Failure(e) =>
+        BadRequest(e.toVector.asJson)
       case Success(a) =>
-        worldService.entry(a.characterId, a.worldId)
-        Ok(("status" -> "ok").asJson)
+        try {
+          worldService.entry(a.characterId, a.worldId)
+          Ok
+        } catch {
+          case e: Exception =>
+            BadGateway
+        }
     }
   }
 }
