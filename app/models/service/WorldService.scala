@@ -30,22 +30,26 @@ trait WorldService extends UsesWorldRepository {
     worldRepository.getWorlds()
   }
 
+  def getByCreatorId(creatorId: Long): List[World] = {
+    worldRepository.getByCreatorId(creatorId)
+  }
+
   /**
-    * ワールドに参加
-    * @param characterId
-    * @param worldId
-    * @return
-    */
+   * ワールドに参加
+   * @param characterId
+   * @param worldId
+   * @return
+   */
   def entry(characterId: Long, worldId: Long): Long = {
     worldRepository.entry(characterId, worldId)
   }
 
   /**
-    * ワールドに参加済みか確認
-    * @param characterId
-    * @param worldId
-    * @return
-    */
+   * ワールドに参加済みか確認
+   * @param characterId
+   * @param worldId
+   * @return
+   */
   def existsEntry(characterId: Long, worldId: Long): Boolean = {
     worldRepository.existsEntry(characterId, worldId)
   }

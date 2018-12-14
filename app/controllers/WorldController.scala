@@ -5,7 +5,6 @@ import java.time.ZonedDateTime
 import auth.AuthAction
 import forms.WorldEntryForm
 import javax.inject.{ Inject, Singleton }
-import play.api._
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -17,6 +16,7 @@ import scalaz._
 
 object WorldController {
   case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
+  case class CreatorIdForm(creatorId: Long)
 }
 
 @Singleton
@@ -52,10 +52,16 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     Ok((worlds.asJson))
   }
 
+  def getByCreatorId(displayId: String) = Action(circe.json[CreatorIdForm]) { implicit request =>
+    val creatorIdForm = request.body
+    val worlds = worldService.getByCreatorId(creatorIdForm.creatorId)
+    Ok((worlds.asJson))
+  }
+
   /**
-    * ワールド参加
-    * @return
-    */
+   * ワールド参加
+   * @return
+   */
   def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
     request.body.validate() match {
       case Failure(e) =>

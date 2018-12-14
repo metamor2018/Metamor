@@ -1,7 +1,7 @@
 package controllers
 
 import auth.AuthAction
-import forms.CreatorForm
+import forms.{ CreatorEditForm, CreatorForm }
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -30,6 +30,18 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
         creatorService.create(s.displayId, s.name)
         Ok(("status" -> "ok").asJson)
     }
+  }
+
+  def edit(): Action[CreatorEditForm] = authAction(circe.json[CreatorEditForm]) {
+    implicit request =>
+      creatorService.edit(
+        request.body.id,
+        request.body.displayId,
+        request.body.name,
+        request.body.profile,
+        request.body.icon
+      )
+      Ok(("status" -> "ok").asJson)
   }
 
 }
