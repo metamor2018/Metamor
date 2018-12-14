@@ -42,6 +42,23 @@ class CreatorControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("ok")
     }
 
+    "創作者編集" in {
+      val request = FakeRequest(PUT, "/creator")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse(
+          """{"id":"1","displayId": "huga", "name": "ほげ","profile":"私はほげです","icon":"hogetter"}"""))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      with MixInMockCreatorService {
+        override val creatorService: CreatorService = mockCreatorService
+      }
+      val result = call(controller.edit(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("ok")
+    }
+
     // DBのロールバック方法がわからないので「存在する場合」より先に検証
     "創作者が存在するか確認 存在しない場合" in new AutoRollbackWithFixture {
       DB autoCommit { implicit session =>

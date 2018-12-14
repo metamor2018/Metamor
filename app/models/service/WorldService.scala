@@ -30,6 +30,10 @@ trait WorldService extends UsesWorldRepository {
     worldRepository.getWorlds()
   }
 
+  def getByCreatorId(creatorId: Long): List[World] = {
+    worldRepository.getByCreatorId(creatorId)
+  }
+
   /**
    * ワールドに参加
    * @param characterId

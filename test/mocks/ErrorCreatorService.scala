@@ -8,6 +8,11 @@ object ErrorCreatorRepositoryImpl extends CreatorRepository {
 
   def existsByDisplayId(displayId: String): Boolean = false
 
+  def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long =
+    throw new Exception
+
+  def existsById(id: Long): Boolean = false
+
   def existsByAuthId(authId: String): Boolean = false
 }
 

@@ -8,6 +8,10 @@ object MockCreatorRepositoryImpl extends CreatorRepository {
 
   def existsByDisplayId(displayId: String): Boolean = true
 
+  def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long = 1
+
+  def existsById(id: Long): Boolean = true
+
   def existsByAuthId(authId: String): Boolean = true
 }
 
