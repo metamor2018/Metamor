@@ -5,6 +5,7 @@ import scalikejdbc._
 trait CreatorRepository {
   def create(displayId: String, name: String): Long
   def existsByDisplayId(displayId: String): Boolean
+  def existsByAuthId(authId: String): Boolean
 }
 
 trait UsesCreatorRepository {
@@ -33,5 +34,14 @@ object CreatorRepositoryImpl extends CreatorRepository {
             FROM creators
             WHERE display_id = $displayId
         """.map(rs => rs.string("id")).single().apply().isDefined
+    }
+
+  def existsByAuthId(authId: String): Boolean =
+    DB readOnly { implicit session =>
+      sql"""
+            SELECT a.auth_id
+            FROM creators
+            JOIN accounts a ON creators.account_id = a.id
+         """.map(_.string("auth_id")).first().apply().isDefined
     }
 }

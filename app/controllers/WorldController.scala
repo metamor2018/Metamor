@@ -53,9 +53,9 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
   }
 
   /**
-    * ワールド参加
-    * @return
-    */
+   * ワールド参加
+   * @return
+   */
   def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
     request.body.validate() match {
       case Failure(e) =>

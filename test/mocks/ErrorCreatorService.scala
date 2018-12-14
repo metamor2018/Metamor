@@ -7,6 +7,8 @@ object ErrorCreatorRepositoryImpl extends CreatorRepository {
   def create(displayId: String, name: String): Long = throw new Exception
 
   def existsByDisplayId(displayId: String): Boolean = false
+
+  def existsByAuthId(authId: String): Boolean = false
 }
 
 trait MixInErrorCreatorRepository {

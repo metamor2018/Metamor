@@ -17,6 +17,15 @@ trait CreatorService extends UsesCreatorRepository {
   def existsByDisplayId(displayId: String): Boolean = {
     creatorRepository.existsByDisplayId(displayId)
   }
+
+  /**
+   * 創作者が存在することをauthIdから確認
+   * @param authId
+   * @return 存在すればtrue
+   */
+  def existsByAuthId(authId: String): Boolean = {
+    creatorRepository.existsByAuthId(authId)
+  }
 }
 
 trait UsesCreatorService {

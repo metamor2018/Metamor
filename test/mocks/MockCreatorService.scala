@@ -7,6 +7,8 @@ object MockCreatorRepositoryImpl extends CreatorRepository {
   def create(displayId: String, name: String): Long = 1
 
   def existsByDisplayId(displayId: String): Boolean = true
+
+  def existsByAuthId(authId: String): Boolean = true
 }
 
 trait MixInMockCreatorRepository {
