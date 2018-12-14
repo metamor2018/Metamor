@@ -1,7 +1,7 @@
--- ワールド（イベント）お気に入り
+-- ワールド（イベント）参加
 
 # --- !Ups
-CREATE TABLE worlds_favorites(
+CREATE TABLE worlds_entries(
   id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   character_id BIGINT NOT NULL,
   world_id BIGINT NOT NULL,
@@ -12,4 +12,4 @@ CREATE TABLE worlds_favorites(
 );
 
 # --- !Downs
-DROP TABLE worlds_favorites;
+DROP TABLE worlds_entries;

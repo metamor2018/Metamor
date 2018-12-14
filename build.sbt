@@ -12,6 +12,7 @@ libraryDependencies ++= Seq(
   jdbc,
   evolutions,
   "com.h2database" % "h2" % "1.4.197" % Test,
+  "org.scalikejdbc" %% "scalikejdbc-test" % "3.3.0" % Test,
   "mysql" % "mysql-connector-java" % "6.0.5",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   "org.scalikejdbc" %% "scalikejdbc" % "3.3.0",
