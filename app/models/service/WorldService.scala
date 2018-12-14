@@ -26,6 +26,10 @@ abstract class WorldService extends UsesWorldRepository {
   def getWorlds(): List[World] = {
     worldRepository.getWorlds()
   }
+
+  def getByCreatorId(creatorId: Long): List[World] = {
+    worldRepository.getByCreatorId(creatorId)
+  }
 }
 
 trait UsesWorldService {

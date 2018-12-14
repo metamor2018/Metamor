@@ -8,6 +8,8 @@ trait WorldRepository {
   def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long
 
   def getWorlds(): List[World]
+
+  def getByCreatorId(creatorId: Long): List[World]
 }
 
 trait UsesWorldRepository extends WorldRepository {
@@ -48,6 +50,30 @@ object WorldRepositoryImpl extends WorldRepository {
           )
         }
         .list()
+        .apply()
+    }
+  }
+
+  def getByCreatorId(creatorId: Long): List[World] = {
+    DB readOnly { implicit session =>
+      sql"""
+            SELECT *
+            FROM worlds
+            where creator_id = $creatorId
+      """
+        .map(rs =>
+          World(
+            rs.long("id"),
+            rs.string("name"),
+            rs.long("creator_id"),
+            rs.string("detail"),
+            rs.zonedDateTimeOpt("started_at"),
+            rs.zonedDateTimeOpt("ended_at"),
+            rs.longOpt("emblem_id"),
+            rs.zonedDateTime("created_at"),
+            rs.zonedDateTime("updated_at")
+        ))
+        .list
         .apply()
     }
   }

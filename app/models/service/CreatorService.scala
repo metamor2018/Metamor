@@ -18,10 +18,24 @@ trait CreatorService extends UsesCreatorRepository {
     creatorRepository.existsByDisplayId(displayId)
   }
 
+  /**
+   * 創作者の情報を編集する
+   * @param id 一意に振り分けられた創作者のid
+   * @param displayId 創作者が設定する表示id
+   * @param name 創作者の名前
+   * @param profile 創作者のプロフィール
+   * @param icon 創作者のアイコン
+   * @return 編集した創作者の主キー
+   */
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long = {
     creatorRepository.edit(id, displayId, name, profile, icon)
   }
 
+  /**
+   * 創作者が存在するか確認する
+   * @param id 確認する創作者のid
+   * @return 存在すればtrueしなければfalse
+   */
   def existsById(id: Long): Boolean = {
     creatorRepository.existsById(id)
   }
