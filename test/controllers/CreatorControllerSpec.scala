@@ -7,7 +7,7 @@ import play.api.test.Helpers._
 import play.api.test._
 import akka.stream.Materializer
 import auth.{ AuthAction, AuthService }
-import mocks. MixInMockCreatorService
+import mocks.MixInMockCreatorService
 import models.service.CreatorService
 import play.api.mvc.BodyParsers
 import play.api.{ Configuration, Environment }
@@ -59,6 +59,5 @@ class CreatorControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
       contentAsString(result) must include("ok")
     }
   }
-  
 
 }

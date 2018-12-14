@@ -22,6 +22,20 @@ object MockWorldRepositoryImpl extends WorldRepository {
     )
     List(world, world.copy(name = "testName2"), world)
   }
+  def getByCreatorId(creatorId: Long): List[World] = {
+    val world = World(
+      1,
+      "testName",
+      1,
+      "detailtest",
+      None,
+      None,
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    List(world, world.copy(name = "testName2"), world)
+  }
 }
 
 trait MixInMockWorldRepository {
