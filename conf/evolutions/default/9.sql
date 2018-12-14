@@ -1,17 +1,15 @@
--- 創作者通知
+-- 投稿お気に入り
 
 # --- !Ups
-CREATE TABLE creators_notifications(
+CREATE TABLE statuses_favorites (
   id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  creator_id BIGINT NOT NULL,
-  from_creator_id BIGINT NOT NULL,
-  activity_id BIGINT NOT NULL,
-  activity_type ENUM('world_created'),
+  character_id BIGINT NOT NULL,
+  status_id BIGINT NOT NULL,
   created_at timestamp not null default current_timestamp,
   updated_at timestamp not null default current_timestamp on update current_timestamp,
-  FOREIGN KEY (creator_id) REFERENCES creators(id),
-  FOREIGN KEY (from_creator_id) REFERENCES creators(id)
+  FOREIGN KEY (character_id) REFERENCES characters(id),
+  FOREIGN KEY (status_id) REFERENCES statuses(id)
 );
 
 # --- !Downs
-DROP TABLE creators_notifications;
+DROP TABLE statuses_favorites;
