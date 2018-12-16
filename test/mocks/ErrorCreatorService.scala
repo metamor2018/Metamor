@@ -12,6 +12,8 @@ object ErrorCreatorRepositoryImpl extends CreatorRepository {
     throw new Exception
 
   def existsById(id: Long): Boolean = false
+
+  def existsByAuthId(authId: String): Boolean = false
 }
 
 trait MixInErrorCreatorRepository {

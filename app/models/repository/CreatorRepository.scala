@@ -7,6 +7,7 @@ trait CreatorRepository {
   def existsByDisplayId(displayId: String): Boolean
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long
   def existsById(id: Long): Boolean
+  def existsByAuthId(authId: String): Boolean
 }
 
 trait UsesCreatorRepository {
@@ -54,5 +55,14 @@ object CreatorRepositoryImpl extends CreatorRepository {
             FROM creators
             WHERE id = $id
         """.map(rs => rs.string("id")).single().apply().isDefined
+    }
+
+  def existsByAuthId(authId: String): Boolean =
+    DB readOnly { implicit session =>
+      sql"""
+            SELECT a.auth_id
+            FROM creators
+            JOIN accounts a ON creators.account_id = a.id
+         """.map(_.string("auth_id")).first().apply().isDefined
     }
 }
