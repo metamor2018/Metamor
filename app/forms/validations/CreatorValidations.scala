@@ -13,12 +13,12 @@ object CreatorValidations extends MixInCreatorService {
     }
   }
 
-  def displayId(displayId: String): ValidationNel[String, String] = {
-    displayId match {
-      case id if id.length < 4                        => "idが短すぎます".failureNel[String]
-      case id if id.length >= 20                      => "idが長すぎます".failureNel[String]
-      case id if creatorService.existsByDisplayId(id) => "既に存在するidです".failureNel[String]
-      case _                                          => displayId.successNel[String]
+  def displayId(id: String): ValidationNel[String, String] = {
+    id match {
+      case id if id.length < 4                 => "idが短すぎます".failureNel[String]
+      case id if id.length >= 20               => "idが長すぎます".failureNel[String]
+      case id if creatorService.existsById(id) => "既に存在するidです".failureNel[String]
+      case _                                   => id.successNel[String]
     }
   }
 

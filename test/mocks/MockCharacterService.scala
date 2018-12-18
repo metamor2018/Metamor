@@ -8,7 +8,7 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
 
   def delete(id: Long): Long = 1
 
-  def exists(characterId: Long): Boolean = true
+  def exists(characterId: String): Boolean = true
 }
 
 trait MixInMockCharacterRepository {
