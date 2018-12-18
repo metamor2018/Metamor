@@ -4,7 +4,7 @@
 CREATE TABLE worlds(
   id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
   name VARCHAR(20) NOT NULL,
-  creator_id BIGINT NOT NULL,
+  creator_id VARCHAR(20) NOT NULL,
   detail VARCHAR(255) NOT NULL,
   started_at DATETIME,
   ended_at DATETIME,
