@@ -82,7 +82,8 @@ class WorldControllerSpec extends ControllerSpecBase {
     }
 
     "開催中ワールド一覧取得" in {
-      val controller = new WorldController(stubControllerComponents()) with MixInMockWorldService {
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      with MixInMockWorldService {
         override val worldService: WorldService = mockWorldService
       }
       val result = controller.getEnable().apply(FakeRequest(GET, "/world"))
