@@ -47,9 +47,22 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     }
   }
 
+  /**
+   * ワールド一覧の取得
+   * @return
+   */
   def getWorlds() = Action {
     val worlds = worldService.getWorlds()
     Ok((worlds.asJson))
+  }
+
+  /**
+   * 開催中のワールド一覧の取得
+   * @return
+   */
+  def getEnable() = Action {
+    val holdWorlds = worldService.getEnable()
+    Ok((holdWorlds.asJson))
   }
 
   def getByCreatorId(displayId: String) = Action(circe.json[CreatorIdForm]) { implicit request =>

@@ -30,6 +30,14 @@ trait WorldService extends UsesWorldRepository {
     worldRepository.getWorlds()
   }
 
+  /**
+   * 開催中のワールド一覧を取得する
+   * @return 存在する開催中のワールドの一覧
+   */
+  def getEnable(): List[World] = {
+    worldRepository.getEnable()
+  }
+
   def getByCreatorId(creatorId: Long): List[World] = {
     worldRepository.getByCreatorId(creatorId)
   }

@@ -52,6 +52,5 @@ class CharacterController @Inject()(cc: ControllerComponents)
       case 1 => Ok(("status" -> "ok").asJson)
       case 0 => BadRequest(("status" -> "ng").asJson)
     }
-
   }
 }

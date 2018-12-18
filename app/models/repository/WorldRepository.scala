@@ -11,6 +11,8 @@ trait WorldRepository {
 
   def getWorlds(): List[World]
 
+  def getEnable(): List[World]
+
   def entry(characterId: Long, worldId: Long): Long
 
   def existsEntry(characterId: Long, worldId: Long): Boolean
@@ -51,6 +53,29 @@ object WorldRepositoryImpl extends WorldRepository {
     DB readOnly { implicit session =>
       sql"""
             SELECT * FROM worlds
+      """
+        .map { rs =>
+          World(
+            rs.long("id"),
+            rs.string("name"),
+            rs.long("creator_id"),
+            rs.string("detail"),
+            rs.zonedDateTimeOpt("started_at"),
+            rs.zonedDateTimeOpt("ended_at"),
+            rs.longOpt("emblem_id"),
+            rs.zonedDateTime("created_at"),
+            rs.zonedDateTime("updated_at")
+          )
+        }
+        .list()
+        .apply()
+    }
+  }
+
+  def getEnable(): List[World] = {
+    DB readOnly { implicit session =>
+      sql"""
+            SELECT * FROM worlds WHERE ended_at IS NULL
       """
         .map { rs =>
           World(
