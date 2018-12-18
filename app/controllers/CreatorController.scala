@@ -1,7 +1,7 @@
 package controllers
 
 import auth.AuthAction
-import forms.CreatorForm
+import forms.{ CreatorEditForm, CreatorForm }
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -29,6 +29,31 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
       case Success(s) =>
         creatorService.create(s.displayId, s.name)
         Ok(("status" -> "ok").asJson)
+    }
+  }
+
+  def edit(): Action[CreatorEditForm] = authAction(circe.json[CreatorEditForm]) {
+    implicit request =>
+      creatorService.edit(
+        request.body.id,
+        request.body.displayId,
+        request.body.name,
+        request.body.profile,
+        request.body.icon
+      )
+      Ok(("status" -> "ok").asJson)
+  }
+
+  /**
+   * クリエイターが存在するか確認
+   * @return 存在すればtrue
+   */
+  def exists() = authAction { implicit request =>
+    request.jwt.subject match {
+      case None => BadRequest // OpenIdがない場合
+      case Some(authId) =>
+        if (creatorService.existsByAuthId(authId)) Ok(("exists" -> true).asJson)
+        else Ok(("exists" -> false).asJson)
     }
   }
 

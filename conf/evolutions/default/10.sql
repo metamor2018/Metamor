@@ -1,17 +1,17 @@
--- キャラクター通知
+-- 創作者通知
 
 # --- !Ups
-CREATE TABLE characters_notifications(
+CREATE TABLE creators_notifications(
   id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  character_id BIGINT NOT NULL,
-  from_character_id BIGINT NOT NULL,
+  creator_id BIGINT NOT NULL,
+  from_creator_id BIGINT NOT NULL,
   activity_id BIGINT NOT NULL,
-  activity_type ENUM('reply', 'favorite', 'world_started', 'world_ended'),
+  activity_type ENUM('world_created'),
   created_at timestamp not null default current_timestamp,
   updated_at timestamp not null default current_timestamp on update current_timestamp,
-  FOREIGN KEY (character_id) REFERENCES characters(id),
-  FOREIGN KEY (from_character_id) REFERENCES characters(id)
+  FOREIGN KEY (creator_id) REFERENCES creators(id),
+  FOREIGN KEY (from_creator_id) REFERENCES creators(id)
 );
 
 # --- !Downs
-DROP TABLE characters_notifications;
+DROP TABLE creators_notifications;

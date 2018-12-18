@@ -1,17 +1,12 @@
--- 創作者
+-- キャラクター通知
 
 # --- !Ups
-CREATE TABLE creators(
+CREATE TABLE accounts(
   id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  display_id VARCHAR(20) NOT NULL UNIQUE,
-  name VARCHAR(30) NOT NULL,
-  profile VARCHAR(64) NULL,
-  icon VARCHAR(255) NULL,
-  official BOOLEAN NOT NULL DEFAULT FALSE,
+  auth_id VARCHAR(255) NOT NULL,
   created_at timestamp not null default current_timestamp,
-  updated_at timestamp not null default current_timestamp on update current_timestamp,
-  deleted_at DATETIME
+  updated_at timestamp not null default current_timestamp on update current_timestamp
 );
 
 # --- !Downs
-DROP TABLE creators;
+DROP TABLE accounts;

@@ -1,23 +1,30 @@
 package controllers
 
 import java.time.ZonedDateTime
+
+import auth.AuthAction
+import forms.WorldEntryForm
 import javax.inject.{ Inject, Singleton }
-import play.api._
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
 import models.service.MixInWorldService
+import models.service.MixInCharacterService
+import scalaz.Scalaz._
+import scalaz._
 
 object WorldController {
   case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
+  case class CreatorIdForm(creatorId: Long)
 }
 
 @Singleton
-class WorldController @Inject()(cc: ControllerComponents)
+class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
     with Circe
-    with MixInWorldService {
+    with MixInWorldService
+    with MixInCharacterService {
 
   import WorldController._
 
@@ -36,7 +43,6 @@ class WorldController @Inject()(cc: ControllerComponents)
       Ok(("status" -> "ok").asJson)
     } catch {
       case e: Exception =>
-        println(e)
         BadRequest(("status" -> "ng").asJson)
     }
   }
@@ -57,5 +63,30 @@ class WorldController @Inject()(cc: ControllerComponents)
   def getEnable() = Action {
     val holdWorlds = worldService.getEnable()
     Ok((holdWorlds.asJson))
+  }
+
+  def getByCreatorId(displayId: String) = Action(circe.json[CreatorIdForm]) { implicit request =>
+    val creatorIdForm = request.body
+    val worlds = worldService.getByCreatorId(creatorIdForm.creatorId)
+    Ok((worlds.asJson))
+  }
+
+  /**
+   * ワールド参加
+   * @return
+   */
+  def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
+    request.body.validate() match {
+      case Failure(e) =>
+        BadRequest(e.toVector.asJson)
+      case Success(a) =>
+        try {
+          worldService.entry(a.characterId, a.worldId)
+          Ok
+        } catch {
+          case e: Exception =>
+            BadGateway
+        }
+    }
   }
 }

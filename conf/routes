@@ -6,13 +6,18 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 POST    /creator                    controllers.CreatorController.create
+PUT     /creator                    controllers.CreatorController.edit
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
 GET     /world                      controllers.WorldController.getWorlds
 GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
+POST    /world/entry                controllers.WorldController.entry
 
 POST    /account                    controllers.AccountController.signup
+
+# Validation
+GET     /creator/validate/exists    controllers.CreatorController.exists
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
