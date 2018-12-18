@@ -34,7 +34,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
       ZonedDateTime.now(),
       ZonedDateTime.now()
     )
-    List(world, world.copy(name = "testName2"), world)
+    List(world, world.copy(id = 2), world.copy(id = 3))
   }
   def entry(characterId: Long, worldId: Long): Long = 5
   def existsEntry(characterId: Long, worldId: Long): Boolean = true

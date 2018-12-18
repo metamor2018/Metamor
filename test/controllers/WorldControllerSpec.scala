@@ -81,6 +81,22 @@ class WorldControllerSpec extends ControllerSpecBase {
       status(result) mustBe OK
     }
 
+    "他の創作者のワールド確認" in {
+      val request = FakeRequest(GET, "/creator/:displayId/worlds")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{"creatorId": "1"}"""))
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      with MixInMockWorldService {
+        override val worldService: WorldService = mockWorldService
+      }
+      val result = call(controller.getByCreatorId("1"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("id")
+
+    }
+
   }
 
   "error" should {
@@ -116,6 +132,22 @@ class WorldControllerSpec extends ControllerSpecBase {
       // validationエラーが返ってくる
       contentAsString(result) must include("存在しないキャラクターです")
       contentAsString(result) must include("存在しないワールドです")
+    }
+
+    "他の創作者のワールド確認" in {
+      val request = FakeRequest(GET, "/creator/:displayId/worlds")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{"creatorId": "1000"}"""))
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      with MixInErrorWorldService {
+        override val worldService: WorldService = mockWorldService
+      }
+      val result = call(controller.getByCreatorId("1"), request)
+
+      status(result) mustBe BAD_REQUEST
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("存在しない創作者です")
+
     }
 
   }

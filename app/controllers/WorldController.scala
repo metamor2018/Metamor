@@ -3,7 +3,7 @@ package controllers
 import java.time.ZonedDateTime
 
 import auth.AuthAction
-import forms.WorldEntryForm
+import forms.{ CreatorIdForm, WorldEntryForm }
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -16,7 +16,6 @@ import scalaz._
 
 object WorldController {
   case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
-  case class CreatorIdForm(creatorId: Long)
 }
 
 @Singleton
@@ -30,6 +29,7 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
 
   /**
    * クリエイターを作成
+   *
    * @return 成功 { status : ok }
    *         失敗 { status : ng }
    */
@@ -52,14 +52,9 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     Ok((worlds.asJson))
   }
 
-  def getByCreatorId(displayId: String) = Action(circe.json[CreatorIdForm]) { implicit request =>
-    val creatorIdForm = request.body
-    val worlds = worldService.getByCreatorId(creatorIdForm.creatorId)
-    Ok((worlds.asJson))
-  }
-
   /**
    * ワールド参加
+   *
    * @return
    */
   def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
@@ -75,5 +70,22 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
             BadGateway
         }
     }
+  }
+  def getByCreatorId(displayId: String) = authAction(circe.json[CreatorIdForm]) {
+    implicit request =>
+      request.body.validate() match {
+        case Failure(e) =>
+          BadRequest(e.toVector.asJson)
+        case Success(a) =>
+          try {
+            val creator = worldService.getByCreatorId(request.body.creatorId)
+            Ok((creator.asJson))
+          } catch {
+            case e: Exception =>
+              BadGateway
+          }
+
+      }
+
   }
 }

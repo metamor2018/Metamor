@@ -30,10 +30,6 @@ trait WorldService extends UsesWorldRepository {
     worldRepository.getWorlds()
   }
 
-  def getByCreatorId(creatorId: Long): List[World] = {
-    worldRepository.getByCreatorId(creatorId)
-  }
-
   /**
    * ワールドに参加
    * @param characterId
@@ -52,6 +48,15 @@ trait WorldService extends UsesWorldRepository {
    */
   def existsEntry(characterId: Long, worldId: Long): Boolean = {
     worldRepository.existsEntry(characterId, worldId)
+  }
+
+  /**
+   * 指定した創作者のワールドを取得する
+   * @param creatorId
+   * @return 指定した創作者のワールド
+   */
+  def getByCreatorId(creatorId: Long): List[World] = {
+    worldRepository.getByCreatorId(creatorId)
   }
 
 }

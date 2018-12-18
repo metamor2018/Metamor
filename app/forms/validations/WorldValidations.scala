@@ -1,10 +1,13 @@
 package forms.validations
 
-import models.service.{ MixInCharacterService, MixInWorldService }
+import models.service.{ MixInCharacterService, MixInCreatorService, MixInWorldService }
 import scalaz.Scalaz._
 import scalaz._
 
-object WorldValidations extends MixInWorldService with MixInCharacterService {
+object WorldValidations
+    extends MixInWorldService
+    with MixInCharacterService
+    with MixInCreatorService {
 
   def isEntryByCharacterId(characterId: Long, worldId: Long): ValidationNel[String, Long] = {
     characterId match {
@@ -23,6 +26,15 @@ object WorldValidations extends MixInWorldService with MixInCharacterService {
         "存在しないワールドです".failureNel[Long]
       case _ =>
         worldId.successNel[String]
+    }
+  }
+
+  def confirmExistenceOfCreatorId(creatorId: Long): ValidationNel[String, Long] = {
+    creatorId match {
+      case creatorId if !creatorService.existsById(creatorId) =>
+        "存在しない創作者です".failureNel[Long]
+      case _ =>
+        creatorId.successNel[String]
     }
   }
 
