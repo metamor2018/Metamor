@@ -59,51 +59,5 @@ class CreatorControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("ok")
     }
 
-    // DBのロールバック方法がわからないので「存在する場合」より先に検証
-    "創作者が存在するか確認 存在しない場合" in new AutoRollbackWithFixture {
-      DB autoCommit { implicit session =>
-        fixture
-      }
-
-      val request = FakeRequest(GET, "/creator/validate/exists")
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-
-      val controller = new CreatorController(stubControllerComponents(), authAction)
-      val result = call(controller.exists(), request)
-
-      status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("false")
-    }
-
-    "創作者が存在するか確認 存在する場合" in new AutoRollbackWithFixture {
-
-      override def fixture(implicit session: FixtureParam): Unit = {
-        sql"""
-            insert into accounts (auth_id) values (${authId})
-          """.update().apply()
-
-        sql"""
-            insert into creators(account_id,display_id,name)
-            values (1,'hoge','huga')
-        """.update().apply()
-
-      }
-
-      DB autoCommit { implicit session =>
-        fixture
-      }
-
-      val request = FakeRequest(GET, "/creator/validate/exists")
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-
-      val controller = new CreatorController(stubControllerComponents(), authAction)
-      val result = call(controller.exists(), request)
-
-      status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("true")
-    }
-
   }
 }

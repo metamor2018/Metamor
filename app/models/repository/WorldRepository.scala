@@ -43,7 +43,7 @@ object WorldRepositoryImpl extends WorldRepository {
              SELECT id
              FROM worlds
              WHERE id = ${worldId}
-        """.map(rs => rs.string("id")).single().apply().isDefined
+        """.map(rs => rs.string("id")).first().apply().isDefined
     }
   }
 
@@ -110,7 +110,7 @@ object WorldRepositoryImpl extends WorldRepository {
             FROM worlds_entries
             WHERE character_id=${characterId}
             AND world_id=${worldId}
-        """.map(rs => rs.long("id")).single().apply().isDefined
+        """.map(rs => rs.long("id")).first().apply().isDefined
     }
   }
 }

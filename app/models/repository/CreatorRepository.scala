@@ -35,7 +35,7 @@ object CreatorRepositoryImpl extends CreatorRepository {
             SELECT id
             FROM creators
             WHERE display_id = $displayId
-        """.map(rs => rs.string("id")).single().apply().isDefined
+        """.map(rs => rs.string("id")).first().apply().isDefined
     }
 
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long = {
@@ -54,7 +54,7 @@ object CreatorRepositoryImpl extends CreatorRepository {
             SELECT id
             FROM creators
             WHERE id = $id
-        """.map(rs => rs.string("id")).single().apply().isDefined
+        """.map(rs => rs.string("id")).first().apply().isDefined
     }
 
   def existsByAuthId(authId: String): Boolean =
