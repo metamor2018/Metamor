@@ -13,9 +13,24 @@ object MockWorldRepositoryImpl extends WorldRepository {
       1,
       "testName",
       1,
-      "detailtest",
+      "detailTest",
       None,
       None,
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    List(world, world.copy(name = "testName2"), world)
+  }
+
+  def getEnable(): List[World] = {
+    val world = World(
+      1,
+      "testName",
+      1,
+      "detailTest",
+      None,
+      Some(ZonedDateTime.now()),
       None,
       ZonedDateTime.now(),
       ZonedDateTime.now()
@@ -47,5 +62,5 @@ trait MixInMockWorldRepository {
 }
 
 trait MixInMockWorldService {
-  val mockWorldService: WorldService = new WorldService with MixInMockWorldRepository {}
+  val mockWorldService: WorldService = new WorldService with MixInMockWorldRepository
 }

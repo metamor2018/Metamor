@@ -81,6 +81,20 @@ class WorldControllerSpec extends ControllerSpecBase {
       status(result) mustBe OK
     }
 
+    "開催中ワールド一覧取得" in {
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      with MixInMockWorldService {
+        override val worldService: WorldService = mockWorldService
+      }
+      val result = controller.getEnable().apply(FakeRequest(GET, "/world"))
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("testName")
+      contentAsString(result) must include("testName2")
+
+    }
+
   }
 
   "error" should {
