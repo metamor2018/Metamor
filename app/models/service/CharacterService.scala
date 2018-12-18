@@ -24,6 +24,22 @@ trait CharacterService extends UsesCharacterRepository {
     characterRepository.delete(id)
   }
 
+  def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long = {
+    characterRepository.edit(id, displayId, name, profile, icon)
+  }
+
+  /**
+   * キャラクターが存在することの確認
+   * @param characterId
+   * @return 存在すればtrue
+   */
+  def exists(characterId: Long): Boolean =
+    characterRepository.exists(characterId)
+
+  def existsByDisplayId(displayId: String): Boolean = {
+    characterRepository.existsByDisplayId(displayId)
+  }
+
 }
 
 trait UsesCharacterService {

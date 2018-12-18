@@ -11,3 +11,9 @@ case class World(id: Long,
                  emblemId: Option[Long],
                  createdAt: ZonedDateTime,
                  updatedAt: ZonedDateTime)
+
+case class Entry(id: Long,
+                 characterId: Long,
+                 worldId: Long,
+                 createdAt: ZonedDateTime,
+                 updatedAt: ZonedDateTime)

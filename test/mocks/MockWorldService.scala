@@ -37,6 +37,24 @@ object MockWorldRepositoryImpl extends WorldRepository {
     )
     List(world, world.copy(name = "testName2"), world)
   }
+  def getByCreatorId(creatorId: Long): List[World] = {
+    val world = World(
+      1,
+      "testName",
+      1,
+      "detailtest",
+      None,
+      None,
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    List(world, world.copy(name = "testName2"), world)
+  }
+  def entry(characterId: Long, worldId: Long): Long = 5
+  def existsEntry(characterId: Long, worldId: Long): Boolean = true
+
+  def exists(worldId: Long): Boolean = true
 }
 
 trait MixInMockWorldRepository {
@@ -44,5 +62,5 @@ trait MixInMockWorldRepository {
 }
 
 trait MixInMockWorldService {
-  val mockWorldService: WorldService = new WorldService with MixInMockWorldRepository
+  val mockWorldService: WorldService = new WorldService with MixInMockWorldRepository {}
 }

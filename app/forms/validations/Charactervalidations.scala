@@ -1,24 +1,23 @@
 package forms.validations
 
-import models.service.MixInCreatorService
+import models.service.MixInCharacterService
 import scalaz.Scalaz._
 import scalaz._
 
-object CreatorValidations extends MixInCreatorService {
+object CharacterValidations extends MixInCharacterService {
 
   def id(id: Long) = {
     id match {
-//      case id if creatorService.existsById(id) => id.successNel[Long]
       case _ => id.successNel[String]
     }
   }
 
   def displayId(displayId: String): ValidationNel[String, String] = {
     displayId match {
-      case id if id.length < 4                        => "idが短すぎます".failureNel[String]
-      case id if id.length >= 20                      => "idが長すぎます".failureNel[String]
-      case id if creatorService.existsByDisplayId(id) => "既に存在するidです".failureNel[String]
-      case _                                          => displayId.successNel[String]
+      case id if id.length < 4                          => "idが短すぎます".failureNel[String]
+      case id if id.length >= 20                        => "idが長すぎます".failureNel[String]
+      case id if characterService.existsByDisplayId(id) => "既に存在するidです".failureNel[String]
+      case _                                            => displayId.successNel[String]
     }
   }
 
