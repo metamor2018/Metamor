@@ -4,11 +4,11 @@ import forms.validations.CreatorValidations
 import scalaz.Scalaz._
 import scalaz._
 
-case class CreatorForm(displayId: String, name: String) {
+case class CreatorForm(id: String, name: String) {
 
   def validate(): Validation[NonEmptyList[String], CreatorForm] = {
     (
-      CreatorValidations.displayId(this.displayId) |@|
+      CreatorValidations.displayId(this.id) |@|
         CreatorValidations.name(this.name)
     )(CreatorForm)
   }

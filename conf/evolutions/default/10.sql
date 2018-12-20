@@ -3,8 +3,8 @@
 # --- !Ups
 CREATE TABLE creators_notifications(
   id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  creator_id BIGINT NOT NULL,
-  from_creator_id BIGINT NOT NULL,
+  creator_id VARCHAR(20) NOT NULL,
+  from_creator_id VARCHAR(20) NOT NULL,
   activity_id BIGINT NOT NULL,
   activity_type ENUM('world_created'),
   created_at timestamp not null default current_timestamp,

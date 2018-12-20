@@ -6,16 +6,21 @@ trait CreatorService extends UsesCreatorRepository {
 
   /**
    * クリエイターを作成する
-   * @param displayId 表示するid
+   * @param id 表示するid
    * @param name 名前
    * @return 作成したクリエイターの主キー
    */
-  def create(displayId: String, name: String): Long = {
-    creatorRepository.create(displayId, name)
+  def create(id: String, name: String): Long = {
+    creatorRepository.create(id, name)
   }
 
-  def existsByDisplayId(displayId: String): Boolean = {
-    creatorRepository.existsByDisplayId(displayId)
+  /**
+   * 創作者が存在するか確認する
+   * @param id 確認する創作者のid
+   * @return 存在すればtrueしなければfalse
+   */
+  def existsById(id: String): Boolean = {
+    creatorRepository.existsById(id)
   }
 
   /**
@@ -29,15 +34,6 @@ trait CreatorService extends UsesCreatorRepository {
    */
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long = {
     creatorRepository.edit(id, displayId, name, profile, icon)
-  }
-
-  /**
-   * 創作者が存在するか確認する
-   * @param id 確認する創作者のid
-   * @return 存在すればtrueしなければfalse
-   */
-  def existsById(id: Long): Boolean = {
-    creatorRepository.existsById(id)
   }
 
   /**

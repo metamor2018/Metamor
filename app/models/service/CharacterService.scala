@@ -29,7 +29,7 @@ trait CharacterService extends UsesCharacterRepository {
    * @param characterId
    * @return 存在すればtrue
    */
-  def exists(characterId: Long): Boolean =
+  def exists(characterId: String): Boolean =
     characterRepository.exists(characterId)
 
 }

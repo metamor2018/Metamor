@@ -28,7 +28,7 @@ class CreatorControllerSpec extends ControllerSpecBase {
     "創作者作成" in {
       val request = FakeRequest(POST, "/creator")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"displayId": "huga", "name": "ほげ"}"""))
+        .withJsonBody(Json.parse("""{"id": "huga", "name": "ほげ"}"""))
 
       val controller = new CreatorController(stubControllerComponents(), authAction)
       with MixInMockCreatorService {
@@ -58,6 +58,5 @@ class CreatorControllerSpec extends ControllerSpecBase {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("ok")
     }
-
   }
 }

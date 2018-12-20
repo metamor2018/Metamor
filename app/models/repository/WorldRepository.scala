@@ -13,9 +13,9 @@ trait WorldRepository {
 
   def getEnable(): List[World]
 
-  def entry(characterId: Long, worldId: Long): Long
+  def entry(characterId: String, worldId: Long): Long
 
-  def existsEntry(characterId: Long, worldId: Long): Boolean
+  def existsEntry(characterId: String, worldId: Long): Boolean
 
   def getByCreatorId(creatorId: Long): List[World]
 }
@@ -45,7 +45,7 @@ object WorldRepositoryImpl extends WorldRepository {
              SELECT id
              FROM worlds
              WHERE id = ${worldId}
-        """.map(rs => rs.string("id")).first().apply().isDefined
+        """.map(rs => rs.string("id")).single().apply().isDefined
     }
   }
 
@@ -56,9 +56,8 @@ object WorldRepositoryImpl extends WorldRepository {
       """
         .map { rs =>
           World(
-            rs.long("id"),
+            rs.string("id"),
             rs.string("name"),
-            rs.long("creator_id"),
             rs.string("detail"),
             rs.zonedDateTimeOpt("started_at"),
             rs.zonedDateTimeOpt("ended_at"),
@@ -79,9 +78,8 @@ object WorldRepositoryImpl extends WorldRepository {
       """
         .map { rs =>
           World(
-            rs.long("id"),
+            rs.string("id"),
             rs.string("name"),
-            rs.long("creator_id"),
             rs.string("detail"),
             rs.zonedDateTimeOpt("started_at"),
             rs.zonedDateTimeOpt("ended_at"),
@@ -104,9 +102,8 @@ object WorldRepositoryImpl extends WorldRepository {
       """
         .map(rs =>
           World(
-            rs.long("id"),
+            rs.string("id"),
             rs.string("name"),
-            rs.long("creator_id"),
             rs.string("detail"),
             rs.zonedDateTimeOpt("started_at"),
             rs.zonedDateTimeOpt("ended_at"),
@@ -119,7 +116,7 @@ object WorldRepositoryImpl extends WorldRepository {
     }
   }
 
-  def entry(characterId: Long, worldId: Long): Long = {
+  def entry(characterId: String, worldId: Long): Long = {
     DB autoCommit { implicit session =>
       sql"""
          insert into worlds_entries(character_Id,world_Id)
@@ -128,14 +125,14 @@ object WorldRepositoryImpl extends WorldRepository {
     }
   }
 
-  def existsEntry(characterId: Long, worldId: Long): Boolean = {
+  def existsEntry(characterId: String, worldId: Long): Boolean = {
     DB readOnly { implicit session =>
       sql"""
             SELECT id
             FROM worlds_entries
             WHERE character_id=${characterId}
             AND world_id=${worldId}
-        """.map(rs => rs.long("id")).first().apply().isDefined
+        """.map(rs => rs.string("id")).single().apply().isDefined
     }
   }
 }

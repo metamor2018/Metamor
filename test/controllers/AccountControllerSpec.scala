@@ -65,7 +65,7 @@ class AccountControllerSpec extends ControllerSpecBase {
           """.update().apply()
 
         sql"""
-            insert into creators(account_id,display_id,name)
+            insert into creators(account_id,id,name)
             values (1,'hoge','huga')
         """.update().apply()
 

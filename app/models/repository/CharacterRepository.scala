@@ -5,7 +5,7 @@ import scalikejdbc._
 trait CharacterRepository {
   def create(creatorId: String, displayId: String, name: String): Long
   def delete(id: Long): Long
-  def exists(characterId: Long): Boolean
+  def exists(characterId: String): Boolean
 }
 
 trait UsesCharacterRepository extends CharacterRepository {
@@ -35,11 +35,11 @@ object CharacterRepositoryImpl extends CharacterRepository {
     }
   }
 
-  def exists(characterId: Long): Boolean = {
+  def exists(characterId: String): Boolean = {
     DB readOnly { implicit session =>
       sql"""
             SELECT id FROM characters WHERE id=${characterId}
-        """.map(_.long("id")).first().apply().isDefined
+        """.map(_.string("id")).first().apply().isDefined
     }
   }
 }

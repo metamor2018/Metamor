@@ -48,7 +48,7 @@ trait WorldService extends UsesWorldRepository {
    * @param worldId
    * @return
    */
-  def entry(characterId: Long, worldId: Long): Long = {
+  def entry(characterId: String, worldId: Long): Long = {
     worldRepository.entry(characterId, worldId)
   }
 
@@ -58,7 +58,7 @@ trait WorldService extends UsesWorldRepository {
    * @param worldId
    * @return
    */
-  def existsEntry(characterId: Long, worldId: Long): Boolean = {
+  def existsEntry(characterId: String, worldId: Long): Boolean = {
     worldRepository.existsEntry(characterId, worldId)
   }
 
