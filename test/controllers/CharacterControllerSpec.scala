@@ -9,14 +9,13 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 
-class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
-  implicit lazy val materializer: Materializer = app.materializer
-
+class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ControllerSpecBase {
   "success" should {
     "キャラクター作成" in {
       val request = FakeRequest(POST, "/character")
-        .withJsonBody(Json.parse("""{"creatorId": "1", "displayId": "test", "name": "ほげ"}"""))
-      val controller = new CharacterController(stubControllerComponents())
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{ "Id": "testid","creatorId": "1", "name": "ほげ"}"""))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
       with MixInMockCharacterService {
         override val characterService: CharacterService = mockCharacterService
       }
@@ -30,8 +29,9 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
 
     "キャラクター削除" in {
       val request = FakeRequest(DELETE, "/characterDelete")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
         .withJsonBody(Json.parse("""{"Id": "1"}"""))
-      val controller = new CharacterController(stubControllerComponents())
+      val controller = new CharacterController(stubControllerComponents(), authAction)
       with MixInMockCharacterService {
         override val characterService: CharacterService = mockCharacterService
       }
@@ -47,8 +47,9 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
   "error" should {
     "キャラクター作成" in {
       val request = FakeRequest(POST, "/character")
-        .withJsonBody(Json.parse("""{"creatorId": "1", "displayId": "test", "name": "ほげ"}"""))
-      val controller = new CharacterController(stubControllerComponents())
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{ "Id": "testid","creatorId": "1", "name": "ほげ"}"""))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
       with MixInErrorCharacterService {
         override val characterService: CharacterService = mockCharacterService
       }
@@ -61,8 +62,9 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
 
     "キャラクター削除" in {
       val request = FakeRequest(DELETE, "/characterDelete")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
         .withJsonBody(Json.parse("""{"Id": "0"}"""))
-      val controller = new CharacterController(stubControllerComponents())
+      val controller = new CharacterController(stubControllerComponents(), authAction)
       with MixInErrorCharacterService {
         override val characterService: CharacterService = mockCharacterService
       }
