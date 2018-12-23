@@ -15,7 +15,7 @@ import scalaz.Scalaz._
 import scalaz._
 
 object WorldController {
-  case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
+  case class WorldForm(creatorId: String, name: String, detail: String, startedAt: ZonedDateTime)
   case class CreatorIdForm(creatorId: Long)
 }
 

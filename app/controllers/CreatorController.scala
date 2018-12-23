@@ -27,7 +27,7 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
       case Success(s) =>
-        creatorService.create(s.displayId, s.name)
+        creatorService.create(s.id, s.name)
         Ok(("status" -> "ok").asJson)
     }
   }

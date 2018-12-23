@@ -6,12 +6,12 @@ import scalaz._
 
 object WorldValidations extends MixInWorldService with MixInCharacterService {
 
-  def isEntryByCharacterId(characterId: Long, worldId: Long): ValidationNel[String, Long] = {
+  def isEntryByCharacterId(characterId: String, worldId: Long): ValidationNel[String, String] = {
     characterId match {
       case characterId if worldService.existsEntry(characterId, worldId) =>
-        "ワールドに参加済みです".failureNel[Long]
+        "ワールドに参加済みです".failureNel[String]
       case characterId if !characterService.exists(characterId) =>
-        "存在しないキャラクターです".failureNel[Long]
+        "存在しないキャラクターです".failureNel[String]
       case _ =>
         characterId.successNel[String]
     }
