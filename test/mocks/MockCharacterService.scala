@@ -4,9 +4,9 @@ import models.repository.CharacterRepository
 import models.service.CharacterService
 
 object MockCharacterRepositoryImpl extends CharacterRepository {
-  def create(creatorId: String, displayId: String, name: String): Long = 1
+  def create(id: String, creatorId: String, name: String): Long = 1
 
-  def delete(id: Long): Long = 1
+  def delete(id: String): Long = 1
 
   def exists(characterId: String): Boolean = true
 }
@@ -17,5 +17,5 @@ trait MixInMockCharacterRepository {
 
 trait MixInMockCharacterService {
   val mockCharacterService: CharacterService = new CharacterService
-  with MixInMockCharacterRepository {}
+  with MixInMockCharacterRepository
 }

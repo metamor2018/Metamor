@@ -20,7 +20,7 @@ trait CharacterService extends UsesCharacterRepository {
    * @param id　キャラクターID
    * @return　削除するキャラクターID
    */
-  def delete(id: Long): Long = {
+  def delete(id: String): Long = {
     characterRepository.delete(id)
   }
 

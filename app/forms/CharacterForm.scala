@@ -1,17 +1,20 @@
 package forms
 
 import forms.validations.CharacterValidations
+import scalaz.Scalaz._
 
-case class CharacterForm(id: String, creatorId: String, name: String) {
-  def createValidation() = {
+case class CharacterCreateForm(id: String, creatorId: String) {
+  def characterValidation() = {
     (
-      CharacterValidations.exists(this.id)
-    )
+      CharacterValidations.createExistCharacter(this.id) |@|
+        CharacterValidations.createExistCreator(this.creatorId)
+    )(CharacterCreateForm)
   }
-
-  def deleteValidation() = {
+}
+case class CharacterDeleteForm(id: String) {
+  def Validation() = {
     (
-      CharacterValidations.exists(this.id)
+      CharacterValidations.deleteExist(this.id)
     )
   }
 }

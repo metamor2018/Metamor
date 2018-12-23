@@ -4,7 +4,7 @@ import scalikejdbc._
 
 trait CharacterRepository {
   def create(id: String, creatorId: String, name: String): Long
-  def delete(id: Long): Long
+  def delete(id: String): Long
   def exists(id: String): Boolean
 }
 
@@ -27,7 +27,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
     }
   }
 
-  def delete(id: Long): Long = {
+  def delete(id: String): Long = {
     DB autoCommit { implicit session =>
       sql"""
             DELETE FROM characters where id=${id}
