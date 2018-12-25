@@ -7,7 +7,8 @@ import models.repository.{
   UsesCreatorRepository
 }
 import scalikejdbc._
-import scala.util.{ Failure, Success }
+
+import scala.util.{ Failure, Success, Try }
 
 trait CreatorService extends UsesCreatorRepository with UsesAccountRepository {
 
@@ -21,7 +22,8 @@ trait CreatorService extends UsesCreatorRepository with UsesAccountRepository {
     DB localTx { implicit session =>
       (for {
         accountOpt <- accountRepository.findByAuthId(authId)
-        creatorId <- creatorRepository.create(id, name, accountOpt.get.id)
+        account <- Try(accountOpt.get)
+        creatorId <- creatorRepository.create(id, name, account.id)
       } yield creatorId) match {
         case Failure(e) =>
           session.connection.rollback()
