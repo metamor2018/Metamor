@@ -24,26 +24,35 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
   /**
    * キャラクターを作成するためにバリデーションをかけ成功ならcharacterCreatingPartを呼ぶ
    * @return 成功 { status : ok }
-   *         失敗(charaterIdが存在時) 既に存在するキャラクターidです
+   *         失敗 { status : ng }
+   *         失敗(charaterIdが存在する時) 既に存在するキャラクターidです
    *         失敗(creatorIdが存在しない時) 存在しない創作者です
    */
   def create() = authAction(circe.json[forms.CharacterCreateForm]) { implicit request =>
+    /**
+     * キャラクターを作成する
+     * @return
+     */
+    def beGoingToCreate() = Action(circe.json[CharacterCreateForm]) { implicit request =>
+      val characterCreateForm = request.body
+      characterService.create(characterCreateForm.id,
+                              characterCreateForm.creatorId,
+                              characterCreateForm.name)
+      Ok
+    }
+
     request.body.characterValidation() match {
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
       case Success(a) =>
-        characterCreatingPart
-        Ok(("status" -> "ok").asJson)
+        try {
+          beGoingToCreate
+          Ok(("status" -> "ok").asJson)
+        } catch {
+          case e: Exception =>
+            BadRequest(("status" -> "ng").asJson)
+        }
     }
-  }
-
-  /**
-   * キャラクターを作成する
-   * @return
-   */
-  def characterCreatingPart() = authAction(circe.json[CharacterCreateForm]) { implicit request =>
-    characterService.create(request.body.id, request.body.creatorId, request.body.name)
-    Ok
   }
 
   /**
@@ -56,8 +65,13 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
       case Failure(e) =>
         BadRequest(e.head.asJson)
       case Success(a) =>
-        characterService.delete(request.body.id)
-        Ok(("status" -> "ok").asJson)
+        try {
+          characterService.delete(a.head.toString)
+          Ok(("status" -> "ok").asJson)
+        } catch {
+          case e: Exception =>
+            BadRequest(("status" -> "ng").asJson)
+        }
 
     }
   }
