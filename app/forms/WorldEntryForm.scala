@@ -2,7 +2,7 @@ package forms
 import forms.validations.WorldValidations
 import scalaz.Scalaz._
 
-case class WorldEntryForm(characterId: Long, worldId: Long) {
+case class WorldEntryForm(characterId: String, worldId: Long) {
 
   def validate() = {
     (
@@ -13,7 +13,7 @@ case class WorldEntryForm(characterId: Long, worldId: Long) {
 
 }
 
-case class CreatorIdForm(creatorId: Long) {
+case class CreatorIdForm(creatorId: String) {
 
   def validate() = {
     (

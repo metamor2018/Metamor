@@ -3,10 +3,10 @@ package models.repository
 import scalikejdbc._
 
 trait CreatorRepository {
-  def create(displayId: String, name: String): Long
-  def existsByDisplayId(displayId: String): Boolean
+  def create(id: String, name: String): Long
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long
-  def existsById(id: Long): Boolean
+  def existsById(id: String): Boolean
+  def existsByAuthId(authId: String): Boolean
 }
 
 trait UsesCreatorRepository {
@@ -19,21 +19,21 @@ trait MixInCreatorRepository {
 
 object CreatorRepositoryImpl extends CreatorRepository {
 
-  def create(displayId: String, name: String): Long = {
+  def create(id: String, name: String): Long = {
     DB autoCommit { implicit session =>
       sql"""
-           insert into creators(display_id,name)
-           values (${displayId}, ${name})
+           insert into creators(id,name)
+           values (${id}, ${name})
         """.updateAndReturnGeneratedKey().apply()
     }
   }
 
-  def existsByDisplayId(displayId: String): Boolean =
+  def existsById(id: String): Boolean =
     DB readOnly { implicit session =>
       sql"""
             SELECT id
             FROM creators
-            WHERE display_id = $displayId
+            WHERE id = $id
         """.map(rs => rs.string("id")).single().apply().isDefined
     }
 
@@ -47,12 +47,12 @@ object CreatorRepositoryImpl extends CreatorRepository {
     }
   }
 
-  def existsById(id: Long): Boolean =
+  def existsByAuthId(authId: String): Boolean =
     DB readOnly { implicit session =>
       sql"""
-            SELECT id
+            SELECT a.auth_id
             FROM creators
-            WHERE id = $id
-        """.map(rs => rs.string("id")).single().apply().isDefined
+            JOIN accounts a ON creators.account_id = a.id
+         """.map(_.string("auth_id")).first().apply().isDefined
     }
 }

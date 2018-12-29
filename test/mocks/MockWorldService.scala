@@ -10,10 +10,9 @@ object MockWorldRepositoryImpl extends WorldRepository {
   def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long = 1
   def getWorlds(): List[World] = {
     val world = World(
-      1,
+      "worldId",
       "testName",
-      1,
-      "detailtest",
+      "detailTest",
       None,
       None,
       None,
@@ -22,11 +21,24 @@ object MockWorldRepositoryImpl extends WorldRepository {
     )
     List(world, world.copy(name = "testName2"), world)
   }
-  def getByCreatorId(creatorId: Long): List[World] = {
+
+  def getEnable(): List[World] = {
     val world = World(
-      1,
+      "worldId",
       "testName",
-      1,
+      "detailTest",
+      None,
+      Some(ZonedDateTime.now()),
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    List(world, world.copy(name = "testName2"), world)
+  }
+  def getByCreatorId(creatorId: String): List[World] = {
+    val world = World(
+      "worldId",
+      "testName",
       "detailtest",
       None,
       None,
@@ -34,10 +46,10 @@ object MockWorldRepositoryImpl extends WorldRepository {
       ZonedDateTime.now(),
       ZonedDateTime.now()
     )
-    List(world, world.copy(id = 2), world.copy(id = 3))
+    List(world, world.copy(id = "2"), world.copy(id = "3"))
   }
-  def entry(characterId: Long, worldId: Long): Long = 5
-  def existsEntry(characterId: Long, worldId: Long): Boolean = true
+  def entry(characterId: String, worldId: Long): Long = 5
+  def existsEntry(characterId: String, worldId: Long): Boolean = true
 
   def exists(worldId: Long): Boolean = true
 }
@@ -47,5 +59,5 @@ trait MixInMockWorldRepository {
 }
 
 trait MixInMockWorldService {
-  val mockWorldService: WorldService = new WorldService with MixInMockWorldRepository {}
+  val mockWorldService: WorldService = new WorldService with MixInMockWorldRepository
 }

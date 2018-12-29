@@ -53,6 +53,15 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
   }
 
   /**
+   * 開催中のワールド一覧の取得
+   * @return
+   */
+  def getEnable() = Action {
+    val holdWorlds = worldService.getEnable()
+    Ok((holdWorlds.asJson))
+  }
+
+  /**
    * ワールド参加
    *
    * @return
@@ -78,7 +87,7 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
           BadRequest(e.toVector.asJson)
         case Success(a) =>
           try {
-            val creator = worldService.getByCreatorId(request.body.creatorId)
+            val creator = worldService.getByCreatorId(a.head.toString)
             Ok((creator.asJson))
           } catch {
             case e: Exception =>

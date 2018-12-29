@@ -9,12 +9,12 @@ object WorldValidations
     with MixInCharacterService
     with MixInCreatorService {
 
-  def isEntryByCharacterId(characterId: Long, worldId: Long): ValidationNel[String, Long] = {
+  def isEntryByCharacterId(characterId: String, worldId: Long): ValidationNel[String, String] = {
     characterId match {
       case characterId if worldService.existsEntry(characterId, worldId) =>
-        "ワールドに参加済みです".failureNel[Long]
+        "ワールドに参加済みです".failureNel[String]
       case characterId if !characterService.exists(characterId) =>
-        "存在しないキャラクターです".failureNel[Long]
+        "存在しないキャラクターです".failureNel[String]
       case _ =>
         characterId.successNel[String]
     }
@@ -29,10 +29,10 @@ object WorldValidations
     }
   }
 
-  def confirmExistenceOfCreatorId(creatorId: Long): ValidationNel[String, Long] = {
+  def confirmExistenceOfCreatorId(creatorId: String): ValidationNel[String, String] = {
     creatorId match {
       case creatorId if !creatorService.existsById(creatorId) =>
-        "存在しない創作者です".failureNel[Long]
+        "存在しない創作者です".failureNel[String]
       case _ =>
         creatorId.successNel[String]
     }

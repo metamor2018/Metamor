@@ -17,18 +17,18 @@ trait AutoRollbackWithFixture extends FlatSpec with AutoRollback {
       """.update().apply()
 
     sql"""
-          insert into creators(account_id,display_id,name)
+          insert into creators(account_id,id,name)
           values (1,'hoge','huga')
       """.update().apply()
 
     sql"""
-          insert into characters(creator_id,display_id,name)
-          values (1,'hoge','huga')
+          insert into characters(creator_id,id,name)
+          values ('hoge','hoge','huga')
       """.update().apply()
 
     sql"""
           insert into worlds(name,creator_Id,detail,started_at)
-          values ('name',1,'hoge','2018-12-04 06:45:55')
+          values ('name','hoge','hoge','2018-12-04 06:45:55')
       """.update().apply()
   }
 }
@@ -39,7 +39,7 @@ class WorldControllerSpec extends ControllerSpecBase {
     "ワールド作成" in {
       val request = FakeRequest(POST, "/world")
         .withJsonBody(Json.parse(
-          """{"name": "testname", "creatorId": "7", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+          """{"creatorId": "hogeCreator", "name": "testname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
       with MixInMockWorldService {
         override val worldService: WorldService = mockWorldService
@@ -72,7 +72,7 @@ class WorldControllerSpec extends ControllerSpecBase {
 
       val request = FakeRequest(POST, "/world/entry")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"characterId": "1", "worldId": "1"}"""))
+        .withJsonBody(Json.parse("""{"characterId": "hoge", "worldId": "1"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
 
       val result = call(controller.entry(), request)
@@ -81,10 +81,24 @@ class WorldControllerSpec extends ControllerSpecBase {
       status(result) mustBe OK
     }
 
+    "開催中ワールド一覧取得" in {
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      with MixInMockWorldService {
+        override val worldService: WorldService = mockWorldService
+      }
+      val result = controller.getEnable().apply(FakeRequest(GET, "/world"))
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("testName")
+      contentAsString(result) must include("testName2")
+
+    }
+
     "他の創作者のワールド確認" in {
       val request = FakeRequest(GET, "/creator/:displayId/worlds")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"creatorId": "1"}"""))
+        .withJsonBody(Json.parse("""{"creatorId": "hoge"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
       with MixInMockWorldService {
         override val worldService: WorldService = mockWorldService
@@ -103,7 +117,7 @@ class WorldControllerSpec extends ControllerSpecBase {
     "ワールド作成" in {
       val request = FakeRequest(POST, "/world")
         .withJsonBody(Json.parse(
-          """{"name": "testname", "creatorId": "7", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+          """{"creatorId": "hogeCreator", "name": "testname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
       with MixInErrorWorldService {
         override val worldService: WorldService = mockWorldService
@@ -119,7 +133,7 @@ class WorldControllerSpec extends ControllerSpecBase {
       // 存在しないキャラクター、ワールドのIDを渡す
       val request = FakeRequest(POST, "/world/entry")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"characterId": "900", "worldId": "900"}"""))
+        .withJsonBody(Json.parse("""{"characterId": "hogegege", "worldId": "900"}"""))
 
       val controller = new WorldController(stubControllerComponents(), authAction)
       val result = call(controller.entry(), request)

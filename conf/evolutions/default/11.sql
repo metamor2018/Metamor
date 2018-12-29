@@ -3,8 +3,8 @@
 # --- !Ups
 CREATE TABLE characters_notifications(
   id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  character_id BIGINT NOT NULL,
-  from_character_id BIGINT NOT NULL,
+  character_id VARCHAR(20) NOT NULL,
+  from_character_id VARCHAR(20) NOT NULL,
   activity_id BIGINT NOT NULL,
   activity_type ENUM('reply', 'favorite', 'world_started', 'world_ended'),
   created_at timestamp not null default current_timestamp,

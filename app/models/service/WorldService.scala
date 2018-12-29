@@ -31,12 +31,20 @@ trait WorldService extends UsesWorldRepository {
   }
 
   /**
+   * 開催中のワールド一覧を取得する
+   * @return 存在する開催中のワールドの一覧
+   */
+  def getEnable(): List[World] = {
+    worldRepository.getEnable()
+  }
+
+  /**
    * ワールドに参加
    * @param characterId
    * @param worldId
    * @return
    */
-  def entry(characterId: Long, worldId: Long): Long = {
+  def entry(characterId: String, worldId: Long): Long = {
     worldRepository.entry(characterId, worldId)
   }
 
@@ -46,7 +54,7 @@ trait WorldService extends UsesWorldRepository {
    * @param worldId
    * @return
    */
-  def existsEntry(characterId: Long, worldId: Long): Boolean = {
+  def existsEntry(characterId: String, worldId: Long): Boolean = {
     worldRepository.existsEntry(characterId, worldId)
   }
 
@@ -55,7 +63,7 @@ trait WorldService extends UsesWorldRepository {
    * @param creatorId
    * @return 指定した創作者のワールド
    */
-  def getByCreatorId(creatorId: Long): List[World] = {
+  def getByCreatorId(creatorId: String): List[World] = {
     worldRepository.getByCreatorId(creatorId)
   }
 

@@ -27,7 +27,7 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
       case Success(s) =>
-        creatorService.create(s.displayId, s.name)
+        creatorService.create(s.id, s.name)
         Ok(("status" -> "ok").asJson)
     }
   }
@@ -42,6 +42,19 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
         request.body.icon
       )
       Ok(("status" -> "ok").asJson)
+  }
+
+  /**
+   * クリエイターが存在するか確認
+   * @return 存在すればtrue
+   */
+  def exists() = authAction { implicit request =>
+    request.jwt.subject match {
+      case None => BadRequest // OpenIdがない場合
+      case Some(authId) =>
+        if (creatorService.existsByAuthId(authId)) Ok(("exists" -> true).asJson)
+        else Ok(("exists" -> false).asJson)
+    }
   }
 
 }

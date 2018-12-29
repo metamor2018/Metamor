@@ -2,9 +2,8 @@ package models.entity
 
 import java.time.ZonedDateTime
 
-case class World(id: Long,
+case class World(id: String,
                  name: String,
-                 creatorId: Long,
                  detail: String,
                  startedAt: Option[ZonedDateTime],
                  endedAt: Option[ZonedDateTime],

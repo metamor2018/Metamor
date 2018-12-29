@@ -11,11 +11,13 @@ trait WorldRepository {
 
   def getWorlds(): List[World]
 
-  def entry(characterId: Long, worldId: Long): Long
+  def getEnable(): List[World]
 
-  def existsEntry(characterId: Long, worldId: Long): Boolean
+  def entry(characterId: String, worldId: Long): Long
 
-  def getByCreatorId(creatorId: Long): List[World]
+  def existsEntry(characterId: String, worldId: Long): Boolean
+
+  def getByCreatorId(creatorId: String): List[World]
 }
 
 trait UsesWorldRepository extends WorldRepository {
@@ -54,9 +56,8 @@ object WorldRepositoryImpl extends WorldRepository {
       """
         .map { rs =>
           World(
-            rs.long("id"),
+            rs.string("id"),
             rs.string("name"),
-            rs.long("creator_id"),
             rs.string("detail"),
             rs.zonedDateTimeOpt("started_at"),
             rs.zonedDateTimeOpt("ended_at"),
@@ -70,7 +71,29 @@ object WorldRepositoryImpl extends WorldRepository {
     }
   }
 
-  def getByCreatorId(creatorId: Long): List[World] = {
+  def getEnable(): List[World] = {
+    DB readOnly { implicit session =>
+      sql"""
+            SELECT * FROM worlds WHERE ended_at IS NULL
+      """
+        .map { rs =>
+          World(
+            rs.string("id"),
+            rs.string("name"),
+            rs.string("detail"),
+            rs.zonedDateTimeOpt("started_at"),
+            rs.zonedDateTimeOpt("ended_at"),
+            rs.longOpt("emblem_id"),
+            rs.zonedDateTime("created_at"),
+            rs.zonedDateTime("updated_at")
+          )
+        }
+        .list()
+        .apply()
+    }
+  }
+
+  def getByCreatorId(creatorId: String): List[World] = {
     DB readOnly { implicit session =>
       sql"""
             SELECT *
@@ -79,9 +102,8 @@ object WorldRepositoryImpl extends WorldRepository {
       """
         .map(rs =>
           World(
-            rs.long("id"),
+            rs.string("id"),
             rs.string("name"),
-            rs.long("creator_id"),
             rs.string("detail"),
             rs.zonedDateTimeOpt("started_at"),
             rs.zonedDateTimeOpt("ended_at"),
@@ -94,7 +116,7 @@ object WorldRepositoryImpl extends WorldRepository {
     }
   }
 
-  def entry(characterId: Long, worldId: Long): Long = {
+  def entry(characterId: String, worldId: Long): Long = {
     DB autoCommit { implicit session =>
       sql"""
          insert into worlds_entries(character_Id,world_Id)
@@ -103,14 +125,14 @@ object WorldRepositoryImpl extends WorldRepository {
     }
   }
 
-  def existsEntry(characterId: Long, worldId: Long): Boolean = {
+  def existsEntry(characterId: String, worldId: Long): Boolean = {
     DB readOnly { implicit session =>
       sql"""
             SELECT id
             FROM worlds_entries
             WHERE character_id=${characterId}
             AND world_id=${worldId}
-        """.map(rs => rs.long("id")).single().apply().isDefined
+        """.map(rs => rs.string("id")).single().apply().isDefined
     }
   }
 }

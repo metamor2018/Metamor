@@ -11,11 +11,13 @@ object ErrorWorldRepositoryImpl extends WorldRepository {
     throw new Exception
   def getWorlds(): List[World] =
     throw new Exception
-  def getByCreatorId(creatorId: Long): List[World] =
+  def getEnable(): List[World] =
     throw new Exception
-  def entry(characterId: Long, worldId: Long): Long =
+  def getByCreatorId(creatorId: String): List[World] =
     throw new Exception
-  def existsEntry(characterId: Long, worldId: Long): Boolean =
+  def entry(characterId: String, worldId: Long): Long =
+    throw new Exception
+  def existsEntry(characterId: String, worldId: Long): Boolean =
     throw new Exception
   def exists(worldId: Long): Boolean =
     throw new Exception
