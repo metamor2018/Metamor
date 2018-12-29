@@ -2,8 +2,11 @@ package models.repository
 
 import scalikejdbc._
 
+import scala.util.Try
+import scala.util.control.Exception.catching
+
 trait CreatorRepository {
-  def create(id: String, name: String): Long
+  def create(id: String, name: String, accountId: Long)(implicit s: DBSession): Try[Long]
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long
   def existsById(id: String): Boolean
   def existsByAuthId(authId: String): Boolean
@@ -19,13 +22,12 @@ trait MixInCreatorRepository {
 
 object CreatorRepositoryImpl extends CreatorRepository {
 
-  def create(id: String, name: String): Long = {
-    DB autoCommit { implicit session =>
+  def create(id: String, name: String, accountId: Long)(implicit s: DBSession): Try[Long] = {
+    catching(classOf[Throwable]) withTry
       sql"""
-           insert into creators(id,name)
-           values (${id}, ${name})
-        """.updateAndReturnGeneratedKey().apply()
-    }
+           insert into creators(id,name,account_id)
+           values ($id, $name, $accountId)
+        """.update().apply()
   }
 
   def existsById(id: String): Boolean =
