@@ -1,5 +1,6 @@
 package forms.validations
 
+import forms.validations.WorldValidations.creatorService
 import models.service.MixInCreatorService
 import scalaz.Scalaz._
 import scalaz._
@@ -42,4 +43,14 @@ object CreatorValidations extends MixInCreatorService {
       case _ => icon.successNel[String]
     }
   }
+
+  def exists(creatorId: String): ValidationNel[String, String] = {
+    creatorId match {
+      case creatorId if !creatorService.existsById(creatorId) =>
+        "存在しない創作者です".failureNel[String]
+      case _ =>
+        creatorId.successNel[String]
+    }
+  }
+
 }

@@ -80,15 +80,15 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
         }
     }
   }
-  def getByCreatorId(displayId: String) = authAction(circe.json[CreatorIdForm]) {
+  def getByCreatorId(creatorId: String) = authAction(circe.json[CreatorIdForm]) {
     implicit request =>
       request.body.validate() match {
         case Failure(e) =>
           BadRequest(e.toVector.asJson)
         case Success(a) =>
           try {
-            val creator = worldService.getByCreatorId(a.head.toString)
-            Ok((creator.asJson))
+            val creator = worldService.getByCreatorId(a)
+            Ok(creator.asJson)
           } catch {
             case e: Exception =>
               BadGateway

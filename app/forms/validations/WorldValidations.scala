@@ -29,13 +29,4 @@ object WorldValidations
     }
   }
 
-  def confirmExistenceOfCreatorId(creatorId: String): ValidationNel[String, String] = {
-    creatorId match {
-      case creatorId if !creatorService.existsById(creatorId) =>
-        "存在しない創作者です".failureNel[String]
-      case _ =>
-        creatorId.successNel[String]
-    }
-  }
-
 }
