@@ -63,6 +63,7 @@ class AuthService @Inject()(config: Configuration) {
   // issuer and audience fields.
   private val validateClaims = (claims: JwtClaim) =>
     if (claims.isValid(issuer, audience)) {
+      if (claims.subject.isEmpty) new Exception("OpenId not found")
       Success(claims)
     } else {
       Failure(new Exception("The JWT did not pass validation"))
