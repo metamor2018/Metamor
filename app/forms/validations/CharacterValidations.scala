@@ -6,7 +6,7 @@ import scalaz._
 
 object CharacterValidations extends MixInCharacterService with MixInCreatorService {
 
-  def createExistCharacter(id: String): ValidationNel[String, String] = {
+  def exists(id: String): ValidationNel[String, String] = {
     id match {
       case id if characterService.exists(id) =>
         "既に存在するキャラクターです".failureNel[String]
@@ -15,16 +15,7 @@ object CharacterValidations extends MixInCharacterService with MixInCreatorServi
     }
   }
 
-  def createExistCreator(creatorId: String): ValidationNel[String, String] = {
-    creatorId match {
-      case creatorId if !creatorService.existsById(creatorId) =>
-        "存在しない創作者です".failureNel[String]
-      case _ =>
-        creatorId.successNel[String]
-    }
-  }
-
-  def deleteExist(id: String): ValidationNel[String, String] = {
+  def notExists(id: String): ValidationNel[String, String] = {
     id match {
       case id if !characterService.exists(id) =>
         "存在しないキャラクターです".failureNel[String]

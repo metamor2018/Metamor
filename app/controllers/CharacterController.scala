@@ -29,19 +29,8 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
    *         失敗(creatorIdが存在しない時) 存在しない創作者です
    */
   def create() = authAction(circe.json[forms.CharacterCreateForm]) { implicit request =>
-    /**
-     * キャラクターを作成する
-     * @return
-     */
-    def beGoingToCreate() = Action(circe.json[CharacterCreateForm]) { implicit request =>
-      val characterCreateForm = request.body
-      characterService.create(characterCreateForm.id,
-                              characterCreateForm.creatorId,
-                              characterCreateForm.name)
-      Ok
-    }
 
-    request.body.characterValidation() match {
+    request.body.validate() match {
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
       case Success(a) =>
@@ -61,7 +50,7 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
    *        失敗(idが存在しない時) 存在しないキャラクターidです
    */
   def delete() = authAction(circe.json[forms.CharacterDeleteForm]) { implicit request =>
-    request.body.Validation() match {
+    request.body.validate() match {
       case Failure(e) =>
         BadRequest(e.head.asJson)
       case Success(a) =>
@@ -74,5 +63,17 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
         }
 
     }
+  }
+
+  /**
+    * キャラクターを作成する
+    * @return
+    */
+  private def beGoingToCreate() = Action(circe.json[CharacterCreateForm]) { implicit request =>
+    val characterCreateForm = request.body
+    characterService.create(characterCreateForm.id,
+      characterCreateForm.creatorId,
+      characterCreateForm.name)
+    Ok
   }
 }
