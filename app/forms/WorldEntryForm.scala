@@ -1,5 +1,5 @@
 package forms
-import forms.validations.WorldValidations
+import forms.validations.{ CreatorValidations, WorldValidations }
 import scalaz.Scalaz._
 
 case class WorldEntryForm(characterId: String, worldId: Long) {
@@ -11,4 +11,13 @@ case class WorldEntryForm(characterId: String, worldId: Long) {
     )(WorldEntryForm)
   }
 
+}
+
+case class CreatorIdForm(creatorId: String) {
+
+  def validate() = {
+    (
+      CreatorValidations.exists(this.creatorId)
+    )
+  }
 }

@@ -17,7 +17,7 @@ trait WorldRepository {
 
   def existsEntry(characterId: String, worldId: Long): Boolean
 
-  def getByCreatorId(creatorId: Long): List[World]
+  def getByCreatorId(creatorId: String): List[World]
 }
 
 trait UsesWorldRepository extends WorldRepository {
@@ -93,7 +93,7 @@ object WorldRepositoryImpl extends WorldRepository {
     }
   }
 
-  def getByCreatorId(creatorId: Long): List[World] = {
+  def getByCreatorId(creatorId: String): List[World] = {
     DB readOnly { implicit session =>
       sql"""
             SELECT *

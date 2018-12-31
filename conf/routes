@@ -6,6 +6,7 @@
 # An example controller showing a sample home page
 POST    /creator                    controllers.CreatorController.create
 PUT     /creator                    controllers.CreatorController.edit
+GET     /creator/:creatorId/worlds        controllers.WorldController.getByCreatorId(creatorId: String)
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
 GET     /world                      controllers.WorldController.getWorlds
