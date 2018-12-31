@@ -9,11 +9,12 @@ POST    /creator                    controllers.CreatorController.create
 PUT     /creator                    controllers.CreatorController.edit
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
+POST    /character/:characterId/world/:worldId   controllers.StatusController.create(characterId: String, worldId: Long)
+
 GET     /world                      controllers.WorldController.getWorlds
 GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
 POST    /world/entry                controllers.WorldController.entry
-
 POST    /account                    controllers.AccountController.signup
 
 # Validation
