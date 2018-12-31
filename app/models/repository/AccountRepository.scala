@@ -1,13 +1,24 @@
 package models.repository
 
+import models.entity.Account
 import scalikejdbc._
+
+import scala.util.Try
+import scala.util.control.Exception._
 
 trait AccountRepository {
   def exists(authId: String): Boolean
   def create(authId: String): Long
+
+  /**
+   * AuthIdからAccountを取得
+   * @param authId
+   * @return 該当するAccount
+   */
+  def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Account]]
 }
 
-trait UsesAccountRepository extends AccountRepository {
+trait UsesAccountRepository {
   val accountRepository: AccountRepository
 }
 
@@ -23,7 +34,7 @@ object AccountRepositoryImpl extends AccountRepository {
             SELECT id
             FROM accounts
             WHERE auth_id = ${authId}
-        """.map(rs => rs.string("id")).single().apply().isDefined
+        """.map(rs => rs.string("id")).first().apply().isDefined
     }
   }
 
@@ -34,4 +45,18 @@ object AccountRepositoryImpl extends AccountRepository {
         """.updateAndReturnGeneratedKey().apply()
     }
   }
+
+  /**
+   * AuthIdからAccountを取得
+   *
+   * @param authId
+   * @return 該当するAccount
+   */
+  def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Account]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+          SELECT *
+          FROM accounts
+          WHERE auth_id = ${authId}
+      """.map(Account.*).first().apply()
 }

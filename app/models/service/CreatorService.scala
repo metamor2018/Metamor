@@ -1,8 +1,17 @@
 package models.service
 
-import models.repository.{ MixInCreatorRepository, UsesCreatorRepository }
+import models.repository.{
+  MixInAccountRepository,
+  MixInCreatorRepository,
+  UsesAccountRepository,
+  UsesCreatorRepository
+}
+import scalikejdbc._
 
-trait CreatorService extends UsesCreatorRepository {
+import scala.util.{ Failure, Success, Try }
+import scalikejdbc.TxBoundary.Try._
+
+trait CreatorService extends UsesCreatorRepository with UsesAccountRepository {
 
   /**
    * クリエイターを作成する
@@ -10,9 +19,17 @@ trait CreatorService extends UsesCreatorRepository {
    * @param name 名前
    * @return 作成したクリエイターの主キー
    */
-  def create(id: String, name: String): Long = {
-    creatorRepository.create(id, name)
-  }
+  def create(id: String, name: String, authId: String): Either[Throwable, Long] =
+    DB localTx { implicit session =>
+      for {
+        accountOpt <- accountRepository.findByAuthId(authId)
+        account <- Try(accountOpt.get)
+        creatorId <- creatorRepository.create(id, name, account.id)
+      } yield creatorId
+    } match {
+      case Failure(e) => Left(e)
+      case Success(s) => Right(s)
+    }
 
   /**
    * 創作者が存在するか確認する
@@ -51,5 +68,6 @@ trait UsesCreatorService {
 }
 
 trait MixInCreatorService {
-  val creatorService: CreatorService = new CreatorService with MixInCreatorRepository
+  val creatorService: CreatorService =
+    new CreatorService with MixInCreatorRepository with MixInAccountRepository
 }

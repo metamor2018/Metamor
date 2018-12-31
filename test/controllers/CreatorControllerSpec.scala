@@ -25,22 +25,6 @@ class CreatorControllerSpec extends ControllerSpecBase {
   }
 
   "success" should {
-    "創作者作成" in {
-      val request = FakeRequest(POST, "/creator")
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"id": "huga", "name": "ほげ"}"""))
-
-      val controller = new CreatorController(stubControllerComponents(), authAction)
-      with MixInMockCreatorService {
-        override val creatorService: CreatorService = mockCreatorService
-      }
-
-      val result = call(controller.create(), request)
-
-      status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("ok")
-    }
 
     "創作者編集" in {
       val request = FakeRequest(PUT, "/creator")
@@ -76,8 +60,28 @@ class CreatorControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("false")
     }
 
+    "創作者作成" in new AutoRollbackWithFixture {
+      DB autoCommit { implicit s =>
+        fixture
+      }
+
+      val request = FakeRequest(POST, "/creator")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{"id": "huga", "name": "ほげ"}"""))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+
+      val result = call(controller.create(), request)
+
+      status(result) mustBe CREATED
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("creatorId")
+      contentAsString(result) must include("huga")
+    }
+
     "創作者が存在するか確認 存在する場合" in new AutoRollbackWithFixture {
 
+      // なぜかロールバックされない
       override def fixture(implicit session: FixtureParam): Unit = {
         sql"""
             insert into accounts (auth_id) values (${authId})
