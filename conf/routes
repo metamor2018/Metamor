@@ -4,7 +4,6 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
 POST    /creator                    controllers.CreatorController.create
 PUT     /creator                    controllers.CreatorController.edit
 POST    /character                  controllers.CharacterController.create
