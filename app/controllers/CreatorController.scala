@@ -18,17 +18,32 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
     with MixInCreatorService {
 
   /**
-   * クリエイターを作成
-   * @return 成功 { status : ok }
-   *         失敗 { status : ng }
+   * 創作者を作成
+   * @return 成功 { creatorId : [作成した創作者のid] }
+   *         失敗 SeeOther 既に創作者を作成している場合
+   *            BadRequest バリデーションエラー
+   *            BadGateway 保存に失敗した場合
    */
   def create(): Action[CreatorForm] = authAction(circe.json[CreatorForm]) { implicit request =>
-    request.body.validate() match {
-      case Failure(e) =>
-        BadRequest(e.toVector.asJson)
-      case Success(s) =>
-        creatorService.create(s.id, s.name)
-        Ok(("status" -> "ok").asJson)
+    val creatorForm = request.body
+    val authId = request.jwt.subject.get
+
+    // 既に創作者を作成済みの場合
+    if (creatorService.existsByAuthId(authId)) {
+      new Status(SEE_OTHER)
+    } else {
+      creatorForm.validate() match {
+        case Failure(e) =>
+          BadRequest(e.toVector.asJson)
+        case Success(s) =>
+          creatorService.create(s.id, s.name, authId) match {
+            case Left(e) =>
+              BadGateway
+            case Right(_) =>
+              Created(Map("creatorId" -> s.id).asJson)
+          }
+      }
+
     }
   }
 

@@ -2,6 +2,9 @@ package mocks
 
 import models.repository.CreatorRepository
 import models.service.CreatorService
+import scalikejdbc.DBSession
+
+import scala.util.Try
 
 object ErrorCreatorRepositoryImpl extends CreatorRepository {
   def create(displayId: String, name: String): Long = throw new Exception
@@ -12,6 +15,9 @@ object ErrorCreatorRepositoryImpl extends CreatorRepository {
     throw new Exception
 
   def existsByAuthId(authId: String): Boolean = false
+
+  def create(id: String, name: String, accountId: Long)(implicit s: DBSession): Try[Long] =
+    Try(throw new Exception)
 }
 
 trait MixInErrorCreatorRepository {
@@ -20,4 +26,5 @@ trait MixInErrorCreatorRepository {
 
 trait MixInErrorCreatorService {
   val mockCreatorService: CreatorService = new CreatorService with MixInErrorCreatorRepository
+  with MixInErrorAccountRepository
 }
