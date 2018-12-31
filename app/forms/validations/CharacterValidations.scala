@@ -23,4 +23,13 @@ object CharacterValidations extends MixInCharacterService with MixInCreatorServi
         id.successNel[String]
     }
   }
+
+  def name(name: String) = {
+    name match {
+      case name if name.isEmpty      => "名前が短すぎます".failureNel[String]
+      case name if name.length >= 30 => "名前が長すぎます".failureNel[String]
+      case _                         => name.successNel[String]
+
+    }
+  }
 }

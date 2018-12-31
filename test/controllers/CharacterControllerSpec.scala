@@ -47,9 +47,6 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
         .withJsonBody(Json.parse("""{ "id": "1","creatorId": "huge", "name": "ほげ"}"""))
       val controller = new CharacterController(stubControllerComponents(), authAction)
-      with MixInMockCharacterService {
-        override val characterService: CharacterService = mockCharacterService
-      }
 
       val result = call(controller.create(), request)
 
@@ -89,7 +86,7 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       val reqest = FakeRequest(POST, "/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
         .withJsonBody(
-          Json.parse("""{ "id": "presentcharacter","creatorId": "oppai", "name": "ふげ"}"""))
+          Json.parse("""{ "id": "presentcharacter","creatorId": "oppai", "name": ""}"""))
 
       val result = call(controller.create(), reqest)
 
@@ -97,6 +94,8 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("存在するキャラクターです")
       contentAsString(result) must include("存在しない創作者です")
+      contentAsString(result) must include("名前が短すぎます")
+
     }
 
     "キャラクター削除" in {

@@ -1,20 +1,15 @@
 package controllers
 
-import javax.inject.{ Inject, Singleton }
+import javax.inject.{Inject, Singleton}
 import auth.AuthAction
-import controllers.CharacterController.CharacterCreateForm
+import forms.{CharacterCreateForm, CharacterDeleteForm}
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
 import models.service.MixInCharacterService
-import scalaz.{ Failure, Success }
+import scalaz.{Failure, Success}
 import scalaz.Scalaz._
-
-object CharacterController {
-  case class CharacterCreateForm(id: String, creatorId: String, name: String)
-}
-
 @Singleton
 class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
@@ -28,17 +23,17 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
    *         失敗(charaterIdが存在する時) 既に存在するキャラクターidです
    *         失敗(creatorIdが存在しない時) 存在しない創作者です
    */
-  def create() = authAction(circe.json[forms.CharacterCreateForm]) { implicit request =>
+  def create() = authAction(circe.json[CharacterCreateForm]) { implicit request =>
     request.body.validate() match {
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
       case Success(a) =>
         try {
-          beGoingToCreate
+          beGoingToCreate(a)
           Ok(("status" -> "ok").asJson)
         } catch {
           case e: Exception =>
-            BadRequest(("status" -> "ng").asJson)
+            BadGateway(("status" -> "ng").asJson)
         }
     }
   }
@@ -48,7 +43,7 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
    * @return 成功 { status : ok }
    *        失敗(idが存在しない時) 存在しないキャラクターidです
    */
-  def delete() = authAction(circe.json[forms.CharacterDeleteForm]) { implicit request =>
+  def delete() = authAction(circe.json[CharacterDeleteForm]) { implicit request =>
     request.body.validate() match {
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
@@ -58,7 +53,7 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
           Ok(("status" -> "ok").asJson)
         } catch {
           case e: Exception =>
-            BadRequest(("status" -> "ng").asJson)
+            BadGateway(("status" -> "ng").asJson)
         }
 
     }
@@ -68,11 +63,8 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
    * キャラクターを作成する
    * @return
    */
-  private def beGoingToCreate() = Action(circe.json[CharacterCreateForm]) { implicit request =>
-    val characterCreateForm = request.body
+  private def beGoingToCreate(characterCreateForm: CharacterCreateForm): Long =
     characterService.create(characterCreateForm.id,
                             characterCreateForm.creatorId,
                             characterCreateForm.name)
-    Ok
-  }
 }
