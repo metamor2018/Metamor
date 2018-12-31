@@ -25,12 +25,20 @@ trait StatusRepository {
              text: String)(implicit s: DBSession): Try[Long]
 
   /**
-    * idから投稿を取得
-    * @param statusId
-    * @param s
-    * @return 投稿
-    */
+   * idから投稿を取得
+   * @param statusId
+   * @param s
+   * @return 投稿
+   */
   def find(statusId: Long)(implicit s: DBSession): Try[Option[Status]]
+
+  /**
+   * 投稿が存在するか確認
+   * @param statusId
+   * @param s
+   * @return 存在すればtrue
+   */
+  def exists(statusId: Long)(implicit s: DBSession): Try[Boolean]
 }
 
 trait UsesStatusRepository {
@@ -54,11 +62,22 @@ object StatusRepositoryImpl extends StatusRepository {
             VALUES ($worldId, $characterId, $reply, $inReplyToId, $text)
       """.updateAndReturnGeneratedKey().apply()
 
-  def find(statusId: Long)(implicit s: DBSession): Try[Option[Status]] = {
+  def find(statusId: Long)(implicit s: DBSession): Try[Option[Status]] =
     catching(classOf[Throwable]) withTry
       sql"""
             SELECT * FROM statuses
       """.map(Status.*).single().apply()
-  }
 
+  /**
+   * 投稿が存在するか確認
+   *
+   * @param statusId
+   * @param s
+   * @return 存在すればtrue
+   */
+  def exists(statusId: Long)(implicit s: DBSession): Try[Boolean] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT id FROM statuses WHERE id = $statusId
+      """.map(_.long("id")).single().apply().isDefined
 }

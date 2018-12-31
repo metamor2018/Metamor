@@ -27,4 +27,19 @@ class StatusControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("ほげふがてきすと")
     }
   }
+
+  "errors" should {
+    "投稿作成 バリデーションエラー" in {
+      val request = FakeRequest(POST, "/character/hoge/world/1")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{"reply": true, "inReplyToId": 999, "text": ""}"""))
+
+      val controller = new StatusController(stubControllerComponents(), authAction)
+      val result = call(controller.create("hoge", 1), request)
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) must include("内容がありません")
+      contentAsString(result) must include("存在しない投稿です")
+
+    }
+  }
 }

@@ -9,14 +9,14 @@ import scala.util.{ Failure, Success, Try }
 trait StatusService extends UsesStatusRepository {
 
   /**
-    * 投稿作成
-    * @param worldId
-    * @param characterId
-    * @param reply
-    * @param inReplyToId
-    * @param text
-    * @return 作成した投稿
-    */
+   * 投稿作成
+   * @param worldId
+   * @param characterId
+   * @param reply
+   * @param inReplyToId
+   * @param text
+   * @return 作成した投稿
+   */
   def create(worldId: Long,
              characterId: String,
              reply: Boolean,
@@ -31,6 +31,16 @@ trait StatusService extends UsesStatusRepository {
     } match {
       case Failure(e) => Left(e)
       case Success(s) => Right(s)
+    }
+
+  /**
+   * 存在するか確認
+   * @param id
+   * @return
+   */
+  def exists(id: Long): Boolean =
+    DB readOnly { implicit session =>
+      statusRepository.exists(id).get
     }
 }
 

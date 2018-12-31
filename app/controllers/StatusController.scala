@@ -3,15 +3,19 @@ package controllers
 import auth.AuthAction
 import forms.StatusForm
 import javax.inject.Inject
-import models.service.MixInStatusService
+import models.service.{ MixInCharacterService, MixInStatusService, MixInWorldService }
 import play.api.libs.circe.Circe
 import play.api.mvc.{ AbstractController, ControllerComponents }
 import io.circe.generic.auto._
 import io.circe.syntax._
+import scalaz.Scalaz._
+import scalaz._
 
 class StatusController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
     with MixInStatusService
+    with MixInCharacterService
+    with MixInWorldService
     with Circe {
 
   /**
@@ -22,18 +26,20 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
    */
   def create(characterId: String, worldId: Long) = authAction(circe.json[StatusForm]) {
     implicit request =>
-      val statusForm = request.body
-      statusService.create(
-        worldId,
-        characterId,
-        statusForm.reply,
-        statusForm.inReplyToId,
-        statusForm.text
-      ) match {
-        case Left(e) =>
-          println(e)
-          BadGateway
-        case Right(s) => Created(s.asJson)
+      request.body.validate() match {
+        case Failure(e) =>
+          BadRequest(e.toVector.asJson)
+        case Success(s) =>
+          statusService.create(
+            worldId,
+            characterId,
+            s.reply,
+            s.inReplyToId,
+            s.text
+          ) match {
+            case Left(e)  => BadGateway
+            case Right(s) => Created(s.asJson)
+          }
       }
   }
 }
