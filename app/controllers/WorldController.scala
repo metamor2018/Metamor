@@ -80,6 +80,12 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
         }
     }
   }
+
+  /**
+    * creatorIdからワールド一覧を取得
+    * @param creatorId
+    * @return
+    */
   def getByCreatorId(creatorId: String) = authAction(circe.json[CreatorIdForm]) {
     implicit request =>
       request.body.validate() match {
@@ -87,8 +93,8 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
           BadRequest(e.toVector.asJson)
         case Success(a) =>
           try {
-            val creator = worldService.getByCreatorId(a)
-            Ok(creator.asJson)
+            val worlds = worldService.getByCreatorId(a)
+            Ok(worlds.asJson)
           } catch {
             case e: Exception =>
               BadGateway
