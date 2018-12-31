@@ -13,7 +13,7 @@ object ErrorWorldRepositoryImpl extends WorldRepository {
     throw new Exception
   def getEnable(): List[World] =
     throw new Exception
-  def getByCreatorId(creatorId: Long): List[World] =
+  def getByCreatorId(creatorId: String): List[World] =
     throw new Exception
   def entry(characterId: String, worldId: Long): Long =
     throw new Exception

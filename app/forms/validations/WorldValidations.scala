@@ -1,10 +1,13 @@
 package forms.validations
 
-import models.service.{ MixInCharacterService, MixInWorldService }
+import models.service.{ MixInCharacterService, MixInCreatorService, MixInWorldService }
 import scalaz.Scalaz._
 import scalaz._
 
-object WorldValidations extends MixInWorldService with MixInCharacterService {
+object WorldValidations
+    extends MixInWorldService
+    with MixInCharacterService
+    with MixInCreatorService {
 
   def isEntryByCharacterId(characterId: String, worldId: Long): ValidationNel[String, String] = {
     characterId match {
