@@ -42,4 +42,17 @@ class StatusControllerSpec extends ControllerSpecBase {
 
     }
   }
+
+  "errors" should {
+    "投稿作成 NotFound" in {
+      val request = FakeRequest(POST, "/character/naiyo/world/1")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{"reply": false, "inReplyToId": null, "text": "ほげふがてきすと"}"""))
+
+      val controller = new StatusController(stubControllerComponents(), authAction)
+      val result = call(controller.create("naiyo", 1), request)
+
+      status(result) mustBe NOT_FOUND
+    }
+  }
 }

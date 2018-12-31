@@ -26,20 +26,26 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
    */
   def create(characterId: String, worldId: Long) = authAction(circe.json[StatusForm]) {
     implicit request =>
-      request.body.validate() match {
-        case Failure(e) =>
-          BadRequest(e.toVector.asJson)
-        case Success(s) =>
-          statusService.create(
-            worldId,
-            characterId,
-            s.reply,
-            s.inReplyToId,
-            s.text
-          ) match {
-            case Left(e)  => BadGateway
-            case Right(s) => Created(s.asJson)
-          }
+      if (!characterService.exists(characterId)
+          || !worldService.exists(worldId)
+          || !worldService.existsEntry(characterId, worldId)) {
+        NotFound
+      } else {
+        request.body.validate() match {
+          case Failure(e) =>
+            BadRequest(e.toVector.asJson)
+          case Success(s) =>
+            statusService.create(
+              worldId,
+              characterId,
+              s.reply,
+              s.inReplyToId,
+              s.text
+            ) match {
+              case Left(e)  => BadGateway
+              case Right(s) => Created(s.asJson)
+            }
+        }
       }
   }
 }
