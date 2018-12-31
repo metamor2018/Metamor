@@ -34,7 +34,7 @@ object AccountRepositoryImpl extends AccountRepository {
             SELECT id
             FROM accounts
             WHERE auth_id = ${authId}
-        """.map(rs => rs.string("id")).single().apply().isDefined
+        """.map(rs => rs.string("id")).first().apply().isDefined
     }
   }
 
