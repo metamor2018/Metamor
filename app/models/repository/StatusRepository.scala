@@ -1,5 +1,6 @@
 package models.repository
 
+import models.entity.Status
 import scalikejdbc._
 
 import scala.util.Try
@@ -20,9 +21,16 @@ trait StatusRepository {
   def create(worldId: Long,
              characterId: String,
              reply: Boolean,
-             inReplyToId: Option[String],
+             inReplyToId: Option[Long],
              text: String)(implicit s: DBSession): Try[Long]
 
+  /**
+    * idから投稿を取得
+    * @param statusId
+    * @param s
+    * @return 投稿
+    */
+  def find(statusId: Long)(implicit s: DBSession): Try[Option[Status]]
 }
 
 trait UsesStatusRepository {
@@ -38,11 +46,19 @@ object StatusRepositoryImpl extends StatusRepository {
   def create(worldId: Long,
              characterId: String,
              reply: Boolean,
-             inReplyToId: Option[String],
+             inReplyToId: Option[Long],
              text: String)(implicit s: DBSession): Try[Long] =
     catching(classOf[Throwable]) withTry
       sql"""
-            INSERT INTO statuses(world_id, character_id, reply, text)
-            VALUES ($worldId, $characterId, $reply, $text)
+            INSERT INTO statuses(world_id, character_id, reply, in_reply_to_id, text)
+            VALUES ($worldId, $characterId, $reply, $inReplyToId, $text)
       """.updateAndReturnGeneratedKey().apply()
+
+  def find(statusId: Long)(implicit s: DBSession): Try[Option[Status]] = {
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT * FROM statuses
+      """.map(Status.*).single().apply()
+  }
+
 }

@@ -14,6 +14,12 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
     with MixInStatusService
     with Circe {
 
+  /**
+   * 投稿を作成する
+   * @param characterId
+   * @param worldId
+   * @return
+   */
   def create(characterId: String, worldId: Long) = authAction(circe.json[StatusForm]) {
     implicit request =>
       val statusForm = request.body
