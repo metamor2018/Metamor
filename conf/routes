@@ -10,7 +10,7 @@ GET     /creator/:creatorId/worlds        controllers.WorldController.getByCreat
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
 GET     /world                      controllers.WorldController.getWorlds
-GET     /world/enable               controllers.WorldController.getEnable
+#GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
 POST    /world/entry                controllers.WorldController.entry
 
