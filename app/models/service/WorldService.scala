@@ -4,6 +4,9 @@ import java.time.ZonedDateTime
 
 import models.entity.World
 import models.repository.{ MixInWorldRepository, UsesWorldRepository }
+import scalikejdbc.DB
+
+import scala.util.{ Failure, Success, Try }
 
 trait WorldService extends UsesWorldRepository {
 
@@ -66,6 +69,17 @@ trait WorldService extends UsesWorldRepository {
   def getByCreatorId(creatorId: String): List[World] = {
     worldRepository.getByCreatorId(creatorId)
   }
+
+  def find(id: Int) =
+    DB readOnly { implicit s =>
+      for {
+        worldOpt <- worldRepository.find(id)
+        world <- Try(worldOpt.get)
+      } yield world
+    } match {
+      case Failure(e) => Left(e)
+      case Success(s) => Right(s)
+    }
 
 }
 

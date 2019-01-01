@@ -103,4 +103,15 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
       }
 
   }
+
+  def find(id: Int) = Action {
+    worldService.find(id) match {
+      case Left(e) =>
+        e match {
+          case e: NoSuchElementException => NotFound
+          case _                         => BadGateway
+        }
+      case Right(s) => Ok(s.asJson)
+    }
+  }
 }

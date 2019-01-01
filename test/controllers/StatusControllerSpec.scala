@@ -9,7 +9,7 @@ class StatusControllerSpec extends ControllerSpecBase {
 
   override def fakeApplication() =
     new GuiceApplicationBuilder()
-      .configure(Map("db.default.fixtures.test" -> List("default.sql")))
+      .configure(Map("db.default.fixtures.test" -> List("default.sql", "entry.sql")))
       .build()
 
   "success" should {

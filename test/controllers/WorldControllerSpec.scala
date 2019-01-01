@@ -2,38 +2,17 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
 import mocks.{ MixInErrorWorldService, MixInMockWorldService }
 import models.service.WorldService
-import scalikejdbc._
-import scalikejdbc.scalatest.AutoRollback
-import org.scalatest.fixture.FlatSpec
-
-trait AutoRollbackWithFixture extends FlatSpec with AutoRollback {
-
-  override def fixture(implicit session: DBSession) {
-    sql"""
-          insert into accounts (auth_id) values ('hoge')
-      """.update().apply()
-
-    sql"""
-          insert into creators(account_id,id,name)
-          values (1,'hoge','huga')
-      """.update().apply()
-
-    sql"""
-          insert into characters(creator_id,id,name)
-          values ('hoge','hoge','huga')
-      """.update().apply()
-
-    sql"""
-          insert into worlds(name,creator_Id,detail,started_at)
-          values ('name','hoge','hoge','2018-12-04 06:45:55')
-      """.update().apply()
-  }
-}
 
 class WorldControllerSpec extends ControllerSpecBase {
+
+  override def fakeApplication() =
+    new GuiceApplicationBuilder()
+      .configure(Map("db.default.fixtures.test" -> List("default.sql")))
+      .build()
 
   "success" should {
     "ワールド作成" in {
@@ -65,10 +44,7 @@ class WorldControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("testName2")
     }
 
-    "ワールド参加" in new AutoRollbackWithFixture {
-      DB autoCommit { implicit session =>
-        fixture
-      }
+    "ワールド参加" in {
 
       val request = FakeRequest(POST, "/world/entry")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
@@ -109,6 +85,16 @@ class WorldControllerSpec extends ControllerSpecBase {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("id")
 
+    }
+
+    "ワールド取得" in {
+      val request = FakeRequest(GET, "/world/:id")
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      val result = call(controller.find(1), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("hoge")
     }
 
   }
@@ -161,7 +147,14 @@ class WorldControllerSpec extends ControllerSpecBase {
       status(result) mustBe BAD_REQUEST
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("存在しない創作者です")
+    }
 
+    "ワールド取得 NotFound" in {
+      val request = FakeRequest(GET, "/world/:id")
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      val result = call(controller.find(999), request)
+
+      status(result) mustBe NOT_FOUND
     }
 
   }

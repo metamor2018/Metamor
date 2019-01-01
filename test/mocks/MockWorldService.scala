@@ -5,12 +5,15 @@ import java.time.ZonedDateTime
 import models.entity.World
 import models.repository.WorldRepository
 import models.service.WorldService
+import scalikejdbc.DBSession
+
+import scala.util.Try
 
 object MockWorldRepositoryImpl extends WorldRepository {
   def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long = 1
   def getWorlds(): List[World] = {
     val world = World(
-      "worldId",
+      1,
       "testName",
       "detailTest",
       None,
@@ -24,7 +27,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
 
   def getEnable(): List[World] = {
     val world = World(
-      "worldId",
+      1,
       "testName",
       "detailTest",
       None,
@@ -37,7 +40,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
   }
   def getByCreatorId(creatorId: String): List[World] = {
     val world = World(
-      "worldId",
+      1,
       "testName",
       "detailtest",
       None,
@@ -46,12 +49,26 @@ object MockWorldRepositoryImpl extends WorldRepository {
       ZonedDateTime.now(),
       ZonedDateTime.now()
     )
-    List(world, world.copy(id = "2"), world.copy(id = "3"))
+    List(world, world.copy(id = 2), world.copy(id = 3))
   }
   def entry(characterId: String, worldId: Long): Long = 5
   def existsEntry(characterId: String, worldId: Long): Boolean = true
 
   def exists(worldId: Long): Boolean = true
+
+  def find(id: Int)(implicit s: DBSession): Try[Option[World]] =
+    Try(
+      Some(
+        World(
+          1,
+          "testName",
+          "detailtest",
+          None,
+          None,
+          None,
+          ZonedDateTime.now(),
+          ZonedDateTime.now()
+        )))
 }
 
 trait MixInMockWorldRepository {

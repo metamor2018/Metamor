@@ -5,6 +5,9 @@ import java.time.ZonedDateTime
 import models.entity.World
 import models.repository.WorldRepository
 import models.service.WorldService
+import scalikejdbc.DBSession
+
+import scala.util.Try
 
 object ErrorWorldRepositoryImpl extends WorldRepository {
   def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long =
@@ -21,6 +24,8 @@ object ErrorWorldRepositoryImpl extends WorldRepository {
     throw new Exception
   def exists(worldId: Long): Boolean =
     throw new Exception
+  def find(id: Int)(implicit s: DBSession): Try[Option[World]] =
+    Try(throw new Exception)
 }
 
 trait MixInErrorWorldRepository {
