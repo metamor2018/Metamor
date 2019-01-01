@@ -56,10 +56,10 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
    * 開催中のワールド一覧の取得
    * @return
    */
-  def getEnable() = Action {
-    val holdWorlds = worldService.getEnable()
-    Ok((holdWorlds.asJson))
-  }
+//  def getEnable() = Action {
+//    val holdWorlds = worldService.getEnable()
+//    Ok((holdWorlds.asJson))
+//  }
 
   /**
    * ワールド参加

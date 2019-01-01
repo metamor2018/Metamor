@@ -1,14 +1,14 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{ Inject, Singleton }
 import auth.AuthAction
-import forms.{CharacterCreateForm, CharacterDeleteForm}
+import forms.{ CharacterCreateForm, CharacterDeleteForm }
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
 import models.service.MixInCharacterService
-import scalaz.{Failure, Success}
+import scalaz.{ Failure, Success }
 import scalaz.Scalaz._
 @Singleton
 class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAction)
