@@ -1,6 +1,5 @@
 package forms.validations
 
-import forms.validations.WorldValidations.creatorService
 import models.service.MixInCreatorService
 import scalaz.Scalaz._
 import scalaz._
@@ -52,5 +51,4 @@ object CreatorValidations extends MixInCreatorService {
         creatorId.successNel[String]
     }
   }
-
 }

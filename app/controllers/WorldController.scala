@@ -82,10 +82,10 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
   }
 
   /**
-    * creatorIdからワールド一覧を取得
-    * @param creatorId
-    * @return
-    */
+   * creatorIdからワールド一覧を取得
+   * @param creatorId
+   * @return
+   */
   def getByCreatorId(creatorId: String) = authAction(circe.json[CreatorIdForm]) {
     implicit request =>
       request.body.validate() match {

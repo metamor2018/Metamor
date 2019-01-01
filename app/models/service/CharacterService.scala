@@ -11,8 +11,8 @@ trait CharacterService extends UsesCharacterRepository {
    * @param name 名前
    * @return　作成したキャラクターの主キー
    */
-  def create(creatorId: String, displayId: String, name: String): Long = {
-    characterRepository.create(creatorId, displayId, name)
+  def create(id: String, creatorId: String, name: String): Long = {
+    characterRepository.create(id, creatorId, name)
   }
 
   /**
@@ -20,7 +20,7 @@ trait CharacterService extends UsesCharacterRepository {
    * @param id　キャラクターID
    * @return　削除するキャラクターID
    */
-  def delete(id: Long): Long = {
+  def delete(id: String): Long = {
     characterRepository.delete(id)
   }
 
@@ -29,8 +29,8 @@ trait CharacterService extends UsesCharacterRepository {
    * @param characterId
    * @return 存在すればtrue
    */
-  def exists(characterId: String): Boolean =
-    characterRepository.exists(characterId)
+  def exists(id: String): Boolean =
+    characterRepository.exists(id)
 
 }
 

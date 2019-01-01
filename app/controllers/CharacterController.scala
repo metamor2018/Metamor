@@ -1,56 +1,70 @@
 package controllers
 
-import javax.inject.{ Inject, Singleton }
-import play.api._
+import javax.inject.{Inject, Singleton}
+import auth.AuthAction
+import forms.{CharacterCreateForm, CharacterDeleteForm}
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
 import models.service.MixInCharacterService
-
-object CharacterController {
-  case class CharacterForm(creatorId: String, displayId: String, name: String)
-  case class CharacterDeleteForm(Id: Long)
-}
-
+import scalaz.{Failure, Success}
+import scalaz.Scalaz._
 @Singleton
-class CharacterController @Inject()(cc: ControllerComponents)
+class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
     with Circe
     with MixInCharacterService {
 
-  import CharacterController._
-
   /**
-   * キャラクターを作成
+   * キャラクターを作成するためにバリデーションをかけ成功ならcharacterCreatingPartを呼ぶ
    * @return 成功 { status : ok }
    *         失敗 { status : ng }
+   *         失敗(charaterIdが存在する時) 既に存在するキャラクターidです
+   *         失敗(creatorIdが存在しない時) 存在しない創作者です
    */
-  def create() = Action(circe.json[CharacterForm]) { implicit request =>
-    val CharacterForm = request.body
-    //ログインしてる程のID
-    val createrId = "7"
-
-    try {
-      characterService.create(createrId, CharacterForm.displayId, CharacterForm.name)
-      Ok(("status" -> "ok").asJson)
-    } catch {
-      case e: Exception => BadRequest(("status" -> "ng").asJson)
+  def create() = authAction(circe.json[CharacterCreateForm]) { implicit request =>
+    request.body.validate() match {
+      case Failure(e) =>
+        BadRequest(e.toVector.asJson)
+      case Success(a) =>
+        try {
+          beGoingToCreate(a)
+          Ok(("status" -> "ok").asJson)
+        } catch {
+          case e: Exception =>
+            BadGateway(("status" -> "ng").asJson)
+        }
     }
   }
 
   /**
    * キャラクターを削除
    * @return 成功 { status : ok }
-   *         失敗 { status : ng }
+   *        失敗(idが存在しない時) 存在しないキャラクターidです
    */
-  def delete() = Action(circe.json[CharacterDeleteForm]) { implicit request =>
-    val deleteForm = request.body
-    //存在している程のキャラクターのID
-    val deleteCharacters = characterService.delete(deleteForm.Id)
-    deleteCharacters match {
-      case 1 => Ok(("status" -> "ok").asJson)
-      case 0 => BadRequest(("status" -> "ng").asJson)
+  def delete() = authAction(circe.json[CharacterDeleteForm]) { implicit request =>
+    request.body.validate() match {
+      case Failure(e) =>
+        BadRequest(e.toVector.asJson)
+      case Success(a) =>
+        try {
+          characterService.delete(a)
+          Ok(("status" -> "ok").asJson)
+        } catch {
+          case e: Exception =>
+            BadGateway(("status" -> "ng").asJson)
+        }
+
     }
   }
+
+  /**
+   * キャラクターを作成する
+   * @return
+   */
+  private def beGoingToCreate(characterCreateForm: CharacterCreateForm): Long =
+    characterService.create(characterCreateForm.id,
+                            characterCreateForm.creatorId,
+                            characterCreateForm.name)
 }
