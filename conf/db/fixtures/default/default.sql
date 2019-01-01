@@ -8,8 +8,6 @@ insert into characters(creator_id,id,name) values ('hoge','hoge','huga');
 
 insert into worlds(name,creator_Id,detail,started_at) values ('name','hoge','hoge','2018-12-04 06:45:55');
 
-insert into worlds_entries(character_id, world_id) values ('hoge', 1);
-
 # --- !Downs
 
 

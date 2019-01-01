@@ -4,6 +4,9 @@ import java.time.ZonedDateTime
 import models.entity.World
 import scalikejdbc._
 
+import scala.util.Try
+import scala.util.control.Exception.catching
+
 trait WorldRepository {
   def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long
 
@@ -18,9 +21,11 @@ trait WorldRepository {
   def existsEntry(characterId: String, worldId: Long): Boolean
 
   def getByCreatorId(creatorId: String): List[World]
+
+  def find(id: Int)(implicit s: DBSession): Try[Option[World]]
 }
 
-trait UsesWorldRepository extends WorldRepository {
+trait UsesWorldRepository {
   val worldRepository: WorldRepository
 }
 
@@ -54,18 +59,7 @@ object WorldRepositoryImpl extends WorldRepository {
       sql"""
             SELECT * FROM worlds
       """
-        .map { rs =>
-          World(
-            rs.string("id"),
-            rs.string("name"),
-            rs.string("detail"),
-            rs.zonedDateTimeOpt("started_at"),
-            rs.zonedDateTimeOpt("ended_at"),
-            rs.longOpt("emblem_id"),
-            rs.zonedDateTime("created_at"),
-            rs.zonedDateTime("updated_at")
-          )
-        }
+        .map(World.*)
         .list()
         .apply()
     }
@@ -76,18 +70,7 @@ object WorldRepositoryImpl extends WorldRepository {
       sql"""
             SELECT * FROM worlds WHERE ended_at IS NULL
       """
-        .map { rs =>
-          World(
-            rs.string("id"),
-            rs.string("name"),
-            rs.string("detail"),
-            rs.zonedDateTimeOpt("started_at"),
-            rs.zonedDateTimeOpt("ended_at"),
-            rs.longOpt("emblem_id"),
-            rs.zonedDateTime("created_at"),
-            rs.zonedDateTime("updated_at")
-          )
-        }
+        .map(World.*)
         .list()
         .apply()
     }
@@ -100,17 +83,7 @@ object WorldRepositoryImpl extends WorldRepository {
             FROM worlds
             where creator_id = $creatorId
       """
-        .map(rs =>
-          World(
-            rs.string("id"),
-            rs.string("name"),
-            rs.string("detail"),
-            rs.zonedDateTimeOpt("started_at"),
-            rs.zonedDateTimeOpt("ended_at"),
-            rs.longOpt("emblem_id"),
-            rs.zonedDateTime("created_at"),
-            rs.zonedDateTime("updated_at")
-        ))
+        .map(World.*)
         .list
         .apply()
     }
@@ -135,4 +108,13 @@ object WorldRepositoryImpl extends WorldRepository {
         """.map(rs => rs.string("id")).single().apply().isDefined
     }
   }
+
+  def find(id: Int)(implicit s: DBSession): Try[Option[World]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT *
+            FROM worlds
+            WHERE id = $id
+      """.map(World.*).single().apply()
+
 }
