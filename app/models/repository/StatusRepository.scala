@@ -44,7 +44,7 @@ trait StatusRepository {
    * 投稿を複数取得
    * @param s
    */
-  def get()(implicit s: DBSession): Try[List[Status]]
+  def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]]
 }
 
 trait UsesStatusRepository {
@@ -92,10 +92,12 @@ object StatusRepositoryImpl extends StatusRepository {
    *
    * @param s
    */
-  def get()(implicit s: DBSession): Try[List[Status]] =
+  def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]] =
     catching(classOf[Throwable]) withTry
       sql"""
-            SELECT * FROM statuses ORDER BY created_at DESC
+            SELECT * FROM statuses
+            WHERE world_id = $worldId
+            ORDER BY created_at DESC
       """.map(Status.*).list.apply()
 
 }

@@ -30,12 +30,16 @@ class StatusControllerSpec extends ControllerSpecBase {
     "投稿取得" in {
       val request = FakeRequest(GET, "/character/hoge/world/1")
       val controller = new StatusController(stubControllerComponents(), authAction)
-      val result = call(controller.get(), request)
+      val result = call(controller.get("hoge", 1), request)
 
       status(result) mustBe OK
       contentAsString(result) must include("てきすと1")
       contentAsString(result) must include("てきすと2")
       contentAsString(result) must include("てきすと3")
+
+      contentAsString(result) mustNot include("てきすと6")
+      contentAsString(result) mustNot include("てきすと7")
+      contentAsString(result) mustNot include("てきすと8")
     }
   }
 
