@@ -39,6 +39,12 @@ trait StatusRepository {
    * @return 存在すればtrue
    */
   def exists(statusId: Long)(implicit s: DBSession): Try[Boolean]
+
+  /**
+   * 投稿を複数取得
+   * @param s
+   */
+  def get()(implicit s: DBSession): Try[List[Status]]
 }
 
 trait UsesStatusRepository {
@@ -65,7 +71,7 @@ object StatusRepositoryImpl extends StatusRepository {
   def find(statusId: Long)(implicit s: DBSession): Try[Option[Status]] =
     catching(classOf[Throwable]) withTry
       sql"""
-            SELECT * FROM statuses
+            SELECT * FROM statuses WHERE id = $statusId
       """.map(Status.*).single().apply()
 
   /**
@@ -80,4 +86,16 @@ object StatusRepositoryImpl extends StatusRepository {
       sql"""
             SELECT id FROM statuses WHERE id = $statusId
       """.map(_.long("id")).single().apply().isDefined
+
+  /**
+   * 投稿を複数取得
+   *
+   * @param s
+   */
+  def get()(implicit s: DBSession): Try[List[Status]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT * FROM statuses ORDER BY created_at DESC
+      """.map(Status.*).list.apply()
+
 }

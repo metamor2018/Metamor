@@ -48,4 +48,16 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
         }
       }
   }
+
+  /**
+   * 投稿を複数取得する
+   * @return List[Status]
+   */
+  def get() = Action {
+    statusService.get() match {
+      case Left(e) => BadGateway
+      case Right(s) => Ok(s.asJson)
+    }
+  }
+
 }

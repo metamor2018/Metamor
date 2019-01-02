@@ -9,7 +9,7 @@ class StatusControllerSpec extends ControllerSpecBase {
 
   override def fakeApplication() =
     new GuiceApplicationBuilder()
-      .configure(Map("db.default.fixtures.test" -> List("default.sql", "entry.sql")))
+      .configure(Map("db.default.fixtures.test" -> List("default.sql", "entry.sql", "status.sql")))
       .build()
 
   "success" should {
@@ -25,6 +25,17 @@ class StatusControllerSpec extends ControllerSpecBase {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("1")
       contentAsString(result) must include("ほげふがてきすと")
+    }
+
+    "投稿取得" in {
+      val request = FakeRequest(GET, "/character/hoge/world/1")
+      val controller = new StatusController(stubControllerComponents(), authAction)
+      val result = call(controller.get(), request)
+
+      status(result) mustBe OK
+      contentAsString(result) must include("てきすと1")
+      contentAsString(result) must include("てきすと2")
+      contentAsString(result) must include("てきすと3")
     }
   }
 
