@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.{ Inject, Singleton }
 import auth.AuthAction
-import forms.{ CharacterCreateForm, CharacterDeleteForm }
+import forms.{ CharacterCreateForm, CharacterDeleteForm, CharacterFetchListForm }
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -67,4 +67,19 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
     characterService.create(characterCreateForm.id,
                             characterCreateForm.creatorId,
                             characterCreateForm.name)
+
+  def fetchList() = authAction(circe.json[CharacterFetchListForm]) { implicit request =>
+    request.body.validate() match {
+      case Failure(e) =>
+        BadRequest(e.toVector.asJson)
+      case Success(a) =>
+        try {
+          val characters = characterService.fetchList(a)
+          Ok(characters.asJson)
+        } catch {
+          case e: Exception =>
+            BadGateway(("status" -> "ng").asJson)
+        }
+    }
+  }
 }

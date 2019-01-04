@@ -1,6 +1,7 @@
 package models.service
 
 import models.repository.{ MixInCharacterRepository, UsesCharacterRepository }
+import models.entity.Character
 
 trait CharacterService extends UsesCharacterRepository {
 
@@ -32,6 +33,8 @@ trait CharacterService extends UsesCharacterRepository {
   def exists(id: String): Boolean =
     characterRepository.exists(id)
 
+  def fetchList(creatorId: String): List[Character] =
+    characterRepository.fetchList(creatorId)
 }
 
 trait UsesCharacterService {

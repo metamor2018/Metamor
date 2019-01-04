@@ -71,6 +71,23 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       contentAsString(result) must include("ok")
     }
 
+    "キャラクター一覧確認" in {
+      val request = FakeRequest(GET, "/character/fetch")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{"creatorId": "huge"}"""))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      with MixInMockCharacterService {
+        override val characterService: CharacterService = mockCharacterService
+      }
+
+      val result = call(controller.fetchList(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("hoge")
+      contentAsString(result) must include("geho")
+    }
+
   }
 
   "error" should {
@@ -113,6 +130,22 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("存在しないキャラクターです")
 
+    }
+
+    "キャラクター一覧確認" in {
+      val request = FakeRequest(GET, "/character/fetch")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse("""{"creatorId": "nonhuge"}"""))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      with MixInErrorCharacterService {
+        override val characterService: CharacterService = mockCharacterService
+      }
+
+      val result = call(controller.fetchList(), request)
+
+      status(result) mustBe BAD_REQUEST
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("存在しない創作者です")
     }
   }
 
