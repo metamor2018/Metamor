@@ -17,6 +17,32 @@ class CreatorControllerSpec extends ControllerSpecBase {
 
   "success" should {
 
+    "創作者取得" in {
+
+      val request = FakeRequest(GET, "/creator/hoge")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      val result = call(controller.find("hoge"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("hoge")
+      contentAsString(result) must include("huga")
+
+    }
+
+    "創作者取得 存在しない場合" in {
+
+      val request = FakeRequest(GET, "/creator/inaiyo")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      val result = call(controller.find("inaiyo"), request)
+
+      status(result) mustBe NOT_FOUND
+    }
+
     "創作者編集" in {
       val request = FakeRequest(PUT, "/creator")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
