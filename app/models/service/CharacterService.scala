@@ -1,8 +1,24 @@
 package models.service
 
+import models.entity
 import models.repository.{ MixInCharacterRepository, UsesCharacterRepository }
+import scalikejdbc.DB
+import scala.util.{ Failure, Success }
 
 trait CharacterService extends UsesCharacterRepository {
+
+  /**
+   * idからキャラクターを1件取得
+   * @param id
+   * @return
+   */
+  def find(id: String): Either[Throwable, Option[entity.Character]] =
+    DB readOnly { implicit s =>
+      characterRepository.find(id) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
 
   /**
    *創作者がキャラクターを作成する

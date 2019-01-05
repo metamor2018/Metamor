@@ -10,11 +10,28 @@ import play.api.libs.circe.Circe
 import models.service.MixInCharacterService
 import scalaz.{ Failure, Success }
 import scalaz.Scalaz._
+
 @Singleton
 class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
     with Circe
     with MixInCharacterService {
+
+  /**
+   * idからキャラクターを1件取得
+   * @param id
+   * @return
+   */
+  def find(id: String) = Action {
+    characterService.find(id) match {
+      case Left(e) => BadGateway
+      case Right(s) =>
+        s match {
+          case None    => NotFound
+          case Some(s) => Ok(s.asJson)
+        }
+    }
+  }
 
   /**
    * キャラクターを作成する

@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.inject.guice.GuiceApplicationBuilder
-import mocks.{ MixInErrorCharacterService, MixInMockCharacterService }
+import mocks.MixInMockCharacterService
 import models.service.CharacterService
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -15,6 +15,27 @@ class CharacterControllerSpec extends ControllerSpecBase {
       .build()
 
   "success" should {
+
+    "キャラクター取得" in {
+      val request = FakeRequest(GET, "/character/hoge")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      val result = call(controller.find("hoge"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("hoge")
+    }
+
+    "キャラクター取得 存在しない場合" in {
+      val request = FakeRequest(GET, "/character/inaiyo")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      val result = call(controller.find("inaiyo"), request)
+
+      status(result) mustBe NOT_FOUND
+    }
+
     "キャラクター作成" in {
 
       val request = FakeRequest(POST, "/character")
