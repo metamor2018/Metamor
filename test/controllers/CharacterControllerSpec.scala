@@ -1,51 +1,25 @@
 package controllers
 
+import play.api.inject.guice.GuiceApplicationBuilder
 import mocks.{ MixInErrorCharacterService, MixInMockCharacterService }
 import models.service.CharacterService
-import org.scalatest.fixture.FlatSpec
-import org.scalatestplus.play._
-import org.scalatestplus.play.guice._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
-import scalikejdbc._
-import scalikejdbc.scalatest.AutoRollback
 
-trait CharacterAutoRollback extends FlatSpec with AutoRollback {
+class CharacterControllerSpec extends ControllerSpecBase {
 
-  override def fixture(implicit session: DBSession) {
-    sql"""
-          insert into accounts (auth_id) values ('hoge')
-      """.update().apply()
+  override def fakeApplication() =
+    new GuiceApplicationBuilder()
+      .configure(Map("db.default.fixtures.test" -> List("default.sql", "entry.sql", "status.sql")))
+      .build()
 
-    sql"""
-          insert into creators(id,account_id,name)
-          values ('huge',1,'huga')
-      """.update().apply()
-
-    sql"""
-          insert into characters(id,creator_id,name)
-          values ('character','huge','huga')
-      """.update().apply()
-  }
-
-  def errorCharacterCreate(implicit session: DBSession) {
-    sql"""
-          insert into characters(id,creator_id,name)
-          values ('presentcharacter','huge','huga')
-      """.update().apply()
-  }
-}
-
-class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with ControllerSpecBase {
   "success" should {
-    "キャラクター作成" in new CharacterAutoRollback {
-      DB autoCommit { implicit session =>
-        fixture
-      }
+    "キャラクター作成" in {
+
       val request = FakeRequest(POST, "/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{ "id": "1","creatorId": "huge", "name": "ほげ"}"""))
+        .withJsonBody(Json.parse("""{ "id": "testchara","creatorId": "hoge", "name": "ほげ"}"""))
       val controller = new CharacterController(stubControllerComponents(), authAction)
 
       val result = call(controller.create(), request)
@@ -59,7 +33,7 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
 
       val request = FakeRequest(DELETE, "/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"id": "character"}"""))
+        .withJsonBody(Json.parse("""{"id": "testchara"}"""))
       val controller = new CharacterController(stubControllerComponents(), authAction)
       with MixInMockCharacterService {
         override val characterService: CharacterService = mockCharacterService
@@ -74,19 +48,12 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
   }
 
   "error" should {
-    "キャラクター作成" in new CharacterAutoRollback {
-      DB autoCommit { implicit session =>
-        errorCharacterCreate
-      }
+    "キャラクター作成" in {
       val controller = new CharacterController(stubControllerComponents(), authAction)
-      with MixInErrorCharacterService {
-        override val characterService: CharacterService = mockCharacterService
-      }
 
       val reqest = FakeRequest(POST, "/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(
-          Json.parse("""{ "id": "presentcharacter","creatorId": "oppai", "name": ""}"""))
+        .withJsonBody(Json.parse("""{ "id": "hoge","creatorId": "inaiyo", "name": ""}"""))
 
       val result = call(controller.create(), reqest)
 
@@ -100,10 +67,6 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
 
     "キャラクター削除" in {
       val controller = new CharacterController(stubControllerComponents(), authAction)
-      with MixInErrorCharacterService {
-        override val characterService: CharacterService = mockCharacterService
-      }
-
       val request = FakeRequest(DELETE, "/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
         .withJsonBody(Json.parse("""{"id": "noneid"}"""))
