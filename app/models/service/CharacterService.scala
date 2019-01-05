@@ -33,6 +33,10 @@ trait CharacterService extends UsesCharacterRepository {
   def exists(id: String): Boolean =
     characterRepository.exists(id)
 
+  /**
+    * @param creatorId
+    * @return 指定した創作者のキャラクター一覧
+    */
   def getByCreatorId(creatorId: String): List[Character] = {
     characterRepository.getByCreatorId(creatorId)
   }

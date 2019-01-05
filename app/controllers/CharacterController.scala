@@ -68,6 +68,12 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
                             characterCreateForm.creatorId,
                             characterCreateForm.name)
 
+  /**
+    * 指定した創作者のキャラクター一覧取得
+    * @param creatorId
+    * @return 成功　指定した創作者のキャラクター一覧
+    *         失敗　{"存在しない創作者です"}
+    */
   def getByCreatorId(creatorId: String) = authAction { implicit request =>
     CharacterFetchListForm.apply(creatorId).validate match {
       case Failure(e) =>
