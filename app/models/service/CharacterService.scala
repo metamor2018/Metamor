@@ -33,8 +33,10 @@ trait CharacterService extends UsesCharacterRepository {
   def exists(id: String): Boolean =
     characterRepository.exists(id)
 
-  def fetchList(creatorId: String): List[Character] =
-    characterRepository.fetchList(creatorId)
+  def getByCreatorId(creatorId: String): List[Character] = {
+    characterRepository.getByCreatorId(creatorId)
+  }
+
 }
 
 trait UsesCharacterService {

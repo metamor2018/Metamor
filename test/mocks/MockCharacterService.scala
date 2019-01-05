@@ -13,14 +13,14 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
 
   def exists(characterId: String): Boolean = true
 
-  def fetchList(creatorId: String): List[Character] = {
+  def getByCreatorId(creatorId: String): List[Character] = {
     val character = Character(
       "huge",
       "hoge",
       "hugeName",
       None,
       None,
-      ZonedDateTime.now(),
+      null,
       ZonedDateTime.now(),
       ZonedDateTime.now()
     )

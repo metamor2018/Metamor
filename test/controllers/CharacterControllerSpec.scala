@@ -28,7 +28,6 @@ trait CharacterAutoRollback extends FlatSpec with AutoRollback {
           values ('character','huge','huga')
       """.update().apply()
   }
-
   def errorCharacterCreate(implicit session: DBSession) {
     sql"""
           insert into characters(id,creator_id,name)
@@ -72,22 +71,15 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
     }
 
     "キャラクター一覧確認" in {
-      val request = FakeRequest(GET, "/character/fetch")
+      val request = FakeRequest(GET, "/creator/:creatorId/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"creatorId": "huge"}"""))
       val controller = new CharacterController(stubControllerComponents(), authAction)
-      with MixInMockCharacterService {
-        override val characterService: CharacterService = mockCharacterService
-      }
-
-      val result = call(controller.fetchList(), request)
+      val result = call(controller.getByCreatorId("huge"), request)
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("hoge")
-      contentAsString(result) must include("geho")
+      contentAsString(result) must include("character")
     }
-
   }
 
   "error" should {
@@ -133,15 +125,11 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
     }
 
     "キャラクター一覧確認" in {
-      val request = FakeRequest(GET, "/character/fetch")
+      val request = FakeRequest(GET, "/creator/:creatorId/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"creatorId": "nonhuge"}"""))
       val controller = new CharacterController(stubControllerComponents(), authAction)
-      with MixInErrorCharacterService {
-        override val characterService: CharacterService = mockCharacterService
-      }
 
-      val result = call(controller.fetchList(), request)
+      val result = call(controller.getByCreatorId("nonhuge"), request)
 
       status(result) mustBe BAD_REQUEST
       contentType(result) mustBe Some("application/json")

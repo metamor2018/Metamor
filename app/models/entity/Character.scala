@@ -6,6 +6,6 @@ case class Character(id: String,
                      name: String,
                      profile: Option[String],
                      icon: Option[String],
-                     deleteAt: ZonedDateTime,
+                     deleteAt: Option[ZonedDateTime],
                      createdAt: ZonedDateTime,
                      updatedAt: ZonedDateTime)

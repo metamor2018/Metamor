@@ -11,7 +11,7 @@ POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
 POST    /character/:characterId/world/:worldId   controllers.StatusController.create(characterId: String, worldId: Long)
 
-GET     /character/fetch            controllers.CharacterController.fetchList
+GET     /creator/:creatorId/character      controllers.CharacterController.getByCreatorId(creatorId: String)
 GET     /world                      controllers.WorldController.getWorlds
 GET     /world/:id                  controllers.WorldController.find(id: Int)
 #GET     /world/enable               controllers.WorldController.getEnable

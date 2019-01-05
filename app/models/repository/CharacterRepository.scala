@@ -7,7 +7,7 @@ trait CharacterRepository {
   def create(creatorId: String, displayId: String, name: String): Long
   def delete(id: String): Long
   def exists(characterId: String): Boolean
-  def fetchList(creatorId: String): List[Character]
+  def getByCreatorId(creatorId: String): List[Character]
 }
 
 trait UsesCharacterRepository extends CharacterRepository {
@@ -45,7 +45,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
     }
   }
 
-  def fetchList(creatorId: String): List[Character] = {
+  def getByCreatorId(creatorId: String): List[Character] = {
     DB readOnly { implicit session =>
       sql"""
             SELECT * FROM characters WHERE creator_id=${creatorId}
@@ -57,7 +57,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
             rs.string("name"),
             rs.stringOpt("profile"),
             rs.stringOpt("icon"),
-            rs.zonedDateTime("deleted_at"),
+            rs.zonedDateTimeOpt("deleted_at"),
             rs.zonedDateTime("created_at"),
             rs.zonedDateTime("updated_at")
           )

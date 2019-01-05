@@ -68,13 +68,13 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
                             characterCreateForm.creatorId,
                             characterCreateForm.name)
 
-  def fetchList() = authAction(circe.json[CharacterFetchListForm]) { implicit request =>
-    request.body.validate() match {
+  def getByCreatorId(creatorId: String) = authAction { implicit request =>
+    CharacterFetchListForm.apply(creatorId).validate match {
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
       case Success(a) =>
         try {
-          val characters = characterService.fetchList(a)
+          val characters = characterService.getByCreatorId(a)
           Ok(characters.asJson)
         } catch {
           case e: Exception =>
