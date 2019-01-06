@@ -1,5 +1,6 @@
 package models.service
 
+import models.entity.Creator
 import models.repository.{
   MixInAccountRepository,
   MixInCreatorRepository,
@@ -29,6 +30,19 @@ trait CreatorService extends UsesCreatorRepository with UsesAccountRepository {
     } match {
       case Failure(e) => Left(e)
       case Success(s) => Right(s)
+    }
+
+  /**
+   * 創作者IDより創作者を取得
+   * @param id
+   * @return
+   */
+  def find(id: String): Either[Throwable, Option[Creator]] =
+    DB readOnly { implicit session =>
+      creatorRepository.find(id) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
     }
 
   /**
