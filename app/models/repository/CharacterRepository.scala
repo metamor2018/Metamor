@@ -1,11 +1,13 @@
 package models.repository
 
+import models.entity.Character
 import scalikejdbc._
 
 trait CharacterRepository {
-  def create(id: String, creatorId: String, name: String): Long
+  def create(creatorId: String, displayId: String, name: String): Long
   def delete(id: String): Long
-  def exists(id: String): Boolean
+  def exists(characterId: String): Boolean
+  def getByCreatorId(creatorId: String): List[Character]
 }
 
 trait UsesCharacterRepository extends CharacterRepository {
@@ -40,6 +42,28 @@ object CharacterRepositoryImpl extends CharacterRepository {
       sql"""
             SELECT id FROM characters WHERE id=${id}
         """.map(_.string("id")).first().apply().isDefined
+    }
+  }
+
+  def getByCreatorId(creatorId: String): List[Character] = {
+    DB readOnly { implicit session =>
+      sql"""
+            SELECT * FROM characters WHERE creator_id=${creatorId}
+        """
+        .map { rs =>
+          Character(
+            rs.string("id"),
+            rs.string("creator_id"),
+            rs.string("name"),
+            rs.stringOpt("profile"),
+            rs.stringOpt("icon"),
+            rs.zonedDateTimeOpt("deleted_at"),
+            rs.zonedDateTime("created_at"),
+            rs.zonedDateTime("updated_at")
+          )
+        }
+        .list()
+        .apply()
     }
   }
 }

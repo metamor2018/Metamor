@@ -28,7 +28,6 @@ trait CharacterAutoRollback extends FlatSpec with AutoRollback {
           values ('character','huge','huga')
       """.update().apply()
   }
-
   def errorCharacterCreate(implicit session: DBSession) {
     sql"""
           insert into characters(id,creator_id,name)
@@ -71,6 +70,16 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       contentAsString(result) must include("ok")
     }
 
+    "キャラクター一覧確認" in {
+      val request = FakeRequest(GET, "/creator/:creatorId/character")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      val result = call(controller.getByCreatorId("huge"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("character")
+    }
   }
 
   "error" should {
@@ -113,6 +122,16 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("存在しないキャラクターです")
 
+    }
+
+    "キャラクター一覧確認" in {
+      val request = FakeRequest(GET, "/creator/:creatorId/character")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+
+      val result = call(controller.getByCreatorId("nonhuge"), request)
+
+      status(result) mustBe NOT_FOUND
     }
   }
 
