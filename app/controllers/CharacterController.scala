@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject.{ Inject, Singleton }
 import auth.AuthAction
+import forms.validations.CreatorValidations
 import forms.{ CharacterCreateForm, CharacterDeleteForm }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -17,6 +18,8 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
     with Circe
     with MixInCharacterService {
 
+  lazy val creatorValidations = CreatorValidations
+
   /**
    * idからキャラクターを1件取得
    * @param id
@@ -24,7 +27,9 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
    */
   def find(id: String) = Action {
     characterService.find(id) match {
-      case Left(e) => BadGateway
+      case Left(e) =>
+        println(e)
+        BadGateway
       case Right(s) =>
         s match {
           case None    => NotFound
@@ -76,4 +81,22 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
     }
   }
 
+  /**
+   * 指定した創作者のキャラクター一覧取得
+   * @param creatorId
+   * @return 成功　指定した創作者のキャラクター一覧
+   *         失敗　NotFound 存在しない創作者IDが来た場合
+   */
+  def getByCreatorId(creatorId: String) = Action { implicit request =>
+    creatorValidations.exists(creatorId) match {
+      case Failure(e) => NotFound
+      case Success(creatorId) =>
+        try {
+          val characters = characterService.getByCreatorId(creatorId)
+          Ok(characters.asJson)
+        } catch {
+          case e: Exception => BadGateway
+        }
+    }
+  }
 }

@@ -12,6 +12,7 @@ object Character {
       rs.string("name"),
       rs.stringOpt("profile"),
       rs.stringOpt("icon"),
+      rs.zonedDateTimeOpt("deleted_at"),
       rs.zonedDateTime("created_at"),
       rs.zonedDateTime("updated_at")
     )
@@ -23,5 +24,6 @@ case class Character(id: String,
                      name: String,
                      profile: Option[String],
                      icon: Option[String],
+                     deletedAt: Option[ZonedDateTime],
                      createdAt: ZonedDateTime,
                      updatedAt: ZonedDateTime)

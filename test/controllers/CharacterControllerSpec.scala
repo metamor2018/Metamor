@@ -66,6 +66,16 @@ class CharacterControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("ok")
     }
 
+    "キャラクター一覧確認" in {
+      val request = FakeRequest(GET, "/creator/hoge/character")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      val result = call(controller.getByCreatorId("hoge"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("huga")
+    }
   }
 
   "error" should {
@@ -97,6 +107,16 @@ class CharacterControllerSpec extends ControllerSpecBase {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("存在しないキャラクターです")
 
+    }
+
+    "キャラクター一覧確認" in {
+      val request = FakeRequest(GET, "/creator/nonhuge/character")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+
+      val result = call(controller.getByCreatorId("nonhuge"), request)
+
+      status(result) mustBe NOT_FOUND
     }
   }
 

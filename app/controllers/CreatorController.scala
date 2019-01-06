@@ -47,6 +47,22 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
     }
   }
 
+  /**
+   * 創作者を1件取得する
+   * @param id 創作者id
+   * @return Creator
+   */
+  def find(id: String) = Action {
+    creatorService.find(id) match {
+      case Left(e) => BadGateway
+      case Right(s) =>
+        s match {
+          case None    => NotFound
+          case Some(s) => Ok(s.asJson)
+        }
+    }
+  }
+
   def edit(): Action[CreatorEditForm] = authAction(circe.json[CreatorEditForm]) {
     implicit request =>
       creatorService.edit(

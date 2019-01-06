@@ -27,6 +27,7 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
           "なまえ",
           None,
           None,
+          None,
           ZonedDateTime.now(),
           ZonedDateTime.now()
         )))
@@ -36,6 +37,21 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
   def delete(id: String): Long = 1
 
   def exists(characterId: String): Boolean = true
+
+  def getByCreatorId(creatorId: String): List[Character] = {
+    val character = Character(
+      "huge",
+      "hoge",
+      "hugeName",
+      None,
+      None,
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    List(character, character.copy(name = "geho"))
+  }
+
 }
 
 trait MixInMockCharacterRepository {

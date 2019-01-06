@@ -23,6 +23,8 @@ object ErrorCharacterRepositoryImpl extends CharacterRepository {
   def delete(id: String): Long = throw new Exception
 
   def exists(characterId: String): Boolean = false
+
+  def getByCreatorId(creatorId: String): List[Character] = throw new Exception
 }
 
 trait MixInErrorCharacterRepository {

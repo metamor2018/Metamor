@@ -1,30 +1,47 @@
 package controllers
 
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
 import mocks.MixInMockCreatorService
 import models.service.CreatorService
-
 import scalikejdbc._
-import scalikejdbc.scalatest.AutoRollback
-import org.scalatest.fixture.FlatSpec
 
 class CreatorControllerSpec extends ControllerSpecBase {
 
-  trait AutoRollbackWithFixture extends FlatSpec with AutoRollback {
-
-    val authId = config.get[String]("auth0.subject")
-
-    override def fixture(implicit session: DBSession) {
-      sql"""
-            insert into accounts (auth_id) values (${authId})
-      """.update().apply()
-
-    }
-  }
+  override def fakeApplication() =
+    new GuiceApplicationBuilder()
+      .configure(Map("db.default.fixtures.test" -> List("account.sql", "creator.sql")))
+      .build()
 
   "success" should {
+
+    "創作者取得" in {
+
+      val request = FakeRequest(GET, "/creator/hoge")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      val result = call(controller.find("hoge"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("hoge")
+      contentAsString(result) must include("huga")
+
+    }
+
+    "創作者取得 存在しない場合" in {
+
+      val request = FakeRequest(GET, "/creator/inaiyo")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      val result = call(controller.find("inaiyo"), request)
+
+      status(result) mustBe NOT_FOUND
+    }
 
     "創作者編集" in {
       val request = FakeRequest(PUT, "/creator")
@@ -43,10 +60,26 @@ class CreatorControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("ok")
     }
 
-    // DBのロールバック方法がわからないので「存在する場合」より先に検証
-    "創作者が存在するか確認 存在しない場合" in new AutoRollbackWithFixture {
-      DB autoCommit { implicit session =>
-        fixture
+    "創作者が存在するか確認 存在する場合" in {
+
+      val request = FakeRequest(GET, "/creator/validate/exists")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      val result = call(controller.exists(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("true")
+    }
+
+    "創作者が存在するか確認 存在しない場合" in {
+
+      // 存在しない場合をテストしたいので創作者を削除する
+      DB autoCommit { implicit s =>
+        sql"""
+              DELETE FROM creators;
+           """.update().apply()
       }
 
       val request = FakeRequest(GET, "/creator/validate/exists")
@@ -60,9 +93,13 @@ class CreatorControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("false")
     }
 
-    "創作者作成" in new AutoRollbackWithFixture {
+    "創作者作成" in {
+
+      // 創作者が存在すると作成できないため削除
       DB autoCommit { implicit s =>
-        fixture
+        sql"""
+              DELETE FROM creators;
+           """.update().apply()
       }
 
       val request = FakeRequest(POST, "/creator")
@@ -77,36 +114,6 @@ class CreatorControllerSpec extends ControllerSpecBase {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("creatorId")
       contentAsString(result) must include("huga")
-    }
-
-    "創作者が存在するか確認 存在する場合" in new AutoRollbackWithFixture {
-
-      // なぜかロールバックされない
-      override def fixture(implicit session: FixtureParam): Unit = {
-        sql"""
-            insert into accounts (auth_id) values (${authId})
-          """.update().apply()
-
-        sql"""
-            insert into creators(account_id,id,name)
-            values (1,'hoge','huga')
-        """.update().apply()
-
-      }
-
-      DB autoCommit { implicit session =>
-        fixture
-      }
-
-      val request = FakeRequest(GET, "/creator/validate/exists")
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-
-      val controller = new CreatorController(stubControllerComponents(), authAction)
-      val result = call(controller.exists(), request)
-
-      status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("true")
     }
 
   }
