@@ -3,14 +3,27 @@ package models.repository
 import models.entity.Character
 import scalikejdbc._
 
+import scala.util.control.Exception.catching
+import models.entity.Character
+
+import scala.util.Try
+
 trait CharacterRepository {
-  def create(creatorId: String, displayId: String, name: String): Long
+
+  /**
+   * idからキャラクターを1件取得
+   * @param id
+   * @param s
+   * @return
+   */
+  def find(id: String)(implicit s: DBSession): Try[Option[Character]]
+  def create(id: String, creatorId: String, name: String): Long
   def delete(id: String): Long
   def exists(characterId: String): Boolean
   def getByCreatorId(creatorId: String): List[Character]
 }
 
-trait UsesCharacterRepository extends CharacterRepository {
+trait UsesCharacterRepository {
   val characterRepository: CharacterRepository
 }
 
@@ -19,6 +32,18 @@ trait MixInCharacterRepository {
 }
 
 object CharacterRepositoryImpl extends CharacterRepository {
+
+  /**
+   * idからキャラクターを1件取得
+   * @param id
+   * @param s
+   * @return
+   */
+  def find(id: String)(implicit s: DBSession): Try[Option[Character]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT * FROM characters WHERE id = $id
+         """.map(Character.*).single().apply()
 
   def create(id: String, creatorId: String, name: String): Long = {
     DB autoCommit { implicit session =>
