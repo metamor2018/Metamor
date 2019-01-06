@@ -2,7 +2,8 @@ package controllers
 
 import javax.inject.{ Inject, Singleton }
 import auth.AuthAction
-import forms.{ CharacterCreateForm, CharacterDeleteForm, CharacterFetchListForm }
+import forms.validations.CreatorValidations
+import forms.{ CharacterCreateForm, CharacterDeleteForm }
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -15,6 +16,8 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
     extends AbstractController(cc)
     with Circe
     with MixInCharacterService {
+
+  lazy val creatorValidations = CreatorValidations
 
   /**
    * キャラクターを作成するためにバリデーションをかけ成功ならcharacterCreatingPartを呼ぶ
@@ -69,22 +72,20 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
                             characterCreateForm.name)
 
   /**
-    * 指定した創作者のキャラクター一覧取得
-    * @param creatorId
-    * @return 成功　指定した創作者のキャラクター一覧
-    *         失敗　{"存在しない創作者です"}
-    */
-  def getByCreatorId(creatorId: String) = authAction { implicit request =>
-    CharacterFetchListForm.apply(creatorId).validate match {
-      case Failure(e) =>
-        BadRequest(e.toVector.asJson)
-      case Success(a) =>
+   * 指定した創作者のキャラクター一覧取得
+   * @param creatorId
+   * @return 成功　指定した創作者のキャラクター一覧
+   *         失敗　NotFound 存在しない創作者IDが来た場合
+   */
+  def getByCreatorId(creatorId: String) = Action { implicit request =>
+    creatorValidations.exists(creatorId) match {
+      case Failure(e) => NotFound
+      case Success(creatorId) =>
         try {
-          val characters = characterService.getByCreatorId(a)
+          val characters = characterService.getByCreatorId(creatorId)
           Ok(characters.asJson)
         } catch {
-          case e: Exception =>
-            BadGateway(("status" -> "ng").asJson)
+          case e: Exception => BadGateway
         }
     }
   }

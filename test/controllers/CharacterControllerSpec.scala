@@ -131,9 +131,7 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
 
       val result = call(controller.getByCreatorId("nonhuge"), request)
 
-      status(result) mustBe BAD_REQUEST
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("存在しない創作者です")
+      status(result) mustBe NOT_FOUND
     }
   }
 

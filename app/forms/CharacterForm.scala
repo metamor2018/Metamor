@@ -19,10 +19,3 @@ case class CharacterDeleteForm(id: String) {
     )
   }
 }
-case class CharacterFetchListForm(creatorId: String) {
-  def validate() = {
-    (
-      CreatorValidations.exists(creatorId)
-    )
-  }
-}
