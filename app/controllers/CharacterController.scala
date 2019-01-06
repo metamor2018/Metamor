@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.{ Inject, Singleton }
 import auth.AuthAction
-import forms.{ CharacterCreateForm, CharacterDeleteForm }
+import forms.{ CharacterCreateForm, CharacterDeleteForm, CharacterEditForm }
 import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
@@ -57,6 +57,30 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
         }
 
     }
+  }
+
+  /**
+    * キャラクターを編集
+    * @return 成功 { status : ok }
+    *         失敗 存在しないキャラクターです
+    *              名前が短すぎます
+    */
+
+  def edit(): Action[CharacterEditForm] = authAction(circe.json[CharacterEditForm]) {
+    implicit request =>
+      request.body.validate() match {
+        case Failure(e) =>
+          BadRequest(e.toVector.asJson)
+        case Success(a) =>
+          try {
+            characterService.edit(a.id, a.name, a.profile, a.icon)
+            Ok(("status" -> "ok").asJson)
+          } catch {
+            case e: Exception =>
+              BadGateway
+          }
+      }
+
   }
 
   /**

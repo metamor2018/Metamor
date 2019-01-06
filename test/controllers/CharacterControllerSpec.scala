@@ -71,6 +71,20 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       contentAsString(result) must include("ok")
     }
 
+    "キャラクター編集" in {
+      val request = FakeRequest(PUT, "/character")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(
+          Json.parse("""{"id":"character", "name": "ほげ","profile":"私はほげです","icon":"hogetter"}"""))
+
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      val result = call(controller.edit(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("ok")
+    }
+
   }
 
   "error" should {
@@ -113,6 +127,21 @@ class CharacterControllerSpec extends PlaySpec with GuiceOneAppPerSuite with Con
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("存在しないキャラクターです")
 
+    }
+
+    "キャラクター編集" in {
+      val request = FakeRequest(PUT, "/character")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(
+          Json.parse("""{"id":"noncharacter", "name": "","profile":"私はほげです","icon":"hogetter"}"""))
+
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      val result = call(controller.edit(), request)
+
+      status(result) mustBe BAD_REQUEST
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("存在しないキャラクターです")
+      contentAsString(result) must include("名前が短すぎます")
     }
   }
 

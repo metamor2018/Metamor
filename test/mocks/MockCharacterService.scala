@@ -9,6 +9,8 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
   def delete(id: String): Long = 1
 
   def exists(characterId: String): Boolean = true
+
+  def edit(id: String, name: String, profile: String, icon: String): Long = 1
 }
 
 trait MixInMockCharacterRepository {

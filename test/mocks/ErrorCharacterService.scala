@@ -9,6 +9,8 @@ object ErrorCharacterRepositoryImpl extends CharacterRepository {
   def delete(id: String): Long = throw new Exception
 
   def exists(characterId: String): Boolean = false
+
+  def edit(id: String, name: String, profile: String, icon: String): Long = throw new Exception
 }
 
 trait MixInErrorCharacterRepository {

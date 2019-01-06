@@ -5,7 +5,9 @@ import scalikejdbc._
 trait CharacterRepository {
   def create(id: String, creatorId: String, name: String): Long
   def delete(id: String): Long
+  def edit(id: String, name: String, profile: String, icon: String): Long
   def exists(id: String): Boolean
+
 }
 
 trait UsesCharacterRepository extends CharacterRepository {
@@ -31,6 +33,16 @@ object CharacterRepositoryImpl extends CharacterRepository {
     DB autoCommit { implicit session =>
       sql"""
             DELETE FROM characters where id=${id}
+      """.update().apply()
+    }
+  }
+
+  def edit(id: String, name: String, profile: String, icon: String): Long = {
+    DB autoCommit { implicit session =>
+      sql"""
+        update characters
+        set name=${name},profile=${profile},icon=${icon}
+        where id=${id}
       """.update().apply()
     }
   }

@@ -25,6 +25,18 @@ trait CharacterService extends UsesCharacterRepository {
   }
 
   /**
+   * キャラクターの情報を編集する
+   * @param id 創作者が決めたキャラクターの一意なid
+   * @param name キャラクターの名前
+   * @param profile キャラクターのプロフィール
+   * @param icon キャラクターのアイコン
+   * @return 編集したキャラクターの主キー
+   */
+  def edit(id: String, name: String, profile: String, icon: String): Long = {
+    characterRepository.edit(id, name, profile, icon)
+  }
+
+  /**
    * キャラクターが存在することの確認
    * @param characterId
    * @return 存在すればtrue
