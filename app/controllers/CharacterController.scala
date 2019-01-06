@@ -60,12 +60,11 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
   }
 
   /**
-    * キャラクターを編集
-    * @return 成功 { status : ok }
-    *         失敗 存在しないキャラクターです
-    *              名前が短すぎます
-    */
-
+   * キャラクターを編集
+   * @return 成功 { status : ok }
+   *         失敗 存在しないキャラクターです
+   *              名前が短すぎます
+   */
   def edit(): Action[CharacterEditForm] = authAction(circe.json[CharacterEditForm]) {
     implicit request =>
       request.body.validate() match {
