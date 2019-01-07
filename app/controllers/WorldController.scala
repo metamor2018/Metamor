@@ -9,8 +9,7 @@ import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
-import models.service.MixInWorldService
-import models.service.MixInCharacterService
+import models.service.{ MixInCharacterService, MixInCreatorService, MixInWorldService }
 import scalaz.Scalaz._
 import scalaz._
 
@@ -23,16 +22,17 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     extends AbstractController(cc)
     with Circe
     with MixInWorldService
-    with MixInCharacterService {
+    with MixInCharacterService
+    with MixInCreatorService {
 
   import WorldController._
 
   /**
-   * クリエイターを作成
-   *
-   * @return 成功 { status : ok }
-   *         失敗 { status : ng }
-   */
+    * クリエイターを作成
+    *
+    * @return 成功 { status : ok }
+    *         失敗 { status : ng }
+    */
   def create() = Action(circe.json[WorldForm]) { implicit request =>
     val worldForm = request.body
     //ログインしてる程のID
@@ -53,19 +53,19 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
   }
 
   /**
-   * 開催中のワールド一覧の取得
-   * @return
-   */
+    * 開催中のワールド一覧の取得
+    * @return
+    */
 //  def getEnable() = Action {
 //    val holdWorlds = worldService.getEnable()
 //    Ok((holdWorlds.asJson))
 //  }
 
   /**
-   * ワールド参加
-   *
-   * @return
-   */
+    * ワールド参加
+    *
+    * @return
+    */
   def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
     request.body.validate() match {
       case Failure(e) =>
@@ -82,22 +82,18 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
   }
 
   /**
-   * creatorIdからワールド一覧を取得
-   * @param creatorId
-   * @return
-   */
+    * creatorIdからワールド一覧を取得
+    * @param creatorId
+    * @return
+    */
   def getByCreatorId(creatorId: String) = Action { implicit request =>
-    import forms.validations.CreatorValidations
-    val creatorValidations = CreatorValidations
-
-    creatorValidations.exists(creatorId) match {
-      case Failure(e) => NotFound
-      case Success(s) =>
-        worldService.getByCreatorId(s) match {
-          case Left(e)  => BadGateway
-          case Right(s) => Ok(s.asJson)
-        }
-    }
+    if (!creatorService.existsById(creatorId))
+      NotFound
+    else
+      worldService.getByCreatorId(creatorId) match {
+        case Left(e)  => BadGateway
+        case Right(s) => Ok(s.asJson)
+      }
   }
 
   def find(id: Int) = Action {
