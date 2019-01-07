@@ -12,12 +12,3 @@ case class WorldEntryForm(characterId: String, worldId: Long) {
   }
 
 }
-
-case class CreatorIdForm(creatorId: String) {
-
-  def validate() = {
-    (
-      CreatorValidations.exists(this.creatorId)
-    )
-  }
-}

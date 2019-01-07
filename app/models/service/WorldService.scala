@@ -66,9 +66,13 @@ trait WorldService extends UsesWorldRepository {
    * @param creatorId
    * @return 指定した創作者のワールド
    */
-  def getByCreatorId(creatorId: String): List[World] = {
-    worldRepository.getByCreatorId(creatorId)
-  }
+  def getByCreatorId(creatorId: String): Either[Throwable, List[World]] =
+    DB readOnly { implicit s =>
+      worldRepository.getByCreatorId(creatorId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
 
   def find(id: Int) =
     DB readOnly { implicit s =>

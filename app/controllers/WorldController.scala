@@ -3,7 +3,7 @@ package controllers
 import java.time.ZonedDateTime
 
 import auth.AuthAction
-import forms.{ CreatorIdForm, WorldEntryForm }
+import forms.WorldEntryForm
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -86,22 +86,18 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
    * @param creatorId
    * @return
    */
-  def getByCreatorId(creatorId: String) = authAction(circe.json[CreatorIdForm]) {
-    implicit request =>
-      request.body.validate() match {
-        case Failure(e) =>
-          BadRequest(e.toVector.asJson)
-        case Success(a) =>
-          try {
-            val worlds = worldService.getByCreatorId(a)
-            Ok(worlds.asJson)
-          } catch {
-            case e: Exception =>
-              BadGateway
-          }
+  def getByCreatorId(creatorId: String) = Action { implicit request =>
+    import forms.validations.CreatorValidations
+    val creatorValidations = CreatorValidations
 
-      }
-
+    creatorValidations.exists(creatorId) match {
+      case Failure(e) => NotFound
+      case Success(s) =>
+        worldService.getByCreatorId(s) match {
+          case Left(e)  => BadGateway
+          case Right(s) => Ok(s.asJson)
+        }
+    }
   }
 
   def find(id: Int) = Action {

@@ -20,7 +20,7 @@ trait WorldRepository {
 
   def existsEntry(characterId: String, worldId: Long): Boolean
 
-  def getByCreatorId(creatorId: String): List[World]
+  def getByCreatorId(creatorId: String)(implicit s: DBSession): Try[List[World]]
 
   def find(id: Int)(implicit s: DBSession): Try[Option[World]]
 }
@@ -76,8 +76,8 @@ object WorldRepositoryImpl extends WorldRepository {
     }
   }
 
-  def getByCreatorId(creatorId: String): List[World] = {
-    DB readOnly { implicit session =>
+  def getByCreatorId(creatorId: String)(implicit s: DBSession): Try[List[World]] =
+    catching(classOf[Throwable]) withTry
       sql"""
             SELECT *
             FROM worlds
@@ -86,8 +86,6 @@ object WorldRepositoryImpl extends WorldRepository {
         .map(World.*)
         .list
         .apply()
-    }
-  }
 
   def entry(characterId: String, worldId: Long): Long = {
     DB autoCommit { implicit session =>
