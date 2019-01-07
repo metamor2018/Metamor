@@ -19,11 +19,11 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
     with Circe {
 
   /**
-   * 投稿を作成する
-   * @param characterId
-   * @param worldId
-   * @return
-   */
+    * 投稿を作成する
+    * @param characterId
+    * @param worldId
+    * @return
+    */
   def create(characterId: String, worldId: Long) = authAction(circe.json[StatusForm]) {
     implicit request =>
       if (!characterService.exists(characterId)
@@ -50,9 +50,9 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
   }
 
   /**
-   * 投稿を複数取得する
-   * @return List[Status]
-   */
+    * 投稿を複数取得する
+    * @return List[Status]
+    */
   def get(characterId: String, worldId: Long) = Action {
     statusService.getByWorldId(worldId) match {
       case Left(e)  => BadGateway

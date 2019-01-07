@@ -13,10 +13,10 @@ object MockCreatorRepositoryImpl extends CreatorRepository {
   def create(displayId: String, name: String): Long = 1
 
   /**
-   * 創作者を1件取得
-   *
-   * @param id
-   */
+    * 創作者を1件取得
+    *
+    * @param id
+    */
   def find(id: String)(implicit s: DBSession): Try[Option[Creator]] =
     Try(
       Some(

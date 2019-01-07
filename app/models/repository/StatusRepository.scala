@@ -9,15 +9,15 @@ import scala.util.control.Exception._
 trait StatusRepository {
 
   /**
-   * 投稿の作成
-   * @param worldId
-   * @param characterId
-   * @param reply
-   * @param inReplyToId
-   * @param text
-   * @param s
-   * @return 作成した投稿のid
-   */
+    * 投稿の作成
+    * @param worldId
+    * @param characterId
+    * @param reply
+    * @param inReplyToId
+    * @param text
+    * @param s
+    * @return 作成した投稿のid
+    */
   def create(worldId: Long,
              characterId: String,
              reply: Boolean,
@@ -25,25 +25,25 @@ trait StatusRepository {
              text: String)(implicit s: DBSession): Try[Long]
 
   /**
-   * idから投稿を取得
-   * @param statusId
-   * @param s
-   * @return 投稿
-   */
+    * idから投稿を取得
+    * @param statusId
+    * @param s
+    * @return 投稿
+    */
   def find(statusId: Long)(implicit s: DBSession): Try[Option[Status]]
 
   /**
-   * 投稿が存在するか確認
-   * @param statusId
-   * @param s
-   * @return 存在すればtrue
-   */
+    * 投稿が存在するか確認
+    * @param statusId
+    * @param s
+    * @return 存在すればtrue
+    */
   def exists(statusId: Long)(implicit s: DBSession): Try[Boolean]
 
   /**
-   * 投稿を複数取得
-   * @param s
-   */
+    * 投稿を複数取得
+    * @param s
+    */
   def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]]
 }
 
@@ -75,12 +75,12 @@ object StatusRepositoryImpl extends StatusRepository {
       """.map(Status.*).single().apply()
 
   /**
-   * 投稿が存在するか確認
-   *
-   * @param statusId
-   * @param s
-   * @return 存在すればtrue
-   */
+    * 投稿が存在するか確認
+    *
+    * @param statusId
+    * @param s
+    * @return 存在すればtrue
+    */
   def exists(statusId: Long)(implicit s: DBSession): Try[Boolean] =
     catching(classOf[Throwable]) withTry
       sql"""
@@ -88,10 +88,10 @@ object StatusRepositoryImpl extends StatusRepository {
       """.map(_.long("id")).single().apply().isDefined
 
   /**
-   * 投稿を複数取得
-   *
-   * @param s
-   */
+    * 投稿を複数取得
+    *
+    * @param s
+    */
   def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]] =
     catching(classOf[Throwable]) withTry
       sql"""
