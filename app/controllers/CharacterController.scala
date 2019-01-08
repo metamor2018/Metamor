@@ -84,15 +84,16 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
   /**
    * 指定した創作者のキャラクター一覧取得
    * @param creatorId
+   * @param line ページ番号
    * @return 成功　指定した創作者のキャラクター一覧
    *         失敗　NotFound 存在しない創作者IDが来た場合
    */
-  def getByCreatorId(creatorId: String) = Action { implicit request =>
+  def getByCreatorId(creatorId: String, line: Long) = Action { implicit request =>
     creatorValidations.exists(creatorId) match {
       case Failure(e) => NotFound
       case Success(creatorId) =>
         try {
-          val characters = characterService.getByCreatorId(creatorId)
+          val characters = characterService.getByCreatorId(creatorId, line)
           Ok(characters.asJson)
         } catch {
           case e: Exception => BadGateway

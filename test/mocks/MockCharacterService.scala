@@ -38,7 +38,7 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
 
   def exists(characterId: String): Boolean = true
 
-  def getByCreatorId(creatorId: String): List[Character] = {
+  def getByCreatorId(creatorId: String, line: Long): List[Character] = {
     val character = Character(
       "huge",
       "hoge",

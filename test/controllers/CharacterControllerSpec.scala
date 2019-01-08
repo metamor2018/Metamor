@@ -70,7 +70,7 @@ class CharacterControllerSpec extends ControllerSpecBase {
       val request = FakeRequest(GET, "/creator/hoge/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new CharacterController(stubControllerComponents(), authAction)
-      val result = call(controller.getByCreatorId("hoge"), request)
+      val result = call(controller.getByCreatorId("hoge", 1), request)
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
@@ -114,7 +114,7 @@ class CharacterControllerSpec extends ControllerSpecBase {
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new CharacterController(stubControllerComponents(), authAction)
 
-      val result = call(controller.getByCreatorId("nonhuge"), request)
+      val result = call(controller.getByCreatorId("nonhuge", 999), request)
 
       status(result) mustBe NOT_FOUND
     }
