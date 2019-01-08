@@ -71,19 +71,14 @@ class WorldControllerSpec extends ControllerSpecBase {
 //
 //    }
 
-    "他の創作者のワールド確認" in {
-      val request = FakeRequest(GET, "/creator/:displayId/worlds")
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"creatorId": "hoge"}"""))
+    "創作者のワールド一覧確認" in {
+      val request = FakeRequest(GET, "/creator/hoge/world")
       val controller = new WorldController(stubControllerComponents(), authAction)
-      with MixInMockWorldService {
-        override val worldService: WorldService = mockWorldService
-      }
-      val result = call(controller.getByCreatorId("1"), request)
+      val result = call(controller.getByCreatorId("hoge"), request)
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("id")
+      contentAsString(result) must include("hoge")
 
     }
 
@@ -134,19 +129,12 @@ class WorldControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("存在しないワールドです")
     }
 
-    "他の創作者のワールド確認" in {
-      val request = FakeRequest(GET, "/creator/:displayId/worlds")
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"creatorId": "1000"}"""))
+    "創作者のワールド一覧確認" in {
+      val request = FakeRequest(GET, "/creator/inaiyo/worlds")
       val controller = new WorldController(stubControllerComponents(), authAction)
-      with MixInErrorWorldService {
-        override val worldService: WorldService = mockWorldService
-      }
-      val result = call(controller.getByCreatorId("1"), request)
+      val result = call(controller.getByCreatorId("inaiyo"), request)
 
-      status(result) mustBe BAD_REQUEST
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("存在しない創作者です")
+      status(result) mustBe NOT_FOUND
     }
 
     "ワールド取得 NotFound" in {

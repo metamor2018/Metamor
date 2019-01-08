@@ -11,10 +11,10 @@ object ErrorCreatorRepositoryImpl extends CreatorRepository {
   def create(displayId: String, name: String): Long = throw new Exception
 
   /**
-   * 創作者を1件取得
-   *
-   * @param id
-   */
+    * 創作者を1件取得
+    *
+    * @param id
+    */
   def find(id: String)(implicit s: DBSession): Try[Option[Creator]] = Try(throw new Exception)
 
   def existsById(id: String): Boolean = false

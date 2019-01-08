@@ -7,7 +7,8 @@
 POST    /creator                    controllers.CreatorController.create
 PUT     /creator                    controllers.CreatorController.edit
 GET     /creator/:id                    controllers.CreatorController.find(id: String)
-GET     /creator/:creatorId/worlds        controllers.WorldController.getByCreatorId(creatorId: String)
+GET     /creator/:creatorId/world        controllers.WorldController.getByCreatorId(creatorId: String)
+
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
 GET     /character/:id              controllers.CharacterController.find(id: String)

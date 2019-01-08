@@ -10,9 +10,9 @@ trait CreatorRepository {
   def create(id: String, name: String, accountId: Long)(implicit s: DBSession): Try[Long]
 
   /**
-   * 創作者を1件取得
-   * @param id
-   */
+    * 創作者を1件取得
+    * @param id
+    */
   def find(id: String)(implicit s: DBSession): Try[Option[Creator]]
 
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long
@@ -39,10 +39,10 @@ object CreatorRepositoryImpl extends CreatorRepository {
   }
 
   /**
-   * 創作者を1件取得
-   *
-   * @param id
-   */
+    * 創作者を1件取得
+    *
+    * @param id
+    */
   def find(id: String)(implicit s: DBSession): Try[Option[Creator]] =
     catching(classOf[Throwable]) withTry
       sql"""

@@ -11,11 +11,11 @@ import scala.util.Try
 trait CharacterRepository {
 
   /**
-   * idからキャラクターを1件取得
-   * @param id
-   * @param s
-   * @return
-   */
+    * idからキャラクターを1件取得
+    * @param id
+    * @param s
+    * @return
+    */
   def find(id: String)(implicit s: DBSession): Try[Option[Character]]
   def create(id: String, creatorId: String, name: String): Long
   def delete(id: String): Long
@@ -34,11 +34,11 @@ trait MixInCharacterRepository {
 object CharacterRepositoryImpl extends CharacterRepository {
 
   /**
-   * idからキャラクターを1件取得
-   * @param id
-   * @param s
-   * @return
-   */
+    * idからキャラクターを1件取得
+    * @param id
+    * @param s
+    * @return
+    */
   def find(id: String)(implicit s: DBSession): Try[Option[Character]] =
     catching(classOf[Throwable]) withTry
       sql"""

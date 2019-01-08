@@ -12,12 +12,12 @@ import scala.util.Try
 object MockCharacterRepositoryImpl extends CharacterRepository {
 
   /**
-   * idからキャラクターを1件取得
-   *
-   * @param id
-   * @param s
-   * @return
-   */
+    * idからキャラクターを1件取得
+    *
+    * @param id
+    * @param s
+    * @return
+    */
   def find(id: String)(implicit s: DBSession): Try[Option[Character]] =
     Try(
       Some(
