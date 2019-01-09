@@ -11,16 +11,22 @@ class CharacterControllerSpec extends ControllerSpecBase {
 
   override def fakeApplication() =
     new GuiceApplicationBuilder()
-      .configure(Map("db.default.fixtures.test" -> List("default.sql", "entry.sql", "status.sql")))
+      .configure(
+        Map(
+          "db.default.fixtures.test" -> List(
+            "account.sql",
+            "creator.sql",
+            "character.sql"
+          )))
       .build()
 
   "success" should {
 
     "キャラクター取得" in {
-      val request = FakeRequest(GET, "/character/hoge")
+      val request = FakeRequest(GET, "/character/testCharacter1")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new CharacterController(stubControllerComponents(), authAction)
-      val result = call(controller.find("hoge"), request)
+      val result = call(controller.find("testCharacter1"), request)
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
@@ -74,7 +80,9 @@ class CharacterControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("huga")
+      contentAsString(result) must include("testCharacter1")
+      contentAsString(result) must include("testCharacter10")
+      contentAsString(result) mustNot include("testCharacter11")
     }
   }
 
@@ -84,7 +92,7 @@ class CharacterControllerSpec extends ControllerSpecBase {
 
       val reqest = FakeRequest(POST, "/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{ "id": "hoge","creatorId": "inaiyo", "name": ""}"""))
+        .withJsonBody(Json.parse("""{ "id": "testCharacter1","creatorId": "inaiyo", "name": ""}"""))
 
       val result = call(controller.create(), reqest)
 

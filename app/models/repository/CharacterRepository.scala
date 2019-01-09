@@ -75,18 +75,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
       sql"""
             SELECT * FROM characters WHERE creator_id=${creatorId} LIMIT ${line * 10 - 10},${line * 10}
         """
-        .map { rs =>
-          Character(
-            rs.string("id"),
-            rs.string("creator_id"),
-            rs.string("name"),
-            rs.stringOpt("profile"),
-            rs.stringOpt("icon"),
-            rs.zonedDateTimeOpt("deleted_at"),
-            rs.zonedDateTime("created_at"),
-            rs.zonedDateTime("updated_at")
-          )
-        }
+        .map(Character.*)
         .list()
         .apply()
     }
