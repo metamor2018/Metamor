@@ -46,6 +46,12 @@ trait StatusRepository {
     */
   def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]]
 
+  /**
+    * キャラクター別に投稿を取得
+    * @param characterId
+    * @param s
+    * @return
+    */
   def getByCharacterId(characterId: String)(implicit s: DBSession): Try[List[Status]]
 }
 

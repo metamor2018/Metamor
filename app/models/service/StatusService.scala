@@ -55,6 +55,12 @@ trait StatusService extends UsesStatusRepository {
       }
     }
 
+  /**
+    * キャラクター別に投稿を取得
+    * @param characterId
+    * @return
+    */
+
   def getByCharacterId(characterId: String): Either[Throwable, List[Status]] =
     DB readOnly { implicit session =>
       statusRepository.getByCharacterId(characterId) match {

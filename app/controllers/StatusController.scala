@@ -60,6 +60,11 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
     }
   }
 
+  /**
+    * キャラクター別に投稿を取得
+    * @param characterId
+    * @return List[Status]
+    */
   def getByCharacterId(characterId: String) = Action {
     statusService.getByCharacterId(characterId) match {
       case Left(e)  => BadGateway
