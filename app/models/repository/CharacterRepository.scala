@@ -73,7 +73,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
   def getByCreatorId(creatorId: String, line: Long): List[Character] = {
     DB readOnly { implicit session =>
       sql"""
-            SELECT * FROM characters WHERE creator_id=${creatorId} LIMIT ${line * 10 - 10},${line * 10}
+            SELECT * FROM characters WHERE creator_id=${creatorId} LIMIT ${line * 10 - 10}, 10
         """
         .map(Character.*)
         .list()
