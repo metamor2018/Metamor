@@ -41,6 +41,20 @@ class StatusControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustNot include("てきすと7")
       contentAsString(result) mustNot include("てきすと8")
     }
+
+    "キャラクター別投稿一覧取得" in {
+      val request = FakeRequest(GET, "/character/hoge")
+      val controller = new StatusController(stubControllerComponents(), authAction)
+      val result = call(controller.getByCharacterId("hoge"), request)
+
+      status(result) mustBe OK
+      contentAsString(result) must include("てきすと1")
+      contentAsString(result) must include("てきすと2")
+      contentAsString(result) must include("てきすと3")
+      contentAsString(result) must include("てきすと4")
+      contentAsString(result) must include("てきすと5")
+
+    }
   }
 
   "errors" should {
@@ -69,5 +83,6 @@ class StatusControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe NOT_FOUND
     }
+
   }
 }

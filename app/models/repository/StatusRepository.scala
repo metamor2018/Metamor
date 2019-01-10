@@ -45,6 +45,8 @@ trait StatusRepository {
     * @param s
     */
   def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]]
+
+  def getByCharacterId(characterId: String)(implicit s: DBSession): Try[List[Status]]
 }
 
 trait UsesStatusRepository {
@@ -97,6 +99,14 @@ object StatusRepositoryImpl extends StatusRepository {
       sql"""
             SELECT * FROM statuses
             WHERE world_id = $worldId
+            ORDER BY created_at DESC
+      """.map(Status.*).list.apply()
+
+  def getByCharacterId(characterId: String)(implicit s: DBSession): Try[List[Status]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT * FROM statuses
+            WHERE character_id = $characterId
             ORDER BY created_at DESC
       """.map(Status.*).list.apply()
 

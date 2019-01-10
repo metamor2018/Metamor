@@ -54,6 +54,14 @@ trait StatusService extends UsesStatusRepository {
         case Success(s) => Right(s)
       }
     }
+
+  def getByCharacterId(characterId: String): Either[Throwable, List[Status]] =
+    DB readOnly { implicit session =>
+      statusRepository.getByCharacterId(characterId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
 }
 
 trait UsesStatusService {
