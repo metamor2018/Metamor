@@ -20,7 +20,7 @@ trait CharacterRepository {
   def create(id: String, creatorId: String, name: String): Long
   def delete(id: String): Long
   def exists(characterId: String): Boolean
-  def getByCreatorId(creatorId: String): List[Character]
+  def getByCreatorId(creatorId: String, line: Long): List[Character]
 }
 
 trait UsesCharacterRepository {
@@ -70,23 +70,12 @@ object CharacterRepositoryImpl extends CharacterRepository {
     }
   }
 
-  def getByCreatorId(creatorId: String): List[Character] = {
+  def getByCreatorId(creatorId: String, line: Long): List[Character] = {
     DB readOnly { implicit session =>
       sql"""
-            SELECT * FROM characters WHERE creator_id=${creatorId}
+            SELECT * FROM characters WHERE creator_id=${creatorId} LIMIT ${line * 10 - 10}, 10
         """
-        .map { rs =>
-          Character(
-            rs.string("id"),
-            rs.string("creator_id"),
-            rs.string("name"),
-            rs.stringOpt("profile"),
-            rs.stringOpt("icon"),
-            rs.zonedDateTimeOpt("deleted_at"),
-            rs.zonedDateTime("created_at"),
-            rs.zonedDateTime("updated_at")
-          )
-        }
+        .map(Character.*)
         .list()
         .apply()
     }
