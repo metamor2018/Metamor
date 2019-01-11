@@ -65,8 +65,8 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
     * @param characterId
     * @return List[Status]
     */
-  def getByCharacterId(characterId: String) = Action {
-    statusService.getByCharacterId(characterId) match {
+  def getByCharacterId(worldId: Long, characterId: String) = Action {
+    statusService.getByCharacterId(worldId, characterId) match {
       case Left(e)  => BadGateway
       case Right(s) => Ok(s.asJson)
     }
