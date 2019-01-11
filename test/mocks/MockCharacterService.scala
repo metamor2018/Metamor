@@ -2,7 +2,7 @@ package mocks
 
 import java.time.ZonedDateTime
 
-import models.entity.Character
+import models.entity.{ Character, Creator }
 import models.repository.CharacterRepository
 import models.service.CharacterService
 import scalikejdbc.DBSession
@@ -23,7 +23,17 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
       Some(
         Character(
           "hoge",
-          "hoge",
+          Creator(
+            "hoge",
+            1,
+            "なまえ",
+            None,
+            None,
+            false,
+            None,
+            ZonedDateTime.now(),
+            ZonedDateTime.now()
+          ),
           "なまえ",
           None,
           None,
@@ -41,7 +51,17 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
   def getByCreatorId(creatorId: String, line: Long): List[Character] = {
     val character = Character(
       "huge",
-      "hoge",
+      Creator(
+        "hoge",
+        1,
+        "なまえ",
+        None,
+        None,
+        false,
+        None,
+        ZonedDateTime.now(),
+        ZonedDateTime.now()
+      ),
       "hugeName",
       None,
       None,

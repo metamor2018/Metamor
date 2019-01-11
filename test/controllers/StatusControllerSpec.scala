@@ -32,6 +32,8 @@ class StatusControllerSpec extends ControllerSpecBase {
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("1")
       contentAsString(result) must include("ほげふがてきすと")
+      contentAsString(result) must include("testCharacter1")
+      contentAsString(result) must include("testName1")
     }
 
     "投稿取得" in {
