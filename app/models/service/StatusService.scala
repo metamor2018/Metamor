@@ -29,7 +29,8 @@ trait StatusService extends UsesStatusRepository {
         status <- Try(statusOpt.get)
       } yield status
     } match {
-      case Failure(e) => Left(e)
+      case Failure(e) =>
+        Left(e)
       case Success(s) => Right(s)
     }
 
