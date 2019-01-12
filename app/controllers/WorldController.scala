@@ -1,9 +1,7 @@
 package controllers
 
-import java.time.ZonedDateTime
-
 import auth.AuthAction
-import forms.WorldEntryForm
+import forms.{ WorldEntryForm, WorldForm }
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -12,11 +10,6 @@ import play.api.libs.circe.Circe
 import models.service.{ MixInCharacterService, MixInCreatorService, MixInWorldService }
 import scalaz.Scalaz._
 import scalaz._
-
-object WorldController {
-  case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
-}
-
 @Singleton
 class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
@@ -25,25 +18,23 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     with MixInCharacterService
     with MixInCreatorService {
 
-  import WorldController._
-
   /**
     * クリエイターを作成
     *
     * @return 成功 { status : ok }
     *         失敗 { status : ng }
     */
-  def create() = Action(circe.json[WorldForm]) { implicit request =>
+  def create(): Action[WorldForm] = authAction(circe.json[WorldForm]) { implicit request =>
     val worldForm = request.body
-    //ログインしてる程のID
-    val creatorId = "7"
-
     try {
-      worldService.create(worldForm.name, creatorId, worldForm.detail, worldForm.startedAt)
+      worldService.create(worldForm.name,
+                          worldForm.creatorId,
+                          worldForm.detail,
+                          worldForm.startedAt)
       Ok(("status" -> "ok").asJson)
     } catch {
       case e: Exception =>
-        BadRequest(("status" -> "ng").asJson)
+        BadRequest
     }
   }
 

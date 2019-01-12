@@ -17,8 +17,23 @@ class WorldControllerSpec extends ControllerSpecBase {
   "success" should {
     "ワールド作成" in {
       val request = FakeRequest(POST, "/world")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
         .withJsonBody(Json.parse(
-          """{"creatorId": "hogeCreator", "name": "testname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+          """{"name": "testname","creatorId": "hoge",  "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+      val controller = new WorldController(stubControllerComponents(), authAction)
+
+      val result = call(controller.create(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("ok")
+    }
+
+    "ワールド作成Mock" in {
+      val request = FakeRequest(POST, "/world")
+        .withJsonBody(Json.parse(
+          """{"creatorId": "hogeCreator", "name": "mocktestname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new WorldController(stubControllerComponents(), authAction)
       with MixInMockWorldService {
         override val worldService: WorldService = mockWorldService
@@ -99,6 +114,7 @@ class WorldControllerSpec extends ControllerSpecBase {
       val request = FakeRequest(POST, "/world")
         .withJsonBody(Json.parse(
           """{"creatorId": "hogeCreator", "name": "testname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new WorldController(stubControllerComponents(), authAction)
       with MixInErrorWorldService {
         override val worldService: WorldService = mockWorldService
@@ -106,8 +122,6 @@ class WorldControllerSpec extends ControllerSpecBase {
       val result = call(controller.create(), request)
 
       status(result) mustBe BAD_REQUEST
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("ng")
     }
 
     "ワールド参加" in {

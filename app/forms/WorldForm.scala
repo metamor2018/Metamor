@@ -1,6 +1,10 @@
 package forms
-import forms.validations.{ CreatorValidations, WorldValidations }
+import java.time.ZonedDateTime
+
+import forms.validations.WorldValidations
 import scalaz.Scalaz._
+
+case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
 
 case class WorldEntryForm(characterId: String, worldId: Long) {
 
@@ -10,5 +14,4 @@ case class WorldEntryForm(characterId: String, worldId: Long) {
         WorldValidations.exists(this.worldId)
     )(WorldEntryForm)
   }
-
 }
