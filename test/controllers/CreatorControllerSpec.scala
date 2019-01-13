@@ -43,6 +43,18 @@ class CreatorControllerSpec extends ControllerSpecBase {
       status(result) mustBe NOT_FOUND
     }
 
+    "ログインしている創作者の取得" in {
+      val request = FakeRequest(GET, "/login/creator")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+
+      val controller = new CreatorController(stubControllerComponents(), authAction)
+      val result = call(controller.findLoginCreator(), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("hoge")
+    }
+
     "創作者編集" in {
       val request = FakeRequest(PUT, "/creator")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))

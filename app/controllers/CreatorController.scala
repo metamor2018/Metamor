@@ -63,6 +63,23 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
     }
   }
 
+  /**
+    * 認証されているアカウントの創作者を取得
+    * @return Creator
+    */
+  def findLoginCreator() = authAction { implicit request =>
+    val authId = request.jwt.subject.get
+
+    creatorService.findByAuthId(authId) match {
+      case Left(e) => BadGateway
+      case Right(s) =>
+        s match {
+          case None    => NotFound
+          case Some(s) => Ok(s.asJson)
+        }
+    }
+  }
+
   def edit(): Action[CreatorEditForm] = authAction(circe.json[CreatorEditForm]) {
     implicit request =>
       creatorService.edit(

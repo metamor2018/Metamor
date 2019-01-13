@@ -45,6 +45,14 @@ trait CreatorService extends UsesCreatorRepository with UsesAccountRepository {
       }
     }
 
+  def findByAuthId(authId: String): Either[Throwable, Option[Creator]] =
+    DB readOnly { implicit session =>
+      creatorRepository.findByAuthId(authId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
+
   /**
     * 創作者が存在するか確認する
     * @param id 確認する創作者のid
