@@ -30,7 +30,32 @@ object MockCreatorRepositoryImpl extends CreatorRepository {
           None,
           ZonedDateTime.now(),
           ZonedDateTime.now()
-        )))
+        )
+      )
+    )
+
+  /**
+    * 創作者を1件取得
+    *
+    * @param authId
+    * @return
+    */
+  def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Creator]] =
+    Try(
+      Some(
+        Creator(
+          "hoge",
+          1,
+          "huga",
+          None,
+          None,
+          false,
+          None,
+          ZonedDateTime.now(),
+          ZonedDateTime.now()
+        )
+      )
+    )
 
   def existsById(id: String): Boolean = true
 

@@ -24,6 +24,8 @@ POST    /world                      controllers.WorldController.create
 POST    /world/entry                controllers.WorldController.entry
 POST    /account                    controllers.AccountController.signup
 
+GET     /login/creator              controllers.CreatorController.findLoginCreator
+
 # Validation
 GET     /creator/validate/exists    controllers.CreatorController.exists
 
