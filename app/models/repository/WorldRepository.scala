@@ -1,5 +1,4 @@
 package models.repository
-import java.time.ZonedDateTime
 
 import models.entity.World
 import scalikejdbc._
@@ -8,7 +7,7 @@ import scala.util.Try
 import scala.util.control.Exception.catching
 
 trait WorldRepository {
-  def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long
+  def create(name: String, creatorId: String, detail: String): Long
 
   def exists(worldId: Long): Boolean
 
@@ -35,11 +34,11 @@ trait MixInWorldRepository {
 
 object WorldRepositoryImpl extends WorldRepository {
 
-  def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long = {
+  def create(name: String, creatorId: String, detail: String): Long = {
     DB autoCommit { implicit session =>
       sql"""
-           insert into worlds(name,creator_Id,detail,started_at)
-           values (${name},${creatorId},${detail},${startedAt})
+           insert into worlds(name,creator_Id,detail)
+           values (${name},${creatorId},${detail})
         """.updateAndReturnGeneratedKey().apply()
     }
   }

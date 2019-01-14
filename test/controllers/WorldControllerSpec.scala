@@ -18,21 +18,19 @@ class WorldControllerSpec extends ControllerSpecBase {
     "ワールド作成" in {
       val request = FakeRequest(POST, "/world")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse(
-          """{"name": "testname","creatorId": "hoge",  "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+        .withJsonBody(
+          Json.parse("""{"name": "testname","creatorId": "hoge",  "detail": "テスト作成"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
 
       val result = call(controller.create(), request)
 
       status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("ok")
     }
 
     "ワールド作成Mock" in {
       val request = FakeRequest(POST, "/world")
-        .withJsonBody(Json.parse(
-          """{"creatorId": "hogeCreator", "name": "mocktestname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+        .withJsonBody(
+          Json.parse("""{ "name": "mocktestname","creatorId": "hoge", "detail": "テスト作成"}"""))
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new WorldController(stubControllerComponents(), authAction)
       with MixInMockWorldService {
@@ -42,8 +40,6 @@ class WorldControllerSpec extends ControllerSpecBase {
       val result = call(controller.create(), request)
 
       status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("ok")
     }
 
     "ワールド一覧取得" in {
@@ -112,8 +108,20 @@ class WorldControllerSpec extends ControllerSpecBase {
   "error" should {
     "ワールド作成" in {
       val request = FakeRequest(POST, "/world")
-        .withJsonBody(Json.parse(
-          """{"creatorId": "hogeCreator", "name": "testname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(
+          Json.parse("""{"name": "nonetestname","creatorId": "nonehoge",  "detail": "テスト作成"}"""))
+      val controller = new WorldController(stubControllerComponents(), authAction)
+
+      val result = call(controller.create(), request)
+
+      status(result) mustBe BAD_REQUEST
+    }
+
+    "ワールド作成mock" in {
+      val request = FakeRequest(POST, "/world")
+        .withJsonBody(
+          Json.parse("""{"name": "testname","creatorId": "hogeCreator",  "detail": "テスト作成"}"""))
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new WorldController(stubControllerComponents(), authAction)
       with MixInErrorWorldService {

@@ -1,10 +1,18 @@
 package forms
-import java.time.ZonedDateTime
 
-import forms.validations.WorldValidations
+import forms.validations.{ CreatorValidations, WorldValidations }
 import scalaz.Scalaz._
+import scalaz.{ NonEmptyList, Validation }
 
-case class WorldForm(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime)
+case class WorldForm(name: String, creatorId: String, detail: String) {
+  def validate(): Validation[NonEmptyList[String], WorldForm] = {
+    (
+      WorldValidations.name(this.name) |@|
+        CreatorValidations.exists(this.creatorId) |@|
+        WorldValidations.detail(this.detail)
+    )(WorldForm)
+  }
+}
 
 case class WorldEntryForm(characterId: String, worldId: Long) {
 

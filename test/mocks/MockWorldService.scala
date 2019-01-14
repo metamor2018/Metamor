@@ -10,7 +10,8 @@ import scalikejdbc.DBSession
 import scala.util.Try
 
 object MockWorldRepositoryImpl extends WorldRepository {
-  def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long = 1
+  def create(name: String, creatorId: String, detail: String): Long = 1
+
   def getWorlds(): List[World] = {
     val world = World(
       1,

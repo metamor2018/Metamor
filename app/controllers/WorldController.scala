@@ -24,18 +24,20 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     * @return 成功 { status : ok }
     *         失敗 { status : ng }
     */
-  def create(): Action[WorldForm] = authAction(circe.json[WorldForm]) { implicit request =>
-    val worldForm = request.body
-    try {
-      worldService.create(worldForm.name,
-                          worldForm.creatorId,
-                          worldForm.detail,
-                          worldForm.startedAt)
-      Ok(("status" -> "ok").asJson)
-    } catch {
-      case e: Exception =>
+  def create() = authAction(circe.json[WorldForm]) { implicit request =>
+    request.body.validate() match {
+      case Failure(e) =>
         BadRequest
+      case Success(a) =>
+        try {
+          worldService.create(a.name, a.creatorId, a.detail)
+          Ok
+        } catch {
+          case e: Exception =>
+            BadGateway
+        }
     }
+
   }
 
   def getWorlds() = Action {
