@@ -54,6 +54,10 @@ class StatusControllerSpec extends ControllerSpecBase {
       contentAsString(result) must include("てきすと4")
       contentAsString(result) must include("てきすと5")
 
+      contentAsString(result) mustNot include("てきすと6")
+      contentAsString(result) mustNot include("てきすと7")
+      contentAsString(result) mustNot include("てきすと8")
+
     }
   }
 
