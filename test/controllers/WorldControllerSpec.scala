@@ -11,7 +11,15 @@ class WorldControllerSpec extends ControllerSpecBase {
 
   override def fakeApplication() =
     new GuiceApplicationBuilder()
-      .configure(Map("db.default.fixtures.test" -> List("default.sql")))
+      .configure(
+        Map(
+          "db.default.fixtures.test" -> List(
+            "account.sql",
+            "creator.sql",
+            "character.sql",
+            "world.sql",
+            "status.sql"
+          )))
       .build()
 
   "success" should {
@@ -48,7 +56,7 @@ class WorldControllerSpec extends ControllerSpecBase {
 
       val request = FakeRequest(POST, "/world/entry")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"characterId": "hoge", "worldId": "1"}"""))
+        .withJsonBody(Json.parse("""{"characterId": "testCharacter1", "worldId": "1"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
 
       val result = call(controller.entry(), request)

@@ -15,7 +15,17 @@ object ErrorCreatorRepositoryImpl extends CreatorRepository {
     *
     * @param id
     */
-  def find(id: String)(implicit s: DBSession): Try[Option[Creator]] = Try(throw new Exception)
+  def find(id: String)(implicit s: DBSession): Try[Option[Creator]] =
+    Try(throw new Exception)
+
+  /**
+    * 創作者を1件取得
+    *
+    * @param authId
+    * @return
+    */
+  def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Creator]] =
+    Try(throw new Exception)
 
   def existsById(id: String): Boolean = false
 

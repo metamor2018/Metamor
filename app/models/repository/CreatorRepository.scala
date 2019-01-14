@@ -15,9 +15,17 @@ trait CreatorRepository {
     */
   def find(id: String)(implicit s: DBSession): Try[Option[Creator]]
 
+  /**
+    * 創作者を1件取得
+    * @param authId
+    * @return
+    */
+  def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Creator]]
+
   def edit(id: Long, displayId: String, name: String, profile: String, icon: String): Long
   def existsById(id: String): Boolean
   def existsByAuthId(authId: String): Boolean
+
 }
 
 trait UsesCreatorRepository {
@@ -50,6 +58,20 @@ object CreatorRepositoryImpl extends CreatorRepository {
             FROM creators
             WHERE id = $id
         """.map(Creator.*).single().apply()
+
+  /**
+    * ログインしている創作者を取得
+    *
+    * @param authId
+    * @return
+    */
+  def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Creator]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT creators.*
+            FROM creators
+            JOIN accounts a ON creators.account_id = a.id
+         """.map(Creator.*).first().apply()
 
   def existsById(id: String): Boolean =
     DB readOnly { implicit session =>

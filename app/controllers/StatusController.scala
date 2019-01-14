@@ -53,8 +53,8 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
     * 投稿を複数取得する
     * @return List[Status]
     */
-  def get(characterId: String, worldId: Long) = Action {
-    statusService.getByWorldId(worldId) match {
+  def get(id: Long) = Action {
+    statusService.getByWorldId(id) match {
       case Left(e)  => BadGateway
       case Right(s) => Ok(s.asJson)
     }
@@ -67,7 +67,9 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
     */
   def getByCharacterId(worldId: Long, characterId: String) = Action {
     statusService.getByCharacterId(worldId, characterId) match {
-      case Left(e)  => BadGateway
+      case Left(e) =>
+        println(e)
+        BadGateway
       case Right(s) => Ok(s.asJson)
     }
   }

@@ -52,8 +52,8 @@ trait CharacterService extends UsesCharacterRepository {
     * @param creatorId
     * @return 指定した創作者のキャラクター一覧
     */
-  def getByCreatorId(creatorId: String): List[Character] = {
-    characterRepository.getByCreatorId(creatorId)
+  def getByCreatorId(creatorId: String, line: Long): List[Character] = {
+    characterRepository.getByCreatorId(creatorId, line)
   }
 
 }
