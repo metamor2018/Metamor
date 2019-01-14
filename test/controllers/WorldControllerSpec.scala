@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
-import mocks.{ MixInErrorWorldService, MixInMockWorldService }
+import mocks.MixInMockWorldService
 import models.service.WorldService
 
 class WorldControllerSpec extends ControllerSpecBase {
@@ -25,18 +25,14 @@ class WorldControllerSpec extends ControllerSpecBase {
   "success" should {
     "ワールド作成" in {
       val request = FakeRequest(POST, "/world")
-        .withJsonBody(Json.parse(
-          """{"creatorId": "hogeCreator", "name": "testname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(
+          Json.parse("""{"name": "testname","creatorId": "hoge",  "detail": "テスト作成"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
-      with MixInMockWorldService {
-        override val worldService: WorldService = mockWorldService
-      }
 
       val result = call(controller.create(), request)
 
-      status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("ok")
+      status(result) mustBe CREATED
     }
 
     "ワールド一覧取得" in {
@@ -105,17 +101,16 @@ class WorldControllerSpec extends ControllerSpecBase {
   "error" should {
     "ワールド作成" in {
       val request = FakeRequest(POST, "/world")
-        .withJsonBody(Json.parse(
-          """{"creatorId": "hogeCreator", "name": "testname", "detail": "テスト作成", "startedAt": "2018-04-01T00:00:00.000+09:00[Asia/Tokyo]"}"""))
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(
+          Json.parse("""{"name": "nonetestname","creatorId": "nonehoge",  "detail": "テスト作成"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
-      with MixInErrorWorldService {
-        override val worldService: WorldService = mockWorldService
-      }
+
       val result = call(controller.create(), request)
 
       status(result) mustBe BAD_REQUEST
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("ng")
+      contentAsString(result) must include("存在しない創作者です")
+
     }
 
     "ワールド参加" in {

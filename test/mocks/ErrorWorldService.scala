@@ -1,7 +1,5 @@
 package mocks
 
-import java.time.ZonedDateTime
-
 import models.entity.World
 import models.repository.WorldRepository
 import models.service.WorldService
@@ -10,8 +8,8 @@ import scalikejdbc.DBSession
 import scala.util.Try
 
 object ErrorWorldRepositoryImpl extends WorldRepository {
-  def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long =
-    throw new Exception
+  def create(name: String, creatorId: String, detail: String)(implicit s: DBSession): Try[Long] =
+    Try(throw new Exception)
   def getWorlds(): List[World] =
     throw new Exception
   def getEnable(): List[World] =
