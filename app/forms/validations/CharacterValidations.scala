@@ -6,6 +6,15 @@ import scalaz._
 
 object CharacterValidations extends MixInCharacterService with MixInCreatorService {
 
+  def id(id: String): ValidationNel[String, String] = {
+    id match {
+      case id if id.length < 4               => "idが短すぎます".failureNel[String]
+      case id if id.length >= 20             => "idが長すぎます".failureNel[String]
+      case id if characterService.exists(id) => "既に存在するidです".failureNel[String]
+      case _                                 => id.successNel[String]
+    }
+  }
+
   def exists(id: String): ValidationNel[String, String] = {
     id match {
       case id if characterService.exists(id) =>

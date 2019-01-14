@@ -11,16 +11,16 @@ object WorldValidations
 
   def name(name: String) = {
     name match {
-      case name if name.isEmpty      => "名前を入力してください".failureNel[String]
+      case name if name.isEmpty     => "名前を入力してください".failureNel[String]
       case name if name.length > 30 => "名前が長すぎます".failureNel[String]
-      case _                         => name.successNel[String]
+      case _                        => name.successNel[String]
     }
   }
 
   def detail(detail: String) = {
     detail match {
       case detail if detail.length > 255 => "詳細が長すぎます".failureNel[String]
-      case _                              => detail.successNel[String]
+      case _                             => detail.successNel[String]
     }
   }
 
