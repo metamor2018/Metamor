@@ -11,10 +11,10 @@ trait AccountRepository {
   def create(authId: String): Long
 
   /**
-   * AuthIdからAccountを取得
-   * @param authId
-   * @return 該当するAccount
-   */
+    * AuthIdからAccountを取得
+    * @param authId
+    * @return 該当するAccount
+    */
   def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Account]]
 }
 
@@ -47,11 +47,11 @@ object AccountRepositoryImpl extends AccountRepository {
   }
 
   /**
-   * AuthIdからAccountを取得
-   *
-   * @param authId
-   * @return 該当するAccount
-   */
+    * AuthIdからAccountを取得
+    *
+    * @param authId
+    * @return 該当するAccount
+    */
   def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Account]] =
     catching(classOf[Throwable]) withTry
       sql"""

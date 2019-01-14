@@ -29,12 +29,12 @@ class AccountController @Inject()(cc: ControllerComponents, authAction: AuthActi
   }
 
   /**
-   * authIdがDBに存在すれば何もしない、
-   * 存在しなければDBに保存する
-   *
-   * @param authId
-   * @return
-   */
+    * authIdがDBに存在すれば何もしない、
+    * 存在しなければDBに保存する
+    *
+    * @param authId
+    * @return
+    */
   private def ifExistsCreate(authId: String): Boolean =
     if (accountService.exists(authId)) true
     else {

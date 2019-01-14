@@ -9,8 +9,8 @@ import play.api.mvc.BodyParsers
 import play.api.test.Helpers.stubControllerComponents
 
 /**
- * テストの事前準備をするトレイト
- */
+  * テストの事前準備をするトレイト
+  */
 trait ControllerSpecBase extends PlaySpec with GuiceOneAppPerSuite {
   implicit lazy val materializer: Materializer = app.materializer
 

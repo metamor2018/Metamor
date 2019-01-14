@@ -6,20 +6,26 @@
 # An example controller showing a sample home page
 POST    /creator                    controllers.CreatorController.create
 PUT     /creator                    controllers.CreatorController.edit
-GET     /creator/:creatorId/worlds        controllers.WorldController.getByCreatorId(creatorId: String)
+GET     /creator/:id                    controllers.CreatorController.find(id: String)
+GET     /creator/:creatorId/world        controllers.WorldController.getByCreatorId(creatorId: String)
+GET     /creator/:creatorId/character/:line      controllers.CharacterController.getByCreatorId(creatorId: String,line:Long)
+
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
 PUT     /character                  controllers.CharacterController.edit
+GET     /character/:id              controllers.CharacterController.find(id: String)
 
-GET    /character/:characterId/world/:worldId   controllers.StatusController.get(characterId: String, worldId: Long)
 POST    /character/:characterId/world/:worldId   controllers.StatusController.create(characterId: String, worldId: Long)
 
 GET     /world                      controllers.WorldController.getWorlds
 GET     /world/:id                  controllers.WorldController.find(id: Int)
+GET     /world/:id/status           controllers.StatusController.get(id: Long)
 #GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
 POST    /world/entry                controllers.WorldController.entry
 POST    /account                    controllers.AccountController.signup
+
+GET     /login/creator              controllers.CreatorController.findLoginCreator
 
 # Validation
 GET     /creator/validate/exists    controllers.CreatorController.exists

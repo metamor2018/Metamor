@@ -38,7 +38,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
     )
     List(world, world.copy(name = "testName2"), world)
   }
-  def getByCreatorId(creatorId: String): List[World] = {
+  def getByCreatorId(creatorId: String)(implicit s: DBSession): Try[List[World]] = {
     val world = World(
       1,
       "testName",
@@ -49,7 +49,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
       ZonedDateTime.now(),
       ZonedDateTime.now()
     )
-    List(world, world.copy(id = 2), world.copy(id = 3))
+    Try(List(world, world.copy(id = 2), world.copy(id = 3)))
   }
   def entry(characterId: String, worldId: Long): Long = 5
   def existsEntry(characterId: String, worldId: Long): Boolean = true

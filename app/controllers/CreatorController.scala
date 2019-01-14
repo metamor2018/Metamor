@@ -18,12 +18,12 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
     with MixInCreatorService {
 
   /**
-   * 創作者を作成
-   * @return 成功 { creatorId : [作成した創作者のid] }
-   *         失敗 SeeOther 既に創作者を作成している場合
-   *            BadRequest バリデーションエラー
-   *            BadGateway 保存に失敗した場合
-   */
+    * 創作者を作成
+    * @return 成功 { creatorId : [作成した創作者のid] }
+    *         失敗 SeeOther 既に創作者を作成している場合
+    *            BadRequest バリデーションエラー
+    *            BadGateway 保存に失敗した場合
+    */
   def create(): Action[CreatorForm] = authAction(circe.json[CreatorForm]) { implicit request =>
     val creatorForm = request.body
     val authId = request.jwt.subject.get
@@ -47,6 +47,39 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
     }
   }
 
+  /**
+    * 創作者を1件取得する
+    * @param id 創作者id
+    * @return Creator
+    */
+  def find(id: String) = Action {
+    creatorService.find(id) match {
+      case Left(e) => BadGateway
+      case Right(s) =>
+        s match {
+          case None    => NotFound
+          case Some(s) => Ok(s.asJson)
+        }
+    }
+  }
+
+  /**
+    * 認証されているアカウントの創作者を取得
+    * @return Creator
+    */
+  def findLoginCreator() = authAction { implicit request =>
+    val authId = request.jwt.subject.get
+
+    creatorService.findByAuthId(authId) match {
+      case Left(e) => BadGateway
+      case Right(s) =>
+        s match {
+          case None    => NotFound
+          case Some(s) => Ok(s.asJson)
+        }
+    }
+  }
+
   def edit(): Action[CreatorEditForm] = authAction(circe.json[CreatorEditForm]) {
     implicit request =>
       creatorService.edit(
@@ -60,9 +93,9 @@ class CreatorController @Inject()(cc: ControllerComponents, authAction: AuthActi
   }
 
   /**
-   * クリエイターが存在するか確認
-   * @return 存在すればtrue
-   */
+    * クリエイターが存在するか確認
+    * @return 存在すればtrue
+    */
   def exists() = authAction { implicit request =>
     request.jwt.subject match {
       case None => BadRequest // OpenIdがない場合

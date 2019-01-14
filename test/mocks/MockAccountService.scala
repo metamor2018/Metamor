@@ -16,11 +16,11 @@ object MockAccountRepositoryImpl extends AccountRepository {
   def create(authId: String): Long = 1
 
   /**
-   * AuthIdからAccountを取得
-   *
-   * @param authId
-   * @return 該当するAccount
-   */
+    * AuthIdからAccountを取得
+    *
+    * @param authId
+    * @return 該当するAccount
+    */
   def findByAuthId(authId: String)(implicit s: DBSession): Try[Option[Account]] =
     Try(
       Some(
