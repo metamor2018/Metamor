@@ -22,6 +22,7 @@ GET     /world/:id/status           controllers.StatusController.get(id: Long)
 #GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
 POST    /world/entry                controllers.WorldController.entry
+GET     /world/:worldId/character/:characterId     controllers.StatusController.getByCharacterId(worldId:Long, characterId: String)
 POST    /account                    controllers.AccountController.signup
 
 GET     /login/creator              controllers.CreatorController.findLoginCreator

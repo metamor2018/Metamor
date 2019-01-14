@@ -45,6 +45,14 @@ trait StatusRepository {
     * @param s
     */
   def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]]
+
+  /**
+    * キャラクター別に投稿を取得
+    * @param characterId
+    * @param s
+    * @return
+    */
+  def getByCharacterId(worldId: Long, characterId: String)(implicit s: DBSession): Try[List[Status]]
 }
 
 trait UsesStatusRepository {
@@ -135,6 +143,33 @@ object StatusRepositoryImpl extends StatusRepository {
             JOIN creators cr on ch.creator_id = cr.id
             WHERE world_id = ${worldId}
             ORDER BY created_at
+      """.map(Status.*).list.apply()
+
+  def getByCharacterId(worldId: Long, characterId: String)(
+      implicit s: DBSession): Try[List[Status]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT s.*,
+                   ch.creator_id,
+                   cr.account_id,
+                   ch.name AS character_name,
+                   ch.profile AS character_profile,
+                   ch.icon AS character_icon,
+                   ch.deleted_at AS character_deleted_at,
+                   ch.updated_at AS character_updated_at,
+                   ch.created_at AS character_created_at,
+                   cr.name AS creator_name,
+                   cr.profile AS creator_profile,
+                   cr.icon AS creator_icon,
+                   cr.official AS creator_official,
+                   cr.deleted_at AS creator_deleted_at,
+                   cr.updated_at AS creator_updated_at,
+                   cr.created_at AS creator_created_at
+            FROM statuses as s
+            JOIN characters ch on s.character_id = ch.id
+            JOIN creators cr on ch.creator_id = cr.id
+            WHERE character_id = $characterId AND world_id = $worldId
+            ORDER BY created_at DESC
       """.map(Status.*).list.apply()
 
 }
