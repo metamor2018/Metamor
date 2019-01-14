@@ -4,7 +4,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._
-import mocks.{ MixInErrorWorldService, MixInMockWorldService }
+import mocks.MixInMockWorldService
 import models.service.WorldService
 
 class WorldControllerSpec extends ControllerSpecBase {
@@ -24,22 +24,7 @@ class WorldControllerSpec extends ControllerSpecBase {
 
       val result = call(controller.create(), request)
 
-      status(result) mustBe OK
-    }
-
-    "ワールド作成Mock" in {
-      val request = FakeRequest(POST, "/world")
-        .withJsonBody(
-          Json.parse("""{ "name": "mocktestname","creatorId": "hoge", "detail": "テスト作成"}"""))
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-      val controller = new WorldController(stubControllerComponents(), authAction)
-      with MixInMockWorldService {
-        override val worldService: WorldService = mockWorldService
-      }
-
-      val result = call(controller.create(), request)
-
-      status(result) mustBe OK
+      status(result) mustBe CREATED
     }
 
     "ワールド一覧取得" in {
@@ -116,20 +101,8 @@ class WorldControllerSpec extends ControllerSpecBase {
       val result = call(controller.create(), request)
 
       status(result) mustBe BAD_REQUEST
-    }
+      contentAsString(result) must include("存在しない創作者です")
 
-    "ワールド作成mock" in {
-      val request = FakeRequest(POST, "/world")
-        .withJsonBody(
-          Json.parse("""{"name": "testname","creatorId": "hogeCreator",  "detail": "テスト作成"}"""))
-        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-      val controller = new WorldController(stubControllerComponents(), authAction)
-      with MixInErrorWorldService {
-        override val worldService: WorldService = mockWorldService
-      }
-      val result = call(controller.create(), request)
-
-      status(result) mustBe BAD_REQUEST
     }
 
     "ワールド参加" in {

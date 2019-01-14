@@ -10,6 +10,7 @@ import play.api.libs.circe.Circe
 import models.service.{ MixInCharacterService, MixInCreatorService, MixInWorldService }
 import scalaz.Scalaz._
 import scalaz._
+
 @Singleton
 class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction)
     extends AbstractController(cc)
@@ -19,22 +20,20 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     with MixInCreatorService {
 
   /**
-    * クリエイターを作成
+    * ワールドを作成
     *
-    * @return 成功 { status : ok }
-    *         失敗 { status : ng }
+    * @return 成功 Created
+    *         失敗 BadRequest バリデーションエラー
+    *             BadGateway ioエラー
     */
   def create() = authAction(circe.json[WorldForm]) { implicit request =>
     request.body.validate() match {
       case Failure(e) =>
-        BadRequest
+        BadRequest(e.toVector.asJson)
       case Success(a) =>
-        try {
-          worldService.create(a.name, a.creatorId, a.detail)
-          Ok
-        } catch {
-          case e: Exception =>
-            BadGateway
+        worldService.create(a.name, a.creatorId, a.detail) match {
+          case Left(e)  => BadGateway
+          case Right(s) => Created
         }
     }
 
