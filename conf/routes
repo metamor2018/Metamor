@@ -10,9 +10,10 @@ GET     /creator/:id                    controllers.CreatorController.find(id: S
 GET     /creator/:creatorId/world        controllers.WorldController.getByCreatorId(creatorId: String)
 GET     /creator/:creatorId/character/:line      controllers.CharacterController.getByCreatorId(creatorId: String,line:Long)
 
-POST    /character                  controllers.CharacterController.create
-DELETE  /character                  controllers.CharacterController.delete
-GET     /character/:id              controllers.CharacterController.find(id: String)
+POST    /character                                  controllers.CharacterController.create
+DELETE  /character                                  controllers.CharacterController.delete
+GET     /character/:id                              controllers.CharacterController.find(id: String)
+GET     /character/:characterId/world               controllers.WorldController.getByCharacterId(characterId: String)
 
 POST    /character/:characterId/world/:worldId   controllers.StatusController.create(characterId: String, worldId: Long)
 
