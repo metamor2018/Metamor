@@ -86,6 +86,16 @@ class WorldControllerSpec extends ControllerSpecBase {
 
     }
 
+    "キャラクターが参加しているワールド一覧取得" in {
+      val request = FakeRequest(GET, "/character/testCharacter1/world")
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      val result = call(controller.getByCharacterId("testCharacter1"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("hoge")
+    }
+
     "ワールド取得" in {
       val request = FakeRequest(GET, "/world/:id")
       val controller = new WorldController(stubControllerComponents(), authAction)

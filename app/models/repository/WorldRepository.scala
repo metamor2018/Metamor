@@ -21,6 +21,8 @@ trait WorldRepository {
 
   def getByCreatorId(creatorId: String)(implicit s: DBSession): Try[List[World]]
 
+  def getByCharacterId(creatorId: String)(implicit s: DBSession): Try[List[World]]
+
   def find(id: Int)(implicit s: DBSession): Try[Option[World]]
 }
 
@@ -79,6 +81,18 @@ object WorldRepositoryImpl extends WorldRepository {
             SELECT *
             FROM worlds
             where creator_id = $creatorId
+      """
+        .map(World.*)
+        .list
+        .apply()
+
+  def getByCharacterId(creatorId: String)(implicit s: DBSession): Try[List[World]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT w.*
+            FROM worlds AS w
+            JOIN worlds_entries we on w.id = we.world_id
+            WHERE we.character_id = $creatorId
       """
         .map(World.*)
         .list
