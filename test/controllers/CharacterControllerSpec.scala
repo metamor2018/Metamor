@@ -51,9 +51,8 @@ class CharacterControllerSpec extends ControllerSpecBase {
 
       val result = call(controller.create(), request)
 
-      status(result) mustBe OK
-      contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("ok")
+      status(result) mustBe CREATED
+      contentAsString(result) must include("testchara")
     }
 
     "キャラクター削除" in {
@@ -114,7 +113,7 @@ class CharacterControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe BAD_REQUEST
       contentType(result) mustBe Some("application/json")
-      contentAsString(result) must include("存在するキャラクターです")
+      contentAsString(result) must include("既に存在するidです")
       contentAsString(result) must include("存在しない創作者です")
       contentAsString(result) must include("名前が短すぎます")
 

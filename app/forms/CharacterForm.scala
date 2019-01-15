@@ -6,7 +6,7 @@ import scalaz.Scalaz._
 case class CharacterCreateForm(id: String, creatorId: String, name: String) {
   def validate() = {
     (
-      CharacterValidations.exists(this.id) |@|
+      CharacterValidations.id(this.id) |@|
         CreatorValidations.exists(this.creatorId) |@|
         CharacterValidations.name(this.name)
     )(CharacterCreateForm)
