@@ -25,6 +25,8 @@ object ErrorCharacterRepositoryImpl extends CharacterRepository {
 
   def exists(characterId: String): Boolean = false
 
+  def edit(id: String, name: String, profile: String, icon: String): Long = throw new Exception
+
   def getByCreatorId(creatorId: String, line: Long): List[Character] = throw new Exception
 }
 

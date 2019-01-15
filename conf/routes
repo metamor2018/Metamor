@@ -12,6 +12,7 @@ GET     /creator/:creatorId/character/:line      controllers.CharacterController
 
 POST    /character                  controllers.CharacterController.create
 DELETE  /character                  controllers.CharacterController.delete
+PUT     /character                  controllers.CharacterController.edit
 GET     /character/:id              controllers.CharacterController.find(id: String)
 
 POST    /character/:characterId/world/:worldId   controllers.StatusController.create(characterId: String, worldId: Long)

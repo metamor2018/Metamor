@@ -1,6 +1,7 @@
 package forms
 
 import forms.validations.{ CharacterValidations, CreatorValidations }
+import scalaz.{ NonEmptyList, Validation }
 import scalaz.Scalaz._
 
 case class CharacterCreateForm(id: String, creatorId: String, name: String) {
@@ -17,5 +18,17 @@ case class CharacterDeleteForm(id: String) {
     (
       CharacterValidations.notExists(this.id)
     )
+  }
+}
+
+case class CharacterEditForm(id: String, name: String, profile: String, icon: String) {
+
+  def validate(): Validation[NonEmptyList[String], CharacterEditForm] = {
+    (
+      CharacterValidations.notExists(this.id) |@|
+        CharacterValidations.name(this.name) |@|
+        CharacterValidations.profile(this.profile) |@|
+        CharacterValidations.icon(this.icon)
+    )(CharacterEditForm)
   }
 }

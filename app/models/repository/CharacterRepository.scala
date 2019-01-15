@@ -28,8 +28,10 @@ trait CharacterRepository {
     */
   def create(id: String, creatorId: String, name: String)(implicit s: DBSession): Try[Long]
   def delete(id: String): Long
-  def exists(characterId: String): Boolean
+  def exists(id: String): Boolean
   def getByCreatorId(creatorId: String, line: Long): List[Character]
+  def edit(id: String, name: String, profile: String, icon: String): Long
+
 }
 
 trait UsesCharacterRepository {
@@ -84,6 +86,16 @@ object CharacterRepositoryImpl extends CharacterRepository {
     DB autoCommit { implicit session =>
       sql"""
             DELETE FROM characters where id=${id}
+      """.update().apply()
+    }
+  }
+
+  def edit(id: String, name: String, profile: String, icon: String): Long = {
+    DB autoCommit { implicit session =>
+      sql"""
+        update characters
+        set name=${name},profile=${profile},icon=${icon}
+        where id=${id}
       """.update().apply()
     }
   }
