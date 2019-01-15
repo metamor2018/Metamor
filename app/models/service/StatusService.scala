@@ -55,6 +55,19 @@ trait StatusService extends UsesStatusRepository {
         case Success(s) => Right(s)
       }
     }
+
+  /**
+    * キャラクター別に投稿を取得
+    * @param characterId
+    * @return
+    */
+  def getByCharacterId(worldId: Long, characterId: String): Either[Throwable, List[Status]] =
+    DB readOnly { implicit session =>
+      statusRepository.getByCharacterId(worldId, characterId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
 }
 
 trait UsesStatusService {

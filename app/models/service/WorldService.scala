@@ -1,7 +1,5 @@
 package models.service
 
-import java.time.ZonedDateTime
-
 import models.entity.World
 import models.repository.{ MixInWorldRepository, UsesWorldRepository }
 import scalikejdbc.DB
@@ -18,9 +16,13 @@ trait WorldService extends UsesWorldRepository {
     * @param startedAt　開始日
     * @return　作成したワールドの主キー
     */
-  def create(name: String, creatorId: String, detail: String, startedAt: ZonedDateTime): Long = {
-    worldRepository.create(name, creatorId, detail, startedAt)
-  }
+  def create(name: String, creatorId: String, detail: String): Either[Throwable, Long] =
+    DB localTx { implicit s =>
+      worldRepository.create(name, creatorId, detail) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
 
   /**
     * ワールド一覧を取得する
