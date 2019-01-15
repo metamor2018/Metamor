@@ -19,9 +19,10 @@ POST    /character/:characterId/world/:worldId   controllers.StatusController.cr
 GET     /world                      controllers.WorldController.getWorlds
 GET     /world/:id                  controllers.WorldController.find(id: Int)
 GET     /world/:id/status           controllers.StatusController.get(id: Long)
+POST    /world/:worldId/entry/:characterId                controllers.WorldController.entry(worldId:Long, characterId: String)
+
 #GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
-POST    /world/entry                controllers.WorldController.entry
 POST    /account                    controllers.AccountController.signup
 
 GET     /login/creator              controllers.CreatorController.findLoginCreator

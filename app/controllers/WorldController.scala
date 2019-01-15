@@ -3,7 +3,6 @@ package controllers
 import java.time.ZonedDateTime
 
 import auth.AuthAction
-import forms.WorldEntryForm
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -66,13 +65,14 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
     *
     * @return
     */
-  def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
-    request.body.validate() match {
-      case Failure(e) =>
-        BadRequest(e.toVector.asJson)
-      case Success(a) =>
+  def entry(worldId: Long, characterId: String) = authAction { implicit request =>
+    (worldId, characterId) match {
+      case _ if !characterService.exists(characterId)          => NotFound
+      case _ if !worldService.exists(worldId)                  => NotFound
+      case _ if worldService.existsEntry(characterId, worldId) => new Status(SEE_OTHER)
+      case _ =>
         try {
-          worldService.entry(a.characterId, a.worldId)
+          worldService.entry(characterId, worldId)
           Ok
         } catch {
           case e: Exception =>

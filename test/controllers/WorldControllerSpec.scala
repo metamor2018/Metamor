@@ -54,12 +54,11 @@ class WorldControllerSpec extends ControllerSpecBase {
 
     "ワールド参加" in {
 
-      val request = FakeRequest(POST, "/world/entry")
+      val request = FakeRequest(POST, "/world/1/entry/testCharacter1")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"characterId": "testCharacter1", "worldId": "1"}"""))
       val controller = new WorldController(stubControllerComponents(), authAction)
 
-      val result = call(controller.entry(), request)
+      val result = call(controller.entry(1, "testCharacter1"), request)
 
       // ステータスコード200がかえってくる
       status(result) mustBe OK
@@ -120,21 +119,15 @@ class WorldControllerSpec extends ControllerSpecBase {
 
     "ワールド参加" in {
       // 存在しないキャラクター、ワールドのIDを渡す
-      val request = FakeRequest(POST, "/world/entry")
+      val request = FakeRequest(POST, "/world/1/entry/hogegege")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
-        .withJsonBody(Json.parse("""{"characterId": "hogegege", "worldId": "900"}"""))
 
       val controller = new WorldController(stubControllerComponents(), authAction)
-      val result = call(controller.entry(), request)
+      val result = call(controller.entry(900, "hogegege"), request)
 
-      // ステータスコード400が返ってくる
-      status(result) mustBe BAD_REQUEST
-      // jsonが返ってくる
-      contentType(result) mustBe Some("application/json")
+      // ステータスコード404が返ってくる
+      status(result) mustBe NOT_FOUND
 
-      // validationエラーが返ってくる
-      contentAsString(result) must include("存在しないキャラクターです")
-      contentAsString(result) must include("存在しないワールドです")
     }
 
     "創作者のワールド一覧確認" in {
