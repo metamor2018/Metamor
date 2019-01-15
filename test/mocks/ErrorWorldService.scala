@@ -15,7 +15,9 @@ object ErrorWorldRepositoryImpl extends WorldRepository {
   def getEnable(): List[World] =
     throw new Exception
   def getByCreatorId(creatorId: String)(implicit s: DBSession): Try[List[World]] =
-    throw new Exception
+    Try(throw new Exception)
+  def getByCharacterId(creatorId: String)(implicit s: DBSession): Try[List[World]] =
+    Try(throw new Exception)
   def entry(characterId: String, worldId: Long): Long =
     throw new Exception
   def existsEntry(characterId: String, worldId: Long): Boolean =
