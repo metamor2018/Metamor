@@ -87,6 +87,21 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
       }
   }
 
+  /**
+    * characterIdからワールド一覧を取得
+    * @param characterId
+    * @return
+    */
+  def getByCharacterId(characterId: String) = Action { implicit request =>
+    if (!characterService.exists(characterId))
+      NotFound
+    else
+      worldService.getByCharacterId(characterId) match {
+        case Left(e)  => BadGateway
+        case Right(s) => Ok(s.asJson)
+      }
+  }
+
   def find(id: Int) = Action {
     worldService.find(id) match {
       case Left(e) =>

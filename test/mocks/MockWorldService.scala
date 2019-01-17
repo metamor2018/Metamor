@@ -54,6 +54,22 @@ object MockWorldRepositoryImpl extends WorldRepository {
     Try(List(world, world.copy(id = 2), world.copy(id = 3)))
   }
   def entry(characterId: String, worldId: Long)(implicit s: DBSession): Try[Long] = Try(5)
+
+  def getByCharacterId(creatorId: String)(implicit s: DBSession): Try[List[World]] = {
+    val world = World(
+      1,
+      "testName",
+      "detailtest",
+      None,
+      None,
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    Try(List(world, world.copy(id = 2), world.copy(id = 3)))
+  }
+
+  def entry(characterId: String, worldId: Long): Long = 5
   def existsEntry(characterId: String, worldId: Long): Boolean = true
 
   def exists(worldId: Long): Boolean = true

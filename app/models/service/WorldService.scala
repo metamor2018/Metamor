@@ -83,6 +83,19 @@ trait WorldService extends UsesWorldRepository {
       }
     }
 
+  /**
+    * キャラクターが参加しているワールド一覧を取得する
+    * @param characterId
+    * @return 指定した創作者のワールド
+    */
+  def getByCharacterId(characterId: String): Either[Throwable, List[World]] =
+    DB readOnly { implicit s =>
+      worldRepository.getByCharacterId(characterId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
+
   def find(id: Int) =
     DB readOnly { implicit s =>
       for {

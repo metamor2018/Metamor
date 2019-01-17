@@ -17,7 +17,16 @@ trait CharacterRepository {
     * @return
     */
   def find(id: String)(implicit s: DBSession): Try[Option[Character]]
-  def create(id: String, creatorId: String, name: String): Long
+
+  /**
+    * キャラクターの作成
+    * @param id
+    * @param creatorId
+    * @param name
+    * @param s
+    * @return
+    */
+  def create(id: String, creatorId: String, name: String)(implicit s: DBSession): Try[Long]
   def delete(id: String): Long
   def exists(characterId: String): Boolean
   def getByCreatorId(creatorId: String, line: Long): List[Character]
@@ -56,14 +65,20 @@ object CharacterRepositoryImpl extends CharacterRepository {
             WHERE ch.id = $id
          """.map(Character.*).single().apply()
 
-  def create(id: String, creatorId: String, name: String): Long = {
-    DB autoCommit { implicit session =>
+  /**
+    * キャラクターの作成
+    * @param id
+    * @param creatorId
+    * @param name
+    * @param s
+    * @return
+    */
+  def create(id: String, creatorId: String, name: String)(implicit s: DBSession): Try[Long] =
+    catching(classOf[Throwable]) withTry
       sql"""
            insert into characters(id,creator_id,name)
            values (${id},${creatorId}, ${name})
         """.update().apply()
-    }
-  }
 
   def delete(id: String): Long = {
     DB autoCommit { implicit session =>

@@ -3,7 +3,8 @@ package models.service
 import models.entity.Character
 import models.repository.{ MixInCharacterRepository, UsesCharacterRepository }
 import scalikejdbc.DB
-import scala.util.{ Failure, Success }
+import scala.util.{ Failure, Success, Try }
+import scalikejdbc.TxBoundary.Try._
 
 trait CharacterService extends UsesCharacterRepository {
 
@@ -21,15 +22,23 @@ trait CharacterService extends UsesCharacterRepository {
     }
 
   /**
-    *創作者がキャラクターを作成する
-    * @param creatorId　創作者ID
-    * @param displayId　表示するID
-    * @param name 名前
-    * @return　作成したキャラクターの主キー
+    * キャラクターの作成
+    * @param id
+    * @param creatorId
+    * @param name
+    * @return 作成したキャラクター
     */
-  def create(id: String, creatorId: String, name: String): Long = {
-    characterRepository.create(id, creatorId, name)
-  }
+  def create(id: String, creatorId: String, name: String): Either[Throwable, Character] =
+    DB localTx { implicit s =>
+      for {
+        _ <- characterRepository.create(id, creatorId, name)
+        characterOpt <- characterRepository.find(id)
+        character <- Try(characterOpt.get)
+      } yield character
+    } match {
+      case Failure(e) => Left(e)
+      case Success(s) => Right(s)
+    }
 
   /**
     * 創作者がキャラクターを削除する
