@@ -142,7 +142,7 @@ object StatusRepositoryImpl extends StatusRepository {
             JOIN characters ch on s.character_id = ch.id
             JOIN creators cr on ch.creator_id = cr.id
             WHERE world_id = ${worldId}
-            ORDER BY created_at
+            ORDER BY id DESC
             LIMIT ${line * 20 - 20}, 20
       """.map(Status.*).list.apply()
 
