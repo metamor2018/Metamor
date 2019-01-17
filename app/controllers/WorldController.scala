@@ -55,7 +55,8 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
 
   /**
     * ワールド参加
-    *
+    * @param worldId
+    * @param characterId
     * @return
     */
   def entry(worldId: Long, characterId: String) = authAction { implicit request =>

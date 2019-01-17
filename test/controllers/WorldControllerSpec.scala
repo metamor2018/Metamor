@@ -126,14 +126,14 @@ class WorldControllerSpec extends ControllerSpecBase {
     }
 
     "ワールド参加SEE_OTHER" in {
-      // 存在しないキャラクター、ワールドのIDを渡す
+      // ワールドに登録済のキャラクターIDとそのワールドのIDを渡す
       val request = FakeRequest(POST, "/world/1/entry/testCharacter1")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
 
       val controller = new WorldController(stubControllerComponents(), authAction)
       val result = call(controller.entry(1, "testCharacter1"), request)
 
-      // ステータスコード404が返ってくる
+      // ステータスコード303が返ってくる
       status(result) mustBe SEE_OTHER
 
     }
