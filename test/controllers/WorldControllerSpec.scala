@@ -112,7 +112,7 @@ class WorldControllerSpec extends ControllerSpecBase {
 
     }
 
-    "ワールド参加" in {
+    "ワールド参加NOT_FOUND" in {
       // 存在しないキャラクター、ワールドのIDを渡す
       val request = FakeRequest(POST, "/world/1/entry/hogegege")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
@@ -122,6 +122,19 @@ class WorldControllerSpec extends ControllerSpecBase {
 
       // ステータスコード404が返ってくる
       status(result) mustBe NOT_FOUND
+
+    }
+
+    "ワールド参加SEE_OTHER" in {
+      // 存在しないキャラクター、ワールドのIDを渡す
+      val request = FakeRequest(POST, "/world/1/entry/testCharacter1")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+
+      val controller = new WorldController(stubControllerComponents(), authAction)
+      val result = call(controller.entry(1, "testCharacter1"), request)
+
+      // ステータスコード404が返ってくる
+      status(result) mustBe SEE_OTHER
 
     }
 

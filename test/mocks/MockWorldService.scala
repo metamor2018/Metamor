@@ -53,7 +53,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
     )
     Try(List(world, world.copy(id = 2), world.copy(id = 3)))
   }
-  def entry(characterId: String, worldId: Long): Long = 5
+  def entry(characterId: String, worldId: Long)(implicit s: DBSession): Try[Long] = Try(5)
   def existsEntry(characterId: String, worldId: Long): Boolean = true
 
   def exists(worldId: Long): Boolean = true

@@ -15,7 +15,7 @@ trait WorldRepository {
 
   def getEnable(): List[World]
 
-  def entry(characterId: String, worldId: Long): Long
+  def entry(characterId: String, worldId: Long)(implicit s: DBSession): Try[Long]
 
   def existsEntry(characterId: String, worldId: Long): Boolean
 
@@ -84,13 +84,12 @@ object WorldRepositoryImpl extends WorldRepository {
         .list
         .apply()
 
-  def entry(characterId: String, worldId: Long): Long = {
-    DB autoCommit { implicit session =>
+  def entry(characterId: String, worldId: Long)(implicit s: DBSession): Try[Long] = {
+    catching(classOf[Throwable]) withTry
       sql"""
          insert into worlds_entries(character_Id,world_Id)
          values (${characterId},${worldId})
        """.updateAndReturnGeneratedKey().apply()
-    }
   }
 
   def existsEntry(characterId: String, worldId: Long): Boolean = {

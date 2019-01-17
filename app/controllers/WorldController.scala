@@ -1,7 +1,7 @@
 package controllers
 
 import auth.AuthAction
-import forms.{ WorldEntryForm, WorldForm }
+import forms.WorldForm
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -64,12 +64,9 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
       case _ if !worldService.exists(worldId)                  => NotFound
       case _ if worldService.existsEntry(characterId, worldId) => new Status(SEE_OTHER)
       case _ =>
-        try {
-          worldService.entry(characterId, worldId)
-          Ok
-        } catch {
-          case e: Exception =>
-            BadGateway
+        worldService.entry(characterId, worldId) match {
+          case Left(_)  => BadGateway
+          case Right(_) => Ok
         }
     }
   }
