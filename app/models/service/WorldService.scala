@@ -49,8 +49,15 @@ trait WorldService extends UsesWorldRepository {
     * @param worldId
     * @return
     */
-  def entry(characterId: String, worldId: Long): Long = {
-    worldRepository.entry(characterId, worldId)
+  def entry(characterId: String, worldId: Long): Either[Throwable, Long] = {
+    DB autoCommit { implicit session =>
+      worldRepository.entry(characterId, worldId) match {
+        case Failure(e) =>
+          println(e)
+          Left(e)
+        case Success(s) => Right(s)
+      }
+    }
   }
 
   /**

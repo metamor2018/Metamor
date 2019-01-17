@@ -1,7 +1,7 @@
 package controllers
 
 import auth.AuthAction
-import forms.{ WorldEntryForm, WorldForm }
+import forms.WorldForm
 import javax.inject.{ Inject, Singleton }
 import play.api.mvc._
 import io.circe.generic.auto._
@@ -55,20 +55,19 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
 
   /**
     * ワールド参加
-    *
+    * @param worldId
+    * @param characterId
     * @return
     */
-  def entry() = authAction(circe.json[WorldEntryForm]) { implicit request =>
-    request.body.validate() match {
-      case Failure(e) =>
-        BadRequest(e.toVector.asJson)
-      case Success(a) =>
-        try {
-          worldService.entry(a.characterId, a.worldId)
-          Ok
-        } catch {
-          case e: Exception =>
-            BadGateway
+  def entry(worldId: Long, characterId: String) = authAction { implicit request =>
+    (worldId, characterId) match {
+      case _ if !characterService.exists(characterId)          => NotFound
+      case _ if !worldService.exists(worldId)                  => NotFound
+      case _ if worldService.existsEntry(characterId, worldId) => new Status(SEE_OTHER)
+      case _ =>
+        worldService.entry(characterId, worldId) match {
+          case Left(_)  => BadGateway
+          case Right(_) => Ok
         }
     }
   }

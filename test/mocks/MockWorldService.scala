@@ -53,6 +53,7 @@ object MockWorldRepositoryImpl extends WorldRepository {
     )
     Try(List(world, world.copy(id = 2), world.copy(id = 3)))
   }
+  def entry(characterId: String, worldId: Long)(implicit s: DBSession): Try[Long] = Try(5)
 
   def getByCharacterId(creatorId: String)(implicit s: DBSession): Try[List[World]] = {
     val world = World(
@@ -86,7 +87,6 @@ object MockWorldRepositoryImpl extends WorldRepository {
           ZonedDateTime.now(),
           ZonedDateTime.now()
         )))
-
 }
 
 trait MixInMockWorldRepository {
