@@ -85,6 +85,15 @@ class StatusControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustNot include("2てきすと5")
 
     }
+
+    "指定個所から最新までの投稿取得" in {
+      val request = FakeRequest(GET, "/status/10")
+      val controller = new StatusController(stubControllerComponents(), authAction)
+      val result = call(controller.getToLast(10), request)
+
+      status(result) mustBe OK
+
+    }
   }
 
   "errors" should {

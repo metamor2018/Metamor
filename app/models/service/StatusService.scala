@@ -68,6 +68,20 @@ trait StatusService extends UsesStatusRepository {
         case Success(s) => Right(s)
       }
     }
+
+  /**
+    * 指定された個所から最新までの投稿を取得
+    * @param id
+    * @return
+    */
+  def getToLast(id: Long): Either[Throwable, List[Status]] =
+    DB readOnly { implicit session =>
+      val status: Long = statusRepository.getStatus.length
+      statusRepository.getToLast(id, status) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
 }
 
 trait UsesStatusService {
