@@ -41,10 +41,19 @@ trait StatusRepository {
   def exists(statusId: Long)(implicit s: DBSession): Try[Boolean]
 
   /**
-    * 投稿を複数取得
+    * 最新の投稿を20件取得
     * @param s
     */
-  def getByWorldId(worldId: Long, line: Long)(implicit s: DBSession): Try[List[Status]]
+  def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]]
+
+  /**
+    * statusIdから、古い投稿を20件取得
+    * @param worldId
+    * @param statusId
+    * @param s
+    * @return
+    */
+  def getByWorldIdOld(worldId: Long, statusId: Long)(implicit s: DBSession): Try[List[Status]]
 
   /**
     * キャラクター別に投稿を取得
@@ -115,11 +124,10 @@ object StatusRepositoryImpl extends StatusRepository {
       """.map(_.long("id")).single().apply().isDefined
 
   /**
-    * 投稿を複数取得
-    *
+    * 最新の投稿を20件取得
     * @param s
     */
-  def getByWorldId(worldId: Long, line: Long)(implicit s: DBSession): Try[List[Status]] =
+  def getByWorldId(worldId: Long)(implicit s: DBSession): Try[List[Status]] =
     catching(classOf[Throwable]) withTry
       sql"""
             SELECT s.*,
@@ -143,7 +151,42 @@ object StatusRepositoryImpl extends StatusRepository {
             JOIN creators cr on ch.creator_id = cr.id
             WHERE world_id = ${worldId}
             ORDER BY id DESC
-            LIMIT ${line * 20 - 20}, 20
+            LIMIT 0, 20
+      """.map(Status.*).list.apply()
+
+  /**
+    * statusIdから、古い投稿を20件取得
+    * @param worldId
+    * @param statusId
+    * @param s
+    * @return
+    */
+  def getByWorldIdOld(worldId: Long, statusId: Long)(implicit s: DBSession): Try[List[Status]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+            SELECT s.*,
+                   ch.creator_id,
+                   cr.account_id,
+                   ch.name AS character_name,
+                   ch.profile AS character_profile,
+                   ch.icon AS character_icon,
+                   ch.deleted_at AS character_deleted_at,
+                   ch.updated_at AS character_updated_at,
+                   ch.created_at AS character_created_at,
+                   cr.name AS creator_name,
+                   cr.profile AS creator_profile,
+                   cr.icon AS creator_icon,
+                   cr.official AS creator_official,
+                   cr.deleted_at AS creator_deleted_at,
+                   cr.updated_at AS creator_updated_at,
+                   cr.created_at AS creator_created_at
+            FROM statuses as s
+            JOIN characters ch on s.character_id = ch.id
+            JOIN creators cr on ch.creator_id = cr.id
+            WHERE world_id = ${worldId}
+            AND s.id < ${statusId}
+            ORDER BY id DESC
+            LIMIT 0, 20
       """.map(Status.*).list.apply()
 
   def getByCharacterId(worldId: Long, characterId: String)(
