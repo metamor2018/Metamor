@@ -44,7 +44,7 @@ trait StatusRepository {
     * 投稿を複数取得
     * @param s
     */
-  def getByWorldId(worldId: Long, line: Long)(implicit s: DBSession): Try[List[Status]]
+  def getByWorldId(worldId: Long, statusId: Long)(implicit s: DBSession): Try[List[Status]]
 
   /**
     * キャラクター別に投稿を取得
@@ -119,7 +119,7 @@ object StatusRepositoryImpl extends StatusRepository {
     *
     * @param s
     */
-  def getByWorldId(worldId: Long, line: Long)(implicit s: DBSession): Try[List[Status]] =
+  def getByWorldId(worldId: Long, statusId: Long)(implicit s: DBSession): Try[List[Status]] =
     catching(classOf[Throwable]) withTry
       sql"""
             SELECT s.*,
@@ -143,7 +143,7 @@ object StatusRepositoryImpl extends StatusRepository {
             JOIN creators cr on ch.creator_id = cr.id
             WHERE world_id = ${worldId}
             ORDER BY id DESC
-            LIMIT ${line * 20 - 20}, 20
+            LIMIT ${statusId}, 20
       """.map(Status.*).list.apply()
 
   def getByCharacterId(worldId: Long, characterId: String)(

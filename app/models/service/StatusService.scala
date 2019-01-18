@@ -48,9 +48,9 @@ trait StatusService extends UsesStatusRepository {
     * 投稿を複数取得
     * @return
     */
-  def getByWorldId(worldId: Long, line: Long): Either[Throwable, List[Status]] =
+  def getByWorldId(worldId: Long, statusId: Long): Either[Throwable, List[Status]] =
     DB readOnly { implicit session =>
-      statusRepository.getByWorldId(worldId, line: Long) match {
+      statusRepository.getByWorldId(worldId, statusId: Long) match {
         case Failure(e) => Left(e)
         case Success(s) => Right(s)
       }
