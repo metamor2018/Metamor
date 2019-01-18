@@ -18,7 +18,11 @@ object ErrorCharacterRepositoryImpl extends CharacterRepository {
   def find(id: String)(implicit s: DBSession): Try[Option[Character]] =
     Try(throw new Exception)
 
-  def create(id: String, creatorId: String, name: String)(implicit s: DBSession): Try[Long] =
+  def create(id: String,
+             creatorId: String,
+             name: String,
+             profile: Option[String],
+             icon: Option[String])(implicit s: DBSession): Try[Long] =
     Try(throw new Exception)
 
   def delete(id: String): Long = throw new Exception

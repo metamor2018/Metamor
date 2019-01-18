@@ -42,7 +42,11 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
           ZonedDateTime.now()
         )))
 
-  def create(id: String, creatorId: String, name: String)(implicit s: DBSession): Try[Long] =
+  def create(id: String,
+             creatorId: String,
+             name: String,
+             profile: Option[String],
+             icon: Option[String])(implicit s: DBSession): Try[Long] =
     Try(1)
 
   def delete(id: String): Long = 1

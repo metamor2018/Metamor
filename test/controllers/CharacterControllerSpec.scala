@@ -43,10 +43,22 @@ class CharacterControllerSpec extends ControllerSpecBase {
     }
 
     "キャラクター作成" in {
-
       val request = FakeRequest(POST, "/character")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
         .withJsonBody(Json.parse("""{ "id": "testchara","creatorId": "hoge", "name": "ほげ"}"""))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+
+      val result = call(controller.create(), request)
+
+      status(result) mustBe CREATED
+      contentAsString(result) must include("testchara")
+    }
+
+    "キャラクター作成(profile,iconアリ)" in {
+      val request = FakeRequest(POST, "/character")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+        .withJsonBody(Json.parse(
+          """{ "id": "testcharaProIco","creatorId": "hoge", "name": "ほげ","profile":"プロフィールとアイコンあるよ","icon":"アイコン"}"""))
       val controller = new CharacterController(stubControllerComponents(), authAction)
 
       val result = call(controller.create(), request)

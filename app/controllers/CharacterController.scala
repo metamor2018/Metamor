@@ -49,7 +49,7 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
       case Failure(e) =>
         BadRequest(e.toVector.asJson)
       case Success(s) =>
-        characterService.create(s.id, s.creatorId, s.name) match {
+        characterService.create(s.id, s.creatorId, s.name, s.profile, s.icon) match {
           case Left(e)  => BadGateway
           case Right(s) => Created(s.asJson)
         }
