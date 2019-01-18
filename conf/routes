@@ -19,7 +19,7 @@ POST    /character/:characterId/world/:worldId   controllers.StatusController.cr
 
 GET     /world                      controllers.WorldController.getWorlds
 GET     /world/:id                  controllers.WorldController.find(id: Int)
-GET     /world/:id/status/:line           controllers.StatusController.get(id: Long,line:Long)
+GET     /world/:id/status           controllers.StatusController.get(id: Long)
 POST    /world/:worldId/entry/:characterId                controllers.WorldController.entry(worldId:Long, characterId: String)
 GET     /status/:id                 controllers.StatusController.getToLast(id: Long)
 

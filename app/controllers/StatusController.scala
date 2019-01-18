@@ -53,8 +53,11 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
     * 投稿を複数取得する
     * @return List[Status]
     */
-  def get(id: Long, line: Long) = Action {
-    statusService.getByWorldId(id, line) match {
+  def get(id: Long) = Action { implicit request =>
+    (request.getQueryString("statusId") match {
+      case None    => statusService.getByWorldId(id)
+      case Some(s) => statusService.getByWorldIdOld(id, s.toLong)
+    }) match {
       case Left(e)  => BadGateway
       case Right(s) => Ok(s.asJson)
     }

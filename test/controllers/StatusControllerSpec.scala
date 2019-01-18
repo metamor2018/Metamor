@@ -37,35 +37,21 @@ class StatusControllerSpec extends ControllerSpecBase {
     }
 
     "投稿取得" in {
-      val request = FakeRequest(GET, "/character/hoge/world/1")
+      val request = FakeRequest(GET, "/world/1/status")
       val controller = new StatusController(stubControllerComponents(), authAction)
-      val result = call(controller.get(1, 1), request)
+      val result = call(controller.get(1), request)
 
       status(result) mustBe OK
-      contentAsString(result) must include("1てきすと1")
-      contentAsString(result) must include("1てきすと2")
-      contentAsString(result) must include("1てきすと3")
-      contentAsString(result) must include("1てきすと4")
-      contentAsString(result) must include("1てきすと5")
-      contentAsString(result) must include("1てきすと6")
-      contentAsString(result) must include("1てきすと7")
-      contentAsString(result) must include("1てきすと8")
-      contentAsString(result) must include("1てきすと9")
-      contentAsString(result) must include("1てきすと10")
-      contentAsString(result) must include("1てきすと11")
-      contentAsString(result) must include("1てきすと12")
-      contentAsString(result) must include("1てきすと13")
-      contentAsString(result) must include("1てきすと14")
-      contentAsString(result) must include("1てきすと15")
-      contentAsString(result) must include("1てきすと16")
-      contentAsString(result) must include("1てきすと17")
-      contentAsString(result) must include("1てきすと18")
-      contentAsString(result) must include("1てきすと19")
-      contentAsString(result) must include("1てきすと20")
+      contentType(result) mustBe Some("application/json")
+    }
 
-      contentAsString(result) mustNot include("2てきすと1")
-      contentAsString(result) mustNot include("2てきすと3")
-      contentAsString(result) mustNot include("2てきすと5")
+    "投稿取得 statusId指定なし" in {
+      val request = FakeRequest(GET, "/world/1/status?statusId=10")
+      val controller = new StatusController(stubControllerComponents(), authAction)
+      val result = call(controller.get(1), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
     }
 
     "キャラクター別投稿一覧取得" in {
