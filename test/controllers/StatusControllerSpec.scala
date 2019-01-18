@@ -73,12 +73,11 @@ class StatusControllerSpec extends ControllerSpecBase {
     }
 
     "指定個所から最新までの投稿取得" in {
-      val request = FakeRequest(GET, "/status/10")
+      val request = FakeRequest(GET, "world/1/status/10")
       val controller = new StatusController(stubControllerComponents(), authAction)
-      val result = call(controller.getToLast(10), request)
-
+      val result = call(controller.getToLast(1, 10), request)
       status(result) mustBe OK
-
+      contentType(result) mustBe Some("application/json")
     }
   }
 

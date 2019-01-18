@@ -86,10 +86,9 @@ trait StatusService extends UsesStatusRepository {
     * @param id
     * @return
     */
-  def getToLast(id: Long): Either[Throwable, List[Status]] =
+  def getToLast(id: Long, statusId: Long): Either[Throwable, List[Status]] =
     DB readOnly { implicit session =>
-      val status: Long = statusRepository.getStatus.length
-      statusRepository.getToLast(id, status) match {
+      statusRepository.getToLast(id, statusId) match {
         case Failure(e) => Left(e)
         case Success(s) => Right(s)
       }

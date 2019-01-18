@@ -80,10 +80,11 @@ class StatusController @Inject()(cc: ControllerComponents, authAction: AuthActio
   /**
     * 指定された個所から最新までの投稿を取得
     * @param id
+    * @param statusId
     * @return
     */
-  def getToLast(id: Long) = Action {
-    statusService.getToLast(id) match {
+  def getToLast(id: Long, statusId: Long) = Action {
+    statusService.getToLast(id, statusId) match {
       case Left(e)  => BadGateway
       case Right(s) => Ok(s.asJson)
     }
