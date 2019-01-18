@@ -45,12 +45,24 @@ trait StatusService extends UsesStatusRepository {
     }
 
   /**
-    * 投稿を複数取得
+    * 最新の投稿を20件取得
     * @return
     */
-  def getByWorldId(worldId: Long, statusId: Long): Either[Throwable, List[Status]] =
+  def getByWorldId(worldId: Long): Either[Throwable, List[Status]] =
     DB readOnly { implicit session =>
-      statusRepository.getByWorldId(worldId, statusId: Long) match {
+      statusRepository.getByWorldId(worldId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
+
+  /**
+    * 指定された投稿より古い投稿を20件取得
+    * @return
+    */
+  def getByWorldIdOld(worldId: Long, statusId: Long): Either[Throwable, List[Status]] =
+    DB readOnly { implicit session =>
+      statusRepository.getByWorldIdOld(worldId, statusId) match {
         case Failure(e) => Left(e)
         case Success(s) => Right(s)
       }
