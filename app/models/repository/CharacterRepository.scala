@@ -30,6 +30,7 @@ trait CharacterRepository {
   def delete(id: String): Long
   def exists(characterId: String): Boolean
   def getByCreatorId(creatorId: String, line: Long): List[Character]
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character]
 }
 
 trait UsesCharacterRepository {
@@ -112,6 +113,30 @@ object CharacterRepositoryImpl extends CharacterRepository {
            JOIN creators cr on ch.creator_id = cr.id
            WHERE ch.creator_id=${creatorId}
            LIMIT ${line * 10 - 10}, 10
+        """
+        .map(Character.*)
+        .list()
+        .apply()
+    }
+  }
+
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character] = {
+    DB readOnly { implicit session =>
+      sql"""
+           SELECT ch.*,
+                  cr.account_id,
+                  cr.name AS creator_name,
+                  cr.profile AS creator_profile,
+                  cr.icon AS creator_icon,
+                  cr.official AS creator_official,
+                  cr.deleted_at AS creator_deleted_at,
+                  cr.updated_at AS creator_updated_at,
+                  cr.created_at AS creator_created_at
+           FROM characters as ch
+           JOIN creators cr on ch.creator_id = cr.id
+           JOIN worlds_entries we on ch.id = we.character_id
+           WHERE we.world_id=${worldId}
+           AND ch.creator_id=${creatorId}
         """
         .map(Character.*)
         .list()

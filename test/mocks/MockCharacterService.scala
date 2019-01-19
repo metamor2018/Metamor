@@ -73,6 +73,30 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
     List(character, character.copy(name = "geho"))
   }
 
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character] = {
+    val character = Character(
+      "huge",
+      Creator(
+        "hoge",
+        1,
+        "なまえ",
+        None,
+        None,
+        false,
+        None,
+        ZonedDateTime.now(),
+        ZonedDateTime.now()
+      ),
+      "hugeName",
+      None,
+      None,
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    List(character, character.copy(name = "geho"))
+  }
+
 }
 
 trait MixInMockCharacterRepository {

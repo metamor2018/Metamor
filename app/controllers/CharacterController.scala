@@ -7,7 +7,7 @@ import play.api.mvc._
 import io.circe.generic.auto._
 import io.circe.syntax._
 import play.api.libs.circe.Circe
-import models.service.{ MixInCharacterService, MixInCreatorService }
+import models.service.{ MixInCharacterService, MixInCreatorService, MixInWorldService }
 import scalaz.{ Failure, Success }
 import scalaz.Scalaz._
 
@@ -16,7 +16,8 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
     extends AbstractController(cc)
     with Circe
     with MixInCharacterService
-    with MixInCreatorService {
+    with MixInCreatorService
+    with MixInWorldService {
 
   /**
     * idからキャラクターを1件取得
@@ -94,6 +95,20 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
         Ok(characters.asJson)
       } catch {
         case e: Exception => BadGateway
+      }
+  }
+
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String) = Action { implicit request =>
+    if (!creatorService.existsById(creatorId) &&
+        !worldService.exists(worldId))
+      NotFound
+    else
+      try {
+        val characters = characterService.getByWorldIdAndCreatorId(worldId, creatorId)
+        Ok(characters.asJson)
+      } catch {
+        case e: Exception =>
+          BadGateway
       }
   }
 }

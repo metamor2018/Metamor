@@ -26,6 +26,9 @@ object ErrorCharacterRepositoryImpl extends CharacterRepository {
   def exists(characterId: String): Boolean = false
 
   def getByCreatorId(creatorId: String, line: Long): List[Character] = throw new Exception
+
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character] =
+    throw new Exception
 }
 
 trait MixInErrorCharacterRepository {

@@ -65,6 +65,10 @@ trait CharacterService extends UsesCharacterRepository {
     characterRepository.getByCreatorId(creatorId, line)
   }
 
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character] = {
+    characterRepository.getByWorldIdAndCreatorId(worldId, creatorId)
+  }
+
 }
 
 trait UsesCharacterService {
