@@ -71,7 +71,8 @@ object CreatorRepositoryImpl extends CreatorRepository {
             SELECT creators.*
             FROM creators
             JOIN accounts a ON creators.account_id = a.id
-         """.map(Creator.*).first().apply()
+            WHERE a.auth_id = ${authId}
+         """.map(Creator.*).single().apply()
 
   def existsById(id: String): Boolean =
     DB readOnly { implicit session =>
@@ -98,6 +99,7 @@ object CreatorRepositoryImpl extends CreatorRepository {
             SELECT a.auth_id
             FROM creators
             JOIN accounts a ON creators.account_id = a.id
-         """.map(_.string("auth_id")).first().apply().isDefined
+            WHERE a.auth_id = ${authId}
+         """.map(_.string("auth_id")).single().apply().isDefined
     }
 }

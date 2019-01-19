@@ -13,7 +13,7 @@ object MockAccountRepositoryImpl extends AccountRepository {
 
   def exists(authId: String): Boolean = true
 
-  def create(authId: String): Long = 1
+  def create(authId: String)(implicit s: DBSession): Try[Long] = Try(1)
 
   /**
     * AuthIdからAccountを取得
@@ -40,5 +40,6 @@ trait MixInMockAccountRepository {
 }
 
 trait MixInMockAccountService {
-  val mockAccountService: AccountService = new AccountService with MixInMockAccountRepository {}
+  val mockAccountService: AccountService = new AccountService with MixInMockAccountRepository
+  with MixInMockCreatorRepository
 }
