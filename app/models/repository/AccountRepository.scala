@@ -8,7 +8,7 @@ import scala.util.control.Exception._
 
 trait AccountRepository {
   def exists(authId: String): Boolean
-  def create(authId: String): Long
+  def create(authId: String)(implicit s: DBSession): Try[Long]
 
   /**
     * AuthIdからAccountを取得
@@ -38,13 +38,11 @@ object AccountRepositoryImpl extends AccountRepository {
     }
   }
 
-  def create(authId: String): Long = {
-    DB autoCommit { implicit session =>
+  def create(authId: String)(implicit s: DBSession): Try[Long] =
+    catching(classOf[Throwable]) withTry
       sql"""
             insert into accounts (auth_id) values (${authId})
-        """.updateAndReturnGeneratedKey().apply()
-    }
-  }
+      """.updateAndReturnGeneratedKey().apply()
 
   /**
     * AuthIdからAccountを取得

@@ -11,7 +11,8 @@ object ErrorAccountRepositoryImpl extends AccountRepository {
 
   def exists(authId: String): Boolean = true
 
-  def create(authId: String): Long = 1
+  def create(authId: String)(implicit s: DBSession): Try[Long] =
+    Try(throw new Exception)
 
   /**
     * AuthIdからAccountを取得
@@ -29,4 +30,5 @@ trait MixInErrorAccountRepository {
 
 trait MixInErrorAccountService {
   val mockAccountService: AccountService = new AccountService with MixInErrorAccountRepository
+  with MixInErrorCreatorRepository
 }

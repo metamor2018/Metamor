@@ -3,7 +3,6 @@ package controllers
 import auth.AuthAction
 import javax.inject.{ Inject, Singleton }
 import models.service.{ MixInAccountService, MixInCreatorService }
-import play.api._
 import play.api.mvc._
 import play.api.libs.circe.Circe
 import io.circe.syntax._
@@ -16,34 +15,14 @@ class AccountController @Inject()(cc: ControllerComponents, authAction: AuthActi
     with MixInCreatorService {
 
   def signup(): Action[AnyContent] = authAction { implicit request =>
-    request.jwt.subject match {
-      case None => BadRequest // OpenIdがない場合
-      case Some(authId) =>
-        if (ifExistsCreate(authId)) {
-          if (creatorService.existsByAuthId(authId))
-            Ok(Map("existsCreator" -> true).asJson)
-          else
-            Ok(Map("existsCreator" -> false).asJson)
-        } else BadGateway
+    val authId = request.jwt.subject.get
+    accountService.create(authId) match {
+      case Left(e) => BadGateway
+      case Right(_) =>
+        creatorService.existsByAuthId(authId) match { // 創作者が作成されているか確認
+          case true  => Ok(Map("existsCreator" -> true).asJson)
+          case false => Ok(Map("existsCreator" -> false).asJson)
+        }
     }
   }
-
-  /**
-    * authIdがDBに存在すれば何もしない、
-    * 存在しなければDBに保存する
-    *
-    * @param authId
-    * @return
-    */
-  private def ifExistsCreate(authId: String): Boolean =
-    if (accountService.exists(authId)) true
-    else {
-      try {
-        accountService.create(authId)
-        true
-      } catch {
-        case e: Exception => false
-      }
-    }
-
 }
