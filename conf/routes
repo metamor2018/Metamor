@@ -14,7 +14,6 @@ POST    /character                                  controllers.CharacterControl
 DELETE  /character                                  controllers.CharacterController.delete
 GET     /character/:id                              controllers.CharacterController.find(id: String)
 GET     /character/:characterId/world               controllers.WorldController.getByCharacterId(characterId: String)
-
 POST    /character/:characterId/world/:worldId   controllers.StatusController.create(characterId: String, worldId: Long)
 
 GET     /world                      controllers.WorldController.getWorlds
@@ -22,6 +21,8 @@ GET     /world/:id                  controllers.WorldController.find(id: Int)
 GET     /world/:id/status           controllers.StatusController.get(id: Long)
 GET     /world/:id/status/:statusId                 controllers.StatusController.getToLast(id: Long, statusId: Long)
 POST    /world/:worldId/entry/:characterId                controllers.WorldController.entry(worldId:Long, characterId: String)
+GET     /world/:worldId/creator/:creatorId       controllers.CharacterController.getByWorldIdAndCreatorId(worldId:Long,creatorId: String)
+
 
 #GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create

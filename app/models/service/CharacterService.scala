@@ -65,6 +65,16 @@ trait CharacterService extends UsesCharacterRepository {
     characterRepository.getByCreatorId(creatorId, line)
   }
 
+  def getByWorldIdAndCreatorId(worldId: Long,
+                               creatorId: String): Either[Throwable, List[Character]] = {
+    DB readOnly { implicit s =>
+      characterRepository.getByWorldIdAndCreatorId(worldId, creatorId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
+  }
+
 }
 
 trait UsesCharacterService {
