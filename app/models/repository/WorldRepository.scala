@@ -49,7 +49,6 @@ object WorldRepositoryImpl extends WorldRepository {
              SELECT id
              FROM worlds
              WHERE id = ${worldId}
-             ORDER BY created_at DESC
         """.map(rs => rs.string("id")).single().apply().isDefined
     }
   }
@@ -58,7 +57,7 @@ object WorldRepositoryImpl extends WorldRepository {
     DB readOnly { implicit session =>
       sql"""
             SELECT * FROM worlds
-            ORDER BY created_at DESC
+            ORDER BY id DESC
       """
         .map(World.*)
         .list()
@@ -70,7 +69,7 @@ object WorldRepositoryImpl extends WorldRepository {
     DB readOnly { implicit session =>
       sql"""
             SELECT * FROM worlds WHERE ended_at IS NULL
-            ORDER BY created_at DESC
+            ORDER BY id DESC
       """
         .map(World.*)
         .list()
@@ -84,7 +83,7 @@ object WorldRepositoryImpl extends WorldRepository {
             SELECT *
             FROM worlds
             where creator_id = $creatorId
-            ORDER BY created_at DESC
+            ORDER BY id DESC
       """
         .map(World.*)
         .list
@@ -97,7 +96,7 @@ object WorldRepositoryImpl extends WorldRepository {
             FROM worlds AS w
             JOIN worlds_entries we on w.id = we.world_id
             WHERE we.character_id = $creatorId
-            ORDER BY created_at DESC
+            ORDER BY w.id DESC
       """
         .map(World.*)
         .list
@@ -118,7 +117,6 @@ object WorldRepositoryImpl extends WorldRepository {
             FROM worlds_entries
             WHERE character_id=${characterId}
             AND world_id=${worldId}
-            ORDER BY created_at DESC
         """.map(rs => rs.string("id")).single().apply().isDefined
     }
   }
@@ -129,7 +127,6 @@ object WorldRepositoryImpl extends WorldRepository {
             SELECT *
             FROM worlds
             WHERE id = $id
-            ORDER BY created_at DESC
       """.map(World.*).single().apply()
 
 }
