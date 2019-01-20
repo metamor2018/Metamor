@@ -33,7 +33,7 @@ class WorldController @Inject()(cc: ControllerComponents, authAction: AuthAction
       case Success(a) =>
         worldService.create(a.name, a.creatorId, a.detail) match {
           case Left(e)  => BadGateway
-          case Right(s) => Created
+          case Right(s) => Created(Map("worldId" -> s).asJson)
         }
     }
 
