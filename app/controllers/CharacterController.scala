@@ -99,16 +99,14 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
   }
 
   def getByWorldIdAndCreatorId(worldId: Long, creatorId: String) = Action { implicit request =>
-    if (!creatorService.existsById(creatorId) &&
-        !worldService.exists(worldId))
+    if (!creatorService.existsById(creatorId)
+        || !worldService.exists(worldId))
       NotFound
     else
-      try {
-        val characters = characterService.getByWorldIdAndCreatorId(worldId, creatorId)
-        Ok(characters.asJson)
-      } catch {
-        case e: Exception =>
-          BadGateway
+      characterService.getByWorldIdAndCreatorId(worldId, creatorId) match {
+        case Left(_)  => BadGateway
+        case Right(s) => Ok(s.asJson)
       }
   }
+
 }

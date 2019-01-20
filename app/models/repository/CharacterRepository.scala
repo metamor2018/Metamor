@@ -30,7 +30,8 @@ trait CharacterRepository {
   def delete(id: String): Long
   def exists(characterId: String): Boolean
   def getByCreatorId(creatorId: String, line: Long): List[Character]
-  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character]
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String)(
+      implicit s: DBSession): Try[List[Character]]
 }
 
 trait UsesCharacterRepository {
@@ -120,8 +121,9 @@ object CharacterRepositoryImpl extends CharacterRepository {
     }
   }
 
-  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character] = {
-    DB readOnly { implicit session =>
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String)(
+      implicit s: DBSession): Try[List[Character]] = {
+    catching(classOf[Throwable]) withTry
       sql"""
            SELECT ch.*,
                   cr.account_id,
@@ -141,6 +143,5 @@ object CharacterRepositoryImpl extends CharacterRepository {
         .map(Character.*)
         .list()
         .apply()
-    }
   }
 }

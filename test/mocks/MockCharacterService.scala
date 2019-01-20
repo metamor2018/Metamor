@@ -73,7 +73,8 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
     List(character, character.copy(name = "geho"))
   }
 
-  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String): List[Character] = {
+  def getByWorldIdAndCreatorId(worldId: Long, creatorId: String)(
+      implicit s: DBSession): Try[List[Character]] = {
     val character = Character(
       "huge",
       Creator(
@@ -94,9 +95,8 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
       ZonedDateTime.now(),
       ZonedDateTime.now()
     )
-    List(character, character.copy(name = "geho"))
+    Try(List(character, character.copy(name = "geho")))
   }
-
 }
 
 trait MixInMockCharacterRepository {

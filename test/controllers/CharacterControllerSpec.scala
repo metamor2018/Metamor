@@ -45,7 +45,7 @@ class CharacterControllerSpec extends ControllerSpecBase {
     }
 
     "キャラクター取得 ワールドと創作者で検索" in {
-      val request = FakeRequest(GET, "/character/hoge/world/1")
+      val request = FakeRequest(GET, "/world/1/creator/hoge")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new CharacterController(stubControllerComponents(), authAction)
       val result = call(controller.getByWorldIdAndCreatorId(1, "hoge"), request)
@@ -53,7 +53,6 @@ class CharacterControllerSpec extends ControllerSpecBase {
       status(result) mustBe OK
       contentType(result) mustBe Some("application/json")
       contentAsString(result) must include("testCharacter1")
-
       contentAsString(result) mustNot include("testCharacter4")
     }
 
@@ -158,7 +157,7 @@ class CharacterControllerSpec extends ControllerSpecBase {
     }
 
     "キャラクター取得 ワールドと創作者で検索" in {
-      val request = FakeRequest(GET, "/character/hoge/world/1")
+      val request = FakeRequest(GET, "/world/1/creator/nonhuge")
         .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
       val controller = new CharacterController(stubControllerComponents(), authAction)
       val result = call(controller.getByWorldIdAndCreatorId(999, "nonhuge"), request)
