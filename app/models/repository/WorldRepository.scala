@@ -57,6 +57,7 @@ object WorldRepositoryImpl extends WorldRepository {
     DB readOnly { implicit session =>
       sql"""
             SELECT * FROM worlds
+            ORDER BY id DESC
       """
         .map(World.*)
         .list()
@@ -68,6 +69,7 @@ object WorldRepositoryImpl extends WorldRepository {
     DB readOnly { implicit session =>
       sql"""
             SELECT * FROM worlds WHERE ended_at IS NULL
+            ORDER BY id DESC
       """
         .map(World.*)
         .list()
@@ -81,6 +83,7 @@ object WorldRepositoryImpl extends WorldRepository {
             SELECT *
             FROM worlds
             where creator_id = $creatorId
+            ORDER BY id DESC
       """
         .map(World.*)
         .list
@@ -93,6 +96,7 @@ object WorldRepositoryImpl extends WorldRepository {
             FROM worlds AS w
             JOIN worlds_entries we on w.id = we.world_id
             WHERE we.character_id = $creatorId
+            ORDER BY w.id DESC
       """
         .map(World.*)
         .list
