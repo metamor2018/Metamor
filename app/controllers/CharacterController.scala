@@ -109,4 +109,14 @@ class CharacterController @Inject()(cc: ControllerComponents, authAction: AuthAc
       }
   }
 
+  def getNonEntry(worldId: Long, creatorId: String) = Action { implicit request =>
+    if (!creatorService.existsById(creatorId)
+        || !worldService.exists(worldId))
+      NotFound
+    else
+      characterService.getNonEntry(worldId, creatorId) match {
+        case Left(_)  => BadGateway
+        case Right(s) => Ok(s.asJson)
+      }
+  }
 }

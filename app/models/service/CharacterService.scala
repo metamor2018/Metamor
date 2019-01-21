@@ -75,6 +75,15 @@ trait CharacterService extends UsesCharacterRepository {
     }
   }
 
+  def getNonEntry(worldId: Long, creatorId: String): Either[Throwable, List[Character]] = {
+    DB readOnly { implicit s =>
+      characterRepository.getByNonEntry(worldId, creatorId) match {
+        case Failure(e) => Left(e)
+        case Success(s) => Right(s)
+      }
+    }
+  }
+
 }
 
 trait UsesCharacterService {

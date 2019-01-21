@@ -56,6 +56,18 @@ class CharacterControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustNot include("testCharacter4")
     }
 
+    "キャラクター取得 ワールドに参加していないキャラクターのみ取得" in {
+      val request = FakeRequest(GET, "/world/1/creator/hoge")
+        .withHeaders("Authorization" -> ("Bearer " + config.get[String]("auth0.token")))
+      val controller = new CharacterController(stubControllerComponents(), authAction)
+      val result = call(controller.getNonEntry(1, "hoge"), request)
+
+      status(result) mustBe OK
+      contentType(result) mustBe Some("application/json")
+      contentAsString(result) must include("testCharacter4")
+      contentAsString(result) mustNot include("testCharacter3")
+    }
+
     "キャラクター作成" in {
 
       val request = FakeRequest(POST, "/character")

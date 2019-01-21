@@ -97,6 +97,32 @@ object MockCharacterRepositoryImpl extends CharacterRepository {
     )
     Try(List(character, character.copy(name = "geho")))
   }
+
+  def getByNonEntry(worldId: Long, creatorId: String)(
+      implicit s: DBSession): Try[List[Character]] = {
+    val character = Character(
+      "huge",
+      Creator(
+        "hoge",
+        1,
+        "なまえ",
+        None,
+        None,
+        false,
+        None,
+        ZonedDateTime.now(),
+        ZonedDateTime.now()
+      ),
+      "hugeName",
+      None,
+      None,
+      None,
+      ZonedDateTime.now(),
+      ZonedDateTime.now()
+    )
+    Try(List(character, character.copy(name = "geho")))
+  }
+
 }
 
 trait MixInMockCharacterRepository {

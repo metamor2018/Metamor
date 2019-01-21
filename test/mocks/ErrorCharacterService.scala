@@ -30,6 +30,9 @@ object ErrorCharacterRepositoryImpl extends CharacterRepository {
   def getByWorldIdAndCreatorId(worldId: Long, creatorId: String)(
       implicit s: DBSession): Try[List[Character]] =
     Try(throw new Exception)
+
+  def getByNonEntry(worldId: Long, creatorId: String)(implicit s: DBSession): Try[List[Character]] =
+    Try(throw new Exception)
 }
 
 trait MixInErrorCharacterRepository {
