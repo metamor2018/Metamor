@@ -114,7 +114,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
            FROM characters as ch
            JOIN creators cr on ch.creator_id = cr.id
            WHERE ch.creator_id=${creatorId}
-           LIMIT ${line * 10 - 10}, 10
+           ORDER BY ch.id DESC
         """
         .map(Character.*)
         .list()
@@ -140,6 +140,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
            JOIN worlds_entries we on ch.id = we.character_id
            WHERE we.world_id=${worldId}
            AND ch.creator_id=${creatorId}
+           ORDER BY ch.id DESC
         """
         .map(Character.*)
         .list()
@@ -168,6 +169,7 @@ object CharacterRepositoryImpl extends CharacterRepository {
              WHERE we.character_id = c.id
                AND we.world_id = ${worldId}
            )
+           ORDER BY ch.id DESC
         """
         .map(Character.*)
         .list()
