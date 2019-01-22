@@ -32,6 +32,7 @@ trait CharacterRepository {
   def getByCreatorId(creatorId: String, line: Long): List[Character]
   def getByWorldIdAndCreatorId(worldId: Long, creatorId: String)(
       implicit s: DBSession): Try[List[Character]]
+  def getByNonEntry(worldId: Long, creatorId: String)(implicit s: DBSession): Try[List[Character]]
 }
 
 trait UsesCharacterRepository {
@@ -144,4 +145,31 @@ object CharacterRepositoryImpl extends CharacterRepository {
         .list()
         .apply()
   }
+
+  def getByNonEntry(worldId: Long, creatorId: String)(implicit s: DBSession): Try[List[Character]] =
+    catching(classOf[Throwable]) withTry
+      sql"""
+           SELECT ch.*,
+                  cr.account_id,
+                  cr.name AS creator_name,
+                  cr.profile AS creator_profile,
+                  cr.icon AS creator_icon,
+                  cr.official AS creator_official,
+                  cr.deleted_at AS creator_deleted_at,
+                  cr.updated_at AS creator_updated_at,
+                  cr.created_at AS creator_created_at
+           FROM characters as ch
+           JOIN creators cr on ch.creator_id = cr.id
+             AND ch.creator_id=${creatorId}
+             AND ch.id NOT IN(
+             SELECT DISTINCT character_id
+             FROM worlds_entries as we
+               JOIN characters c on we.character_id = c.id
+             WHERE we.character_id = c.id
+               AND we.world_id = ${worldId}
+           )
+        """
+        .map(Character.*)
+        .list()
+        .apply()
 }

@@ -22,6 +22,8 @@ insert into characters(creator_id,id,name) values ('hoge','testCharacter20','tes
 insert into characters(creator_id,id,name) values ('hoge','testCharacter21','testName21');
 insert into characters(creator_id,id,name) values ('hoge','testCharacter22','testName22');
 insert into characters(creator_id,id,name) values ('hoge','testCharacter23','testName23');
+insert into characters(creator_id,id,name) values ('hoge','ほげ','ふが');
+
 
 
 # --- !Downs
