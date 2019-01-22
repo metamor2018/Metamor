@@ -22,7 +22,7 @@ GET     /world/:id/status           controllers.StatusController.get(id: Long)
 GET     /world/:id/status/:statusId                 controllers.StatusController.getToLast(id: Long, statusId: Long)
 POST    /world/:worldId/entry/:characterId                controllers.WorldController.entry(worldId:Long, characterId: String)
 GET     /world/:worldId/creator/:creatorId       controllers.CharacterController.getByWorldIdAndCreatorId(worldId:Long,creatorId: String)
-GET     /world/:worldId//creator/:creatorId/nonEntry      controllers.CharacterController.getNonEntry(worldId:Long, creatorId: String)
+GET     /world/:worldId/creator/:creatorId/nonEntry      controllers.CharacterController.getNonEntry(worldId:Long, creatorId: String)
 
 #GET     /world/enable               controllers.WorldController.getEnable
 POST    /world                      controllers.WorldController.create
