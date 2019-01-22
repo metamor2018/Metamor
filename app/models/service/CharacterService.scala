@@ -28,10 +28,14 @@ trait CharacterService extends UsesCharacterRepository {
     * @param name
     * @return 作成したキャラクター
     */
-  def create(id: String, creatorId: String, name: String): Either[Throwable, Character] =
+  def create(id: String,
+             creatorId: String,
+             name: String,
+             profile: Option[String],
+             icon: Option[String]): Either[Throwable, Character] =
     DB localTx { implicit s =>
       for {
-        _ <- characterRepository.create(id, creatorId, name)
+        _ <- characterRepository.create(id, creatorId, name, profile, icon)
         characterOpt <- characterRepository.find(id)
         character <- Try(characterOpt.get)
       } yield character

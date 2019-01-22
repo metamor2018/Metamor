@@ -41,4 +41,17 @@ object CharacterValidations extends MixInCharacterService with MixInCreatorServi
 
     }
   }
+
+  def profile(profile: Option[String]): ValidationNel[String, Option[String]] = {
+    profile match {
+//      case profile if profile.length >= 100 => "プロフィールが長すぎます".failureNel[Option[String]]
+      case _ => profile.successNel[String]
+    }
+  }
+
+  def icon(icon: Option[String]): ValidationNel[String, Option[String]] = {
+    icon match {
+      case _ => icon.successNel[String]
+    }
+  }
 }

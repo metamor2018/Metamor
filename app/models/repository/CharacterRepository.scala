@@ -1,6 +1,5 @@
 package models.repository
 
-import models.entity.Character
 import scalikejdbc._
 
 import scala.util.control.Exception.catching
@@ -26,7 +25,11 @@ trait CharacterRepository {
     * @param s
     * @return
     */
-  def create(id: String, creatorId: String, name: String)(implicit s: DBSession): Try[Long]
+  def create(id: String,
+             creatorId: String,
+             name: String,
+             profile: Option[String],
+             icon: Option[String])(implicit s: DBSession): Try[Long]
   def delete(id: String): Long
   def exists(characterId: String): Boolean
   def getByCreatorId(creatorId: String, line: Long): List[Character]
@@ -76,11 +79,15 @@ object CharacterRepositoryImpl extends CharacterRepository {
     * @param s
     * @return
     */
-  def create(id: String, creatorId: String, name: String)(implicit s: DBSession): Try[Long] =
+  def create(id: String,
+             creatorId: String,
+             name: String,
+             profile: Option[String],
+             icon: Option[String])(implicit s: DBSession): Try[Long] =
     catching(classOf[Throwable]) withTry
       sql"""
-           insert into characters(id,creator_id,name)
-           values (${id},${creatorId}, ${name})
+           insert into characters(id,creator_id,name,profile,icon)
+           values (${id},${creatorId}, ${name},${profile},${icon})
         """.update().apply()
 
   def delete(id: String): Long = {
